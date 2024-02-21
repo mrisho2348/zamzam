@@ -1,0 +1,80 @@
+{% extends 'hod_template/base_template.html' %}
+<title>{% block title %}
+    Results
+    {% endblock title %}</title>
+{% load static %}
+
+{% block main_content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+        <div class="container mt-5">
+            <form id="search-form">
+                {% csrf_token %}
+                <div class="row">
+                    <input type="hidden" id="student_id" name="student_id" value="{{ student.id }}" readonly/>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="exam_type_id">Select Exam Type:</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="exam_type_id" name="exam_type_id">
+                                {% for exam_type in exam_types %}
+                                    <option value="{{ exam_type.id }}">{{ exam_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="year">Select Year:</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="year" name="year">
+                                {% for date in distinct_dates %}
+                                    <option value="{{ date|date:'Y-m-d' }}">{{ date|date:'Y-m-d' }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                       <div class="form-group">
+                        <label for="year">Search:</label>
+                        <button type="submit" class="btn btn-primary float-right form-control">Search</button>
+                       </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="result-table-container">
+
+</div>
+<script>
+  $(document).ready(function() {
+    // Add event listener to the form submission
+    $('#search-form').submit(function(event) {
+      // Prevent default form submission
+      event.preventDefault();
+      
+      // Serialize form data
+      var formData = $(this).serialize();
+      
+      // Send AJAX request to the server
+      $.ajax({
+        type: 'POST',
+        url: '{% url 'student_subject_wise_result' %}',
+        data: formData,
+        success: function(response) {
+          // Update the table content with the fetched data
+          console.log(response)
+          $('#result-table-container').html(response.html_result);
+        },
+        error: function(xhr, status, error) {
+          // Handle errors
+          console.error(xhr.responseText);
+        }
+      });
+    });
+  });
+  </script>   
+
+{% endblock main_content %}

@@ -1,0 +1,51 @@
+{% extends 'hod_template/base_template.html' %}
+{% load static %}
+
+{% block page_title %}
+  Subject Details
+{% endblock page_title %}
+
+{% block main_content %}
+  <section class="content">
+    <div class="container-fluid">
+      <div class="content-wrapper">
+        <!-- Content Header (Page header) -->
+        <div class="content-header">
+          <div class="container-fluid">
+            <div class="row mb-2">
+              <div class="col-sm-6">
+                <h1 class="m-0">Subject Details</h1>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <div class="col-md-12">
+                <div class="card card-primary">
+                  <div class="card-body">
+                    <div class="card-text">
+                      {% if subject.id %}
+                        <h3>Subject ID: {{ subject.id }}</h3>
+                      {% endif %}
+                      {% if subject.subject_name %}
+                        <h3>Subject Name: {{ subject.subject_name }}</h3>
+                      {% endif %}
+                      {% if subject.education_level %}
+                        <h3>School Segment: {{ subject.education_level }}</h3>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- /.content -->
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+{% endblock main_content %}

@@ -1,0 +1,71 @@
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %}
+  Add Subject
+{% endblock page_title %}
+{% block main_content %}
+  {% load static %}
+  <section class="content">
+    <div class="container-fluid">
+      <div class="content-wrappe">
+        <!-- Content Header (Page header) -->
+
+        <!-- Main content -->
+        <section class="content">
+          <div class="container-fluid">
+            <div class="row">
+              <!-- left column -->
+              <div class="col-md-12">
+                <!-- general form elements -->
+                <div class="card card-primary">
+                  <div class="card-header">
+                    <h2 class="card-title">Add Subject</h2>
+                  </div>
+                  <div class="card-body">
+                    <form method="post" action="{% if subject.id %}{% url 'create_or_edit_subject' subject_id=subject.id %}{% else %}{% url 'create_or_edit_subject' subject_id=None %}{% endif %}">
+                      {% csrf_token %}
+                      <div class="form-group">
+                        <div class="form-group">
+                          <label for="school_level">School Level:</label>
+                          <!-- You can create a dropdown select field for the school_level -->
+                          <select id="school_level" name="education_level" class="form-control" required>
+                              {% for education_level in education_levels %}
+                                  <option value="{{ education_level.id }}" {% if education_level.id == subject.education_level.id %}selected{% endif %}>{{ education_level.name }}</option>
+                              {% endfor %}
+                          </select>
+                          
+                      </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="subject_name">Subject Name:</label>
+                        <input type="text" class="form-control" id="subject_name" name="subject_name" value="{{ subject.subject_name }}">
+                      </div>
+                      <div class="card-footer">
+                        <div class="form-row">
+                          <div>
+                            {% if messages %}
+                              <div class="col-12">
+                                {% for message in messages %}
+                                  {% if message.tags == 'error' %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                  {% elif message.tags == 'success' %}
+                                    <div class="alert alert-primary">{{ message }}</div>
+                                  {% endif %}
+                                {% endfor %}
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Subject</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+        <!-- /.content -->
+      </div>
+    </div><!-- /.container-fluid -->
+  </section>
+{% endblock main_content %}

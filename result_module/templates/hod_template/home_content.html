@@ -1,0 +1,248 @@
+ 
+{% extends 'hod_template/base_template.html' %}
+{% block page_title %}
+HOME
+{% endblock page_title %}
+{% block main_content %}
+{% load static %}
+<section class="content">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-lg-6 col-6">
+          <!-- small box -->
+          <div class="small-box bg-info">
+            <div class="inner">
+              <h3>{{ student_count }}</h3>
+              <p>TOTAL REGISTERED IN OUR SCHOOL</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-users"></i>
+            </div>
+            <a href="{% url 'manage_student' %}#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+      
+
+        <!-- ./col -->
+        <div class="col-lg-6 col-6">
+          <!-- small box -->
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <h3>{{ subject_count }}</h3>
+              <p>TOTAL SUBJECTS</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <a href="{% url 'manage_subject' %}" class="small-box-footer">&nbsp<i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+      </div>
+      
+      <div class="row">
+        <div class="col-lg-6">
+          <!-- PIE CHART -->
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">TOTAL STUDENTS IN EACH SCHOOL LEVEL</h3>
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
+            <div class="card-body">
+              <canvas id="pieChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            </div>
+            <!-- /.card-body -->
+          </div>
+          <!-- /.card -->
+        </div>
+        <div class="col-lg-6">
+    
+            <!-- DONUT CHART -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">TOTAL STUDENT IN EACH CLASS</h3>
+
+                <div class="card-tools">
+                  <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                  </button>
+                  <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+                </div>
+              </div>
+              <div class="card-body">
+                <canvas id="donutChart" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+              </div>
+              <!-- /.card-body -->
+            </div>
+            <!-- /.card -->
+
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">TOTAL MALE AND FEMALE</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+              </div>
+            </div>
+            <div class="card-body">
+              <canvas id="donutChart2" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+        <div class="col-lg-6">
+          <div class="card card-primary">
+            <div class="card-header">
+              <h3 class="card-title">TOTAL STUDENTS IN EACH SUBJECTS</h3>
+
+              <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse"><i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove"><i class="fas fa-times"></i></button>
+              </div>
+            </div>
+            <div class="card-body">
+              <canvas id="donutChart4" style="min-height: 250px; height: 250px; max-height: 250px; max-width: 100%;"></canvas>
+            </div>
+            <!-- /.card-body -->
+          </div>
+        </div>
+      </div>
+   
+   
+    </div><!-- /.container-fluid -->
+  </section>
+
+  {% endblock main_content %}
+
+  {% block customer_js %}
+  <script>
+    $(document).ready(function(){
+
+  
+      
+      var pieData = {
+        labels: ['Nursery', 'Primary', 'Secondary'], // Fixed labels
+        datasets: [
+            {
+                data: [{{ total_nursery_student }}, {{ total_primary_student }}, {{ total_secondary_student }}],
+                backgroundColor: ['#f56954', '#00a65a', '#0000ff'], // Added colors for each level
+            }
+        ]
+    };
+
+    // Get context with jQuery - using jQuery's .get() method.
+    var pieChartCanvas = $('#pieChart').get(0).getContext('2d');
+    
+    var pieOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+    };
+
+    // Create pie or doughnut chart
+    // You can switch between pie and doughnut using the method below.
+    var pieChart = new Chart(pieChartCanvas, {
+        type: 'pie',
+        data: pieData,
+        options: pieOptions,
+    });
+
+ 
+    
+    
+     //TOTAL MALE AND FEMALE
+    //-------------
+    //- DONUT CHART -
+    //-------------
+    // Get context with jQuery - using jQuery's .get() method.
+ // Get context with jQuery - using jQuery's .get() method.
+var gender_labels = ['Male', 'Female'];  // Labels for male and female
+var gender_counts = [{{ total_male_students }}, {{ total_female_students }}];  // Values from Django context
+
+var donutChartCanvas2 = $('#donutChart2').get(0).getContext('2d');
+var donutData2 = {
+    labels: gender_labels,
+    datasets: [
+        {
+            data: gender_counts,
+            backgroundColor: ['#f56954', '#00a65a'],
+        }
+    ]
+};
+var donutOptions2 = {
+    maintainAspectRatio: false,
+    responsive: true,
+};
+
+// Create pie or doughnut chart
+var donutChart2 = new Chart(donutChartCanvas2, {
+    type: 'doughnut',
+    data: donutData2,
+    options: donutOptions2
+});
+
+
+   //TOTAL STUDENT IN EACH CLASS
+    //-------------
+    //- DONUT CHART -
+    //-------------
+    // Get context with jQuery - using jQuery's .get() method.
+  
+    var class_level_list = {{ class_levels|safe }};
+    var student_class_level_count = [
+    {{ total_baby_students }},
+    {{ total_kg1_students }},
+    {{ total_kg2_students }},
+    {{ total_std_i_students }},
+    {{ total_std_ii_students }},
+    {{ total_std_iii_students }},
+    {{ total_std_iv_students }},
+    {{ total_std_v_students }},
+    {{ total_std_vi_students }},
+    {{ total_std_vii_students }},
+    {{ total_form_i_students }},
+    {{ total_form_ii_students }},
+    {{ total_form_iii_students }},
+    {{ total_form_iv_students }},
+       
+ 
+    ];
+    var donutChartCanvas = $('#donutChart').get(0).getContext('2d');
+    var donutData = {
+        labels: class_level_list,
+        datasets: [
+            {
+                data: student_class_level_count,
+                backgroundColor: ['#f56954', '#00a65a', '#f39c12', '#00c0ef', '#3c8dbc', '#d2d6de', '#f56799', '#00999a', '#f39678', '#00caaa', '#3c8444', '#d2d999'],
+            }
+        ]
+    };
+    var donutOptions = {
+        maintainAspectRatio: false,
+        responsive: true,
+    };
+    // Create pie or doughnut chart
+    // You can switch between pie and doughnut using the method below.
+    var donutChart = new Chart(donutChartCanvas, {
+        type: 'doughnut',
+        data: donutData,
+        options: donutOptions
+    });
+  
+
+    });
+  </script>
+{% endblock customer_js %}

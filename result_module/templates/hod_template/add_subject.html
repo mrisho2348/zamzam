@@ -1,0 +1,40 @@
+ 
+{% extends 'hod_template/base_template.html' %}
+{% block title %}
+        Add Subject    
+{% endblock title %}
+{% block main_content %}
+{% load static %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="content-wrappe">
+            <!-- Content Header (Page header) -->    
+        
+            <!-- Main content -->
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <!-- left column -->
+                  <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                      <div class="card-header">
+
+                    </div>
+
+                    {% url 'addsubjectsave' as action_path %}
+                    {% include 'admin_template/form_template.html' with messages=messages forms=forms action_path=action_path button_text="Add Subject" %}
+                  </div>
+
+                  </div>
+                  <!--/.col (right) -->
+                </div>
+             
+              
+            </section>
+            <!-- /.content -->
+          </div>
+    </div><!-- /.container-fluid -->
+  </section>
+
+  {% endblock main_content %}
