@@ -2,7 +2,7 @@
 from django.urls import  include, path
 
 from result_module import imports
-from . import views,delete
+from . import views,delete,StudentView
 
 urlpatterns = [
         path('',views.ShowLogin, name="login"),
@@ -34,4 +34,17 @@ urlpatterns = [
          path('import_student_records', imports.import_student_records, name='import_student_records'),
          path('import_subject_records', imports.import_subject_records, name='import_subject_records'),
          path('import_exam_type_records', imports.import_exam_type_records, name='import_exam_type_records'),
+         
+          # student url paths  
+        path('student_home', StudentView.student_home, name='student_home'),      
+       
+        path('student_profile', StudentView.student_profile, name='student_profile'),    
+        path('student_profile_save', StudentView.student_profile_save, name='student_profile_save'), 
+        path('single_student_details', StudentView.single_student_details, name='single_student_details'),  
+        path('student_dologin', StudentView.student_dologin, name='student_dologin'),  
+        path('student_subject_wise_result_pages', StudentView.student_subject_wise_result_pages, name='student_subject_wise_result_pages'),  
+        path('student_subject_wise_results', StudentView.student_subject_wise_results, name='student_subject_wise_results'),  
+        path('student_login', views.student_login, name='student_login'),  
+        path('logout_user', views.logout_user, name='logout_user'),  # Move this line here
+    
 ]

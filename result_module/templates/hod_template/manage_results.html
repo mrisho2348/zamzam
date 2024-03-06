@@ -55,7 +55,7 @@ Result
             </tr>
         </thead>
         <tbody>
-            {% for result in results %}
+            {% for result in student_results %}
                 <tr>
                     <td>{{ forloop.counter }}</td>
                     <td>{{ result.student.registration_number }}</td>
@@ -63,16 +63,16 @@ Result
                     <td>{{ result.student.gender }}</td>
                     <td>{{ result.student.calculate_performance }}</td>
                     <td>{{ result.division }}</td>
-                    <td>{{ result.best_subjects.phy }}</td>
-                    <td>{{ result.best_subjects.chem }}</td>
-                    <td>{{ result.best_subjects.bio }}</td>
-                    <td>{{ result.best_subjects.geo }}</td>
-                    <td>{{ result.best_subjects.math }}</td>
-                    <td>{{ result.best_subjects.eng }}</td>
-                    <td>{{ result.best_subjects.ara }}</td>
-                    <td>{{ result.best_subjects.kisw }}</td>
-                    <td>{{ result.best_subjects.dini }}</td>
-                    <td> {% if 'History' in result.best_subjects %}
+                    <td>{{ result.subjects.phy }}</td>
+                    <td>{{ result.subjects.chem }}</td>
+                    <td>{{ result.subjects.bio }}</td>
+                    <td>{{ result.subjects.geo }}</td>
+                    <td>{{ result.subjects.math }}</td>
+                    <td>{{ result.subjects.eng }}</td>
+                    <td>{{ result.subjects.ara }}</td>
+                    <td>{{ result.subjects.kisw }}</td>
+                    <td>{{ result.subjects.dini }}</td>
+                    <td> {% if 'History' in result.subjects %}
                       {{ result.marks }}{% else %}bado{% endif %}
                     </td>
                     <td>{{ result.best_subjects.civ }}</td>
@@ -300,8 +300,8 @@ Result
                   <div class="form-group">
                     <label for="subject">Subject</label>
                     <select class="form-control select2bs4" style="width: 100%;" id="subject" name="subject">
-                      {% for subject in subjects %}
-                      <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                      {% for subjects in subject %}
+                      <option value="{{ subjects.id }}">{{ subjects.subject_name }}</option>
                       {% endfor %}
                     </select>
                   </div>

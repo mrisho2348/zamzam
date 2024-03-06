@@ -13,10 +13,34 @@ from django.template.loader import render_to_string
 # Create your views here.
 
 def dashboard(request):
-    return render(request,"hod_template/home_content.html")
+    # Fetch total number of students
+    total_students = Students.objects.count()
+
+    # Fetch total number of subjects
+    total_subjects = Subject.objects.count()
+
+    # Fetch total number of female students
+    total_female_students = Students.objects.filter(gender='Female').count()
+
+    # Fetch total number of male students
+    total_male_students = Students.objects.filter(gender='Male').count()
+
+    return render(request, "hod_template/home_content.html", {
+        'total_students': total_students,
+        'total_subjects': total_subjects,
+        'total_female_students': total_female_students,
+        'total_male_students': total_male_students,
+    })
+
+def logout_user(request):
+  logout(request)
+  return HttpResponseRedirect(reverse("login"))
 
 def ShowLogin(request):  
   return render(request,'login.html')
+
+def student_login(request):  
+  return render(request,'student_template/student_login.html')
 
 def  admin_profile(request):
     user = CustomUser.objects.get(id=request.user.id)
@@ -31,7 +55,7 @@ def edit_profile_save(request):
        last_name = request.POST.get("last_name")
        password = request.POST.get("password")
        try:           
-          customuser = CustomUser.objects.get(id=request.user.id)
+          customuser = CustomUser.objects.get(admin=request.user.id)
           customuser.first_name = first_name
           customuser.last_name = last_name
           if password!= "" and password!=None:
@@ -67,6 +91,7 @@ def DoLogin(request):
             return HttpResponseRedirect(reverse("login"))
     
 
+
 def manage_student(request):
     students = Students.objects.all()
     return render(request, 'hod_template/manage_student.html', {'students': students})
@@ -75,6 +100,7 @@ def student_subject_wise_result_page(request,student_id):
     student = Students.objects.get(id=student_id)
     exam_types = ExamType.objects.all()
     distinct_dates= Result.objects.order_by('date_of_exam').values_list('date_of_exam', flat=True).distinct()
+    print(distinct_dates)
     return render(request, 'hod_template/subject_wise_results.html',
                   {
                       'student': student,
@@ -90,27 +116,57 @@ def manage_subject(request):
     subjects = Subject.objects.all()
     return render(request, 'hod_template/manage_subject.html', {'subjects': subjects})
 
+# def manage_result(request):
+#     # Get all students, results, and subjects
+#     students = Students.objects.all()
+#     subjects = Subject.objects.all()
+
+#     # Initialize a dictionary to store results for each student
+#     student_results = defaultdict(dict)
+
+#     # Retrieve results for each student and subject
+#     for student in students:
+#         # Filter results for the current student
+#         student_results_queryset = Result.objects.filter(student=student)
+#         # Group results by subject
+#         for subject in subjects:
+#             # Get results for the current subject and student
+#             subject_results = student_results_queryset.filter(subject=subject)
+#             # Store the marks for the subject
+#             student_results[student][subject.subject_name] = [result.marks for result in subject_results]
+#     print(student_results)
+#     context = {
+#         'student_results': student_results,
+#     }
+#     return render(request, 'hod_template/manage_results.html', context)
+
 def manage_result(request):
     # Get all students, results, and subjects
     students = Students.objects.all()
     subjects = Subject.objects.all()
-
-    # Initialize a dictionary to store results for each student
+    subject = Subject.objects.all()
+    exam_types = ExamType.objects.all()
+   
     student_results = defaultdict(dict)
 
     # Retrieve results for each student and subject
     for student in students:
         # Filter results for the current student
         student_results_queryset = Result.objects.filter(student=student)
-        # Group results by subject
-        for subject in subjects:
-            # Get results for the current subject and student
-            subject_results = student_results_queryset.filter(subject=subject)
-            # Store the marks for the subject
-            student_results[student][subject.subject_name] = [result.marks for result in subject_results]
-    print(student_results)
+        # Initialize a dictionary to store results for the current student
+        student_result = {subject.subject_name: None for subject in subjects}
+        # Populate the dictionary with marks for each subject
+        for result in student_results_queryset:
+            student_result[result.subject.subject_name] = result.marks
+        # Store the result dictionary for the current student
+        student_results[student.full_name] = student_result
+
     context = {
+        'students': students,
+        'subject': subject,
+        'exam_types': exam_types,
         'student_results': student_results,
+        'subjects': [subject.subject_name for subject in subjects],
     }
     return render(request, 'hod_template/manage_results.html', context)
 

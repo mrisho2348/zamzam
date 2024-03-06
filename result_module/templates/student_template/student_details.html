@@ -1,0 +1,53 @@
+{% extends 'student_template/base_template.html' %}
+{% load static %}
+{% block title %}
+My Personal Info
+{% endblock title %}
+{% block main_content %}
+<div class="container mt-5">
+  <!-- Students Personal Info -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      My Personal Info
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Full Name: <span style="color: blue;">{{ student.full_name }}</span> </h5>
+      {% if student.address %}
+      <p class="card-text">Address: {{ student.address }}</p>
+      {% endif %}
+      {% if student.gender %}
+      <p class="card-text">Gender: {{ student.gender }}</p>
+      {% endif %}
+      {% if student.date_of_birth %}
+      <p class="card-text">Date of Birth: {{ student.date_of_birth }}</p>
+      {% endif %}
+      {% if student.phone_number %}
+      <p class="card-text">Contact Number: {{ student.phone_number }}</p>
+      {% endif %}
+      <!-- Add other personal information fields here -->
+    </div>
+  </div>
+
+  <!-- Students Academic Info -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+         Academic Info
+    </div>
+    <div class="card-body">
+        {% if student.current_class %}
+        <p class="card-text">Current Class: {{ student.current_class }}</p>
+        {% endif %}
+        {% if student.created_at %}
+        <p class="card-text">Admission Date: {{ student.created_at }}</p>
+        {% endif %}
+        {% if student.registration_number %}
+        <p class="card-text">Registration Number: {{ student.registration_number }}</p>
+        {% endif %}
+    
+    
+    
+       
+    </div>
+  </div>
+</div>
+{% endblock main_content %}

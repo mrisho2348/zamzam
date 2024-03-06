@@ -1,0 +1,117 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{% static 'img/zamzamLogo.jpg' %}">
+    <title>Student Parent Login</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h2>Student Parent Login</h2>
+                    </div>
+                    <div class="card-body">
+                        <form action="/student_dologin" method="POST">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="registration_number">Registration Number:</label>
+                                <input type="text" id="registration_number" name="registration_number" class="form-control" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" id="first_name" name="first_name" class="form-control" required>
+                            </div>
+
+                            <div class="row"> 
+                                {% if messages  %}
+                                <div class="col-12">
+                                    {% for message in messages %}
+                                        {% if message.tags == 'error' %}
+                                            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                                {% endif %}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-block">Login</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+    }
+    
+    .login-container {
+        width: 300px;
+        margin: 100px auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease-in-out; /* Add smooth transition effect */
+    }
+    
+    .login-container:hover {
+        transform: scale(1.02); /* Add slight scaling effect on hover */
+    }
+    
+    h2 {
+        text-align: center;
+    }
+    
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    
+    input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        transition: border-color 0.3s ease-in-out; /* Add transition effect for input border color */
+    }
+    
+    input[type="text"]:focus {
+        border-color: #007bff; /* Change border color on focus */
+    }
+    
+    button {
+        width: 100%;
+        padding: 10px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+        transition: background-color 0.3s ease-in-out; /* Add transition effect for button background color */
+    }
+    
+    button:hover {
+        background-color: #0056b3;
+    }
+    
+</style>
