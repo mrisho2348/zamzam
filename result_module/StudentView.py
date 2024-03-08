@@ -1,7 +1,7 @@
 
 from datetime import datetime
 from time import strptime
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.contrib import messages
@@ -11,6 +11,8 @@ from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from result_module.models import (
 
+    Announcement,
+    AnnouncementForStudents,
     CustomUser,
    
     Students, 
@@ -51,7 +53,50 @@ def student_view_attendance(request):
     return render(request, "student_template/student_view_attendance.html", {"subjects": subjects,"students":student})
 
 
+def student_announcements(request):
+    student_id = request.session.get('student_id')
+    if student_id:
+        try:
+            student = Students.objects.get(id=student_id)
+            announcements = Announcement.objects.filter(current_class=student.current_class)
+            
+            # Mark announcements as read for the logged-in student
+            unread_announcements = AnnouncementForStudents.objects.filter(student=student, read=False)
+            for announcement in unread_announcements:
+                announcement.read = True
+                announcement.save()
 
+            return render(request, 'student_template/student_announcements.html', {'announcements': announcements})
+        except Students.DoesNotExist:
+            return HttpResponseBadRequest("Student does not exist")
+    else:
+        return HttpResponseBadRequest("Unauthorized access")
+
+
+
+def fetch_unread_announcement_count(request):
+    student_id = request.session.get('student_id')
+    if student_id:
+        try:
+            student = Students.objects.get(pk=student_id)
+            announcements = Announcement.objects.filter(current_class=student.current_class)
+            unread_count = 0
+            
+            for announcement in announcements:
+                # Check if the announcement exists for the student
+                if not AnnouncementForStudents.objects.filter(announcement=announcement, student=student).exists():
+                    # If the announcement doesn't exist, create a new entry
+                    AnnouncementForStudents.objects.create(announcement=announcement, student=student)
+                    unread_count += 1
+                elif not AnnouncementForStudents.objects.get(announcement=announcement, student=student).read:
+                    # If the announcement exists but is unread, increment the count
+                    unread_count += 1
+                    
+            return JsonResponse({'unread_count': unread_count})
+        except Students.DoesNotExist:
+            pass
+    
+    return JsonResponse({'error': 'Unauthorized'}, status=401)
 
 
 def student_dologin(request):

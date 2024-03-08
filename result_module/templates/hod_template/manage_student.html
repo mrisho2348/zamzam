@@ -160,17 +160,17 @@
                                                 <input type="text" class="form-control" id="edit_full_name" name="full_name" value="{{ student.full_name }}">
                                             </div>
                                         </div>
-                                        <div class="col-md-4">
-                                            <div class="form-group">
-                                              <label for="current_class">Selected Class</label>
+                                        <div class="col-md-4">            
+                                          <div class="form-group">
+                                              <label for="current_class">Class</label>
                                               <select class="form-control select2bs4" style="width: 100%;" id="current_class" name="current_class">
-                                                <option value="Form One" {% if student.current_class %}{% endif %}>Form One</option>
-                                                <option value="Form Two">Form Two</option>
-                                                <option value="Form Three">Form Three</option>
-                                                <option value="Form Four">Form Four</option>
+                                                  <option value="Form One" {% if student.current_class == 'Form One' %} selected {% endif %}>Form One</option>
+                                                  <option value="Form Two" {% if student.current_class == 'Form Two' %} selected {% endif %}>Form Two</option>
+                                                  <option value="Form Three" {% if student.current_class == 'Form Three' %} selected {% endif %}>Form Three</option>
+                                                  <option value="Form Four" {% if student.current_class == 'Form Four' %} selected {% endif %}>Form Four</option>
                                               </select>
-                                            </div>
-                                          </div>
+                                          </div>          
+                                      </div>
                                     </div>
                                     <div class="row">
                                         <div class="col-md-4">

@@ -1,15 +1,16 @@
 from collections import defaultdict
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import RequestContext
 from django.urls import reverse
 from django.views.decorators.http import require_POST
-from result_module.models import CustomUser, ExamType, Result, StudentExamInfo, StudentPositionInfo, Students, Subject
+from result_module.models import AdminHOD, Announcement, AnnouncementForStudents, CustomUser, ExamType, Result, StudentExamInfo, StudentPositionInfo, Students, Subject
 from django.contrib import messages
 from django.contrib.auth import logout,login
 from result_module.emailBackEnd import EmailBackend
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
+from django.contrib.auth.decorators import login_required
 # Create your views here.
 
 def dashboard(request):
@@ -116,29 +117,70 @@ def manage_subject(request):
     subjects = Subject.objects.all()
     return render(request, 'hod_template/manage_subject.html', {'subjects': subjects})
 
-# def manage_result(request):
-#     # Get all students, results, and subjects
-#     students = Students.objects.all()
-#     subjects = Subject.objects.all()
+@login_required
+def staff_announcements(request):
+    try:
+        admin_hod = request.user.admin_hod  # Access the AdminHOD instance associated with the logged-in user
+        staff_announcements = Announcement.objects.filter(created_by=admin_hod)
+        return render(request, 'hod_template/staff_announcements.html', {'announcements': staff_announcements})
+    except AdminHOD.DoesNotExist:
+        return render(request, 'hod_template/staff_announcements.html', {'announcements': []})
+  
+@csrf_exempt    
+def fetch_read_count(request):
+    if request.method == 'GET' and 'announcement_id' in request.GET:
+        announcement_id = request.GET.get('announcement_id')
+        read_count = AnnouncementForStudents.objects.filter(announcement_id=announcement_id, read=True).count()
+        return JsonResponse({'read_count': read_count})
+    else:
+        return JsonResponse({'error': 'Invalid request'})   
 
-#     # Initialize a dictionary to store results for each student
-#     student_results = defaultdict(dict)
 
-#     # Retrieve results for each student and subject
-#     for student in students:
-#         # Filter results for the current student
-#         student_results_queryset = Result.objects.filter(student=student)
-#         # Group results by subject
-#         for subject in subjects:
-#             # Get results for the current subject and student
-#             subject_results = student_results_queryset.filter(subject=subject)
-#             # Store the marks for the subject
-#             student_results[student][subject.subject_name] = [result.marks for result in subject_results]
-#     print(student_results)
-#     context = {
-#         'student_results': student_results,
-#     }
-#     return render(request, 'hod_template/manage_results.html', context)
+@require_POST
+def edit_announcement(request):
+    try:
+        announcement_id = request.POST.get('announcement_id')
+        title = request.POST.get('title')
+        content = request.POST.get('content')
+        current_class = request.POST.get('current_class')
+
+        # Retrieve the announcement object
+        announcement = Announcement.objects.get(pk=announcement_id)
+
+        # Update the announcement fields
+        announcement.title = title
+        announcement.content = content
+        announcement.current_class = current_class
+        announcement.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Announcement updated successfully'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': 'Error occurred while updating announcement' + str(e)})
+    
+@csrf_exempt     
+def fetch_students_for_announcement(request):
+    if request.method == 'GET' and 'announcement_id' in request.GET:
+        announcement_id = request.GET['announcement_id']
+        try:
+            announcement_students = AnnouncementForStudents.objects.filter(announcement_id=announcement_id, read=True)
+            students_data = [{'registration_number': student.student.registration_number, 'full_name': student.student.full_name} for student in announcement_students]
+            return JsonResponse({'students': students_data})
+        except AnnouncementForStudents.DoesNotExist:
+            return JsonResponse({'error': 'No students found for this announcement'}, status=404)
+    else:
+        return JsonResponse({'error': 'Invalid request'}, status=400)     
+
+def delete_announcement(request):
+    if request.method == 'POST':
+        try:
+            announcement_id = request.POST.get('announcement_id')
+            announcement = Announcement.objects.get(id=announcement_id)
+            announcement.delete()
+            return JsonResponse({'status': 'success', 'message': 'Announcement deleted successfully'})
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': 'Error deleting announcement', 'details': str(e)})
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
 def manage_result(request):
     # Get all students, results, and subjects
@@ -169,6 +211,21 @@ def manage_result(request):
         'subjects': [subject.subject_name for subject in subjects],
     }
     return render(request, 'hod_template/manage_results.html', context)
+
+def add_announcement(request):
+    if request.method == 'POST':
+        try:
+            title = request.POST.get('title')
+            current_class = request.POST.get('current_class')
+            content = request.POST.get('content')
+            created_by = request.user.admin_hod  # Assuming the currently logged-in user is an AdminHOD
+
+            Announcement.objects.create(title=title, current_class=current_class, content=content, created_by=created_by)
+            return JsonResponse({'status':'success','message': 'Announcement added successfully'})
+        except Exception as e:
+            return JsonResponse({'status':'error', 'message': 'Error occurred while adding announcement' + str(e)})
+    else:
+        return JsonResponse({'status':'error', 'message':  'Invalid request method'})
 
 @csrf_exempt
 @require_POST

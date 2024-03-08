@@ -63,7 +63,16 @@
          
           </ul>
       </li>
-
+      <li class="nav-item">
+        {% url 'student_announcements' exam_type as student_announcements %}
+        <a href="{% url 'student_announcements' %}" class="nav-link {% if request.path == student_announcements %}active{% endif %}">
+            <i class="nav-icon fas fa-bullhorn"></i> <!-- Using a bullhorn icon for announcements -->
+            <p>
+                 Announcements 
+               <span class="right badge badge-danger">New</span> 
+            </p>
+        </a>
+    </li>
       <!-- Details -->
       <li class="nav-header">Details</li>
 
@@ -90,6 +99,28 @@
 </aside>
 
 <!-- Bootstrap CSS links -->
+<script>
+    // Function to fetch the total number of unread announcements for the student's class
+    function fetchUnreadAnnouncementCount() {
+        $.ajax({
+            url: '/fetch_unread_announcement_count/',
+            type: 'GET',
+            success: function(data) {
+                // Update the badge with the total number of unread announcements
+                $('.badge.badge-danger').text(data.unread_count);
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching unread announcement count:', error);
+            }
+        });
+    }
+
+    // Call the fetchUnreadAnnouncementCount function initially and every 60 seconds (for example)
+    $(document).ready(function() {
+        fetchUnreadAnnouncementCount(); // Call initially
+        setInterval(fetchUnreadAnnouncementCount, 60000); // Call every 60 seconds
+    });
+</script>
 
 
 <!-- jQuery and Bootstrap JS scripts -->

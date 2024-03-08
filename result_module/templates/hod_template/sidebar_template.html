@@ -43,7 +43,15 @@
           </li>
 
 
-
+          <li class="nav-item">
+            <a href="{% url 'staff_announcements' %}" class="nav-link {% if request.path == staff_announcements %}active{% endif %}">
+                <i class="nav-icon fas fa-bullhorn"></i> <!-- Using a bullhorn icon for announcements -->
+                <p>
+                    Manage Announcements <!-- Renamed for clarity and appeal -->
+                    {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                </p>
+            </a>
+        </li>
           <li class="nav-item">
             {% url 'manage_student' as manage_student %}          
             <a href="{% url 'manage_student' %}" class="nav-link {% if request.path == manage_student %}active{% endif %}">

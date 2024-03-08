@@ -3,6 +3,7 @@ from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save,post_delete
 from django.contrib.auth.models import AbstractUser,BaseUserManager
+from django.utils import timezone
 # Create your models here.
 
 class CustomUserManager(BaseUserManager):
@@ -59,6 +60,32 @@ class AdminHOD(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
+
+class Announcement(models.Model):
+    title = models.CharField(max_length=100)
+    current_class = models.CharField(max_length=100) 
+    content = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+    created_by = models.ForeignKey(AdminHOD, on_delete=models.CASCADE)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    objects = models.Manager() 
+    
+    def __str__(self):
+        return self.title
+
+class AnnouncementForStudents(models.Model):
+    announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
+    student = models.ForeignKey('Students', on_delete=models.CASCADE)
+    read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()   
+    class Meta:
+        unique_together = ('announcement', 'student')
+
+    def __str__(self):
+        return f"{self.announcement.title} for {self.student.full_name}"
 
 class Students(models.Model):
     id = models.AutoField(primary_key=True)
