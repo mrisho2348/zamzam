@@ -87,7 +87,7 @@
                                 <td>{{ student_result.position|default_if_none:"" }}</td>
                                 <td>{{ student_result.remark|default_if_none:"" }}</td>
                                 <td>
-                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addResultModal{{ student_result.student.id }}">
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addResultModal{{ student_result.student.id }}"  data-toggle="tooltip" title="Add result for this student">
                                         <i class="fas fa-plus"></i>
                                     </button>
                                     <a href="{% url 'student_subject_wise_result_page' student_result.student.id %}" class="btn btn-success btn-sm" data-toggle="tooltip" title="View Result">

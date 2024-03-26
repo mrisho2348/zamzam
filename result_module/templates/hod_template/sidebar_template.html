@@ -44,6 +44,7 @@
 
 
           <li class="nav-item">
+            {% url 'staff_announcements' as staff_announcements %} 
             <a href="{% url 'staff_announcements' %}" class="nav-link {% if request.path == staff_announcements %}active{% endif %}">
                 <i class="nav-icon fas fa-bullhorn"></i> <!-- Using a bullhorn icon for announcements -->
                 <p>
