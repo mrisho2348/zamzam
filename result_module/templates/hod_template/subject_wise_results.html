@@ -7,6 +7,44 @@
 {% block main_content %}
 <div class="container">
   <div class="row">
+    <div class="col-md">
+        <div class="card">
+            <div class="card-header">Student Personal Details</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Registration Number:</strong> {{ student.registration_number }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Full Name:</strong> {{ student.full_name }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Current Class:</strong> {{ student.current_class }}
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <strong>Date of Birth:</strong> {{ student.date_of_birth }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Gender:</strong> {{ student.gender }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Phone Number:</strong> {{ student.phone_number }}
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <strong>Address:</strong> {{ student.address }}
+                    </div>
+                </div>
+                <!-- Add more rows and details as needed -->
+            </div>
+        </div>
+    </div>
+</div>
+
+  <div class="row">
     <div class="col-md-12">
         <div class="container mt-5">
             <form id="search-form">

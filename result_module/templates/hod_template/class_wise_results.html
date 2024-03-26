@@ -1,0 +1,55 @@
+ 
+{% extends 'hod_template/base_template.html' %}
+{% block title %}
+   School Class
+{% endblock title %}
+{% block page_title %}
+  {{exam_type}}
+{% endblock page_title %}
+{% block main_content %}
+{% load static %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Form One</h5>
+                            <p class="card-text">Click to add results for Form One</p>
+                            <a href="{% url 'view_student_to_add_result' exam_type.id 'Form One' %}" class="btn btn-primary">Add Results</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Form Two</h5>
+                            <p class="card-text">Click to add results for Form Two</p>
+                            <a href="{% url 'view_student_to_add_result' exam_type.id 'Form Two' %}" class="btn btn-primary">Add Results</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Form Three</h5>
+                            <p class="card-text">Click to add results for Form Three</p>
+                            <a href="{% url 'view_student_to_add_result' exam_type.id 'Form Three' %}" class="btn btn-primary">Add Results</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Form Four</h5>
+                            <p class="card-text">Click to add results for Form Four</p>
+                            <a href="{% url 'view_student_to_add_result' exam_type.id 'Form Four' %}" class="btn btn-primary">Add Results</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+  </section>
+  {% endblock main_content %}

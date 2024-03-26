@@ -61,7 +61,7 @@
       // Send AJAX request to the server
       $.ajax({
         type: 'POST',
-        url: '{% url 'student_subject_wise_result' %}',
+        url: '{% url 'students_subject_wise_results' %}',
         data: formData,
         success: function(response) {
           // Update the table content with the fetched data

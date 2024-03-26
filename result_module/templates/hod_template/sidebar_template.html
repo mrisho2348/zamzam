@@ -84,8 +84,18 @@
             </a>
         </li>
         <li class="nav-item">
-            {% url 'manage_result' as manage_result %}            
-            <a href="{% url 'manage_result' %}" class="nav-link {% if request.path == manage_result %}active{% endif %}">
+          {% url 'exam_type_list' as exam_type_list_url %}            
+          <a href="{{ exam_type_list_url }}" class="nav-link {% if request.path == exam_type_list_url %}active{% endif %}">
+              <i class="nav-icon fas fa-plus"></i> 
+              <p>
+                  Add Result
+                  
+              </p>
+          </a>
+      </li>
+        <li class="nav-item">
+            {% url 'students_wise_result_page' as students_wise_result_page %}            
+            <a href="{% url 'students_wise_result_page' %}" class="nav-link {% if request.path == students_wise_result_page %}active{% endif %}">
                 <i class="nav-icon fas fa-poll"></i>
                 <p>
                     Result Management
@@ -93,11 +103,7 @@
                 </p>
             </a>
         </li>
-        
-    
-
-
-        </ul>
+     </ul>
       </nav>
       <!-- /.sidebar-menu -->
     </div>

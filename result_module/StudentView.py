@@ -14,6 +14,7 @@ from result_module.models import (
     Announcement,
     AnnouncementForStudents,
     CustomUser,
+    ExamMetrics,
    
     Students, 
     Subject,
@@ -29,12 +30,10 @@ from result_module.templatetags.custom_filters import strftime
 def student_home(request):
     # Retrieve logged-in student's ID from session variable
     student_id = request.session.get('student_id')
-
     if student_id:
         try:
             # Fetch the logged-in student's information
-            student = Students.objects.get(id=student_id)
-            
+            student = Students.objects.get(id=student_id)            
             # You can add additional logic here if needed
             
             return render(request, "student_template/student_home.html", {'student': student})
@@ -45,7 +44,6 @@ def student_home(request):
 
     # Redirect to login page if not logged in or if student not found
     return redirect('student_login')
-
 
 def student_view_attendance(request):
     student = Students.objects.get(admin=request.user.id)
@@ -202,7 +200,7 @@ def student_subject_wise_result_pages(request):
     # Redirect to login page if not logged in or if student not found
     return redirect('student_login')
     
-def student_subject_wise_results(request):
+def students_subject_wise_results(request):
     if request.method == 'POST' and request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest':
         # Get the student based on the provided student_id
         student_id = request.POST.get('student_id')
@@ -230,7 +228,16 @@ def student_subject_wise_results(request):
             exam_type=exam_type,
             current_class=student.current_class
         ).first()
-
+        
+        exam_metrics, created = ExamMetrics.objects.get_or_create(
+                    student=student,
+                    exam_type=exam_type,
+                    selected_class=student.current_class,
+                )
+        total_marks = exam_metrics.total_marks
+        average = exam_metrics.average
+        grademetrics = exam_metrics.grade
+        remark = exam_metrics.remark    
         if exam_info:
             division = exam_info.division
             total_grade_points = exam_info.total_grade_points
@@ -244,6 +251,10 @@ def student_subject_wise_results(request):
             position = "Position Not Available"
 
         context = {
+            'total_marks': total_marks,
+            'average': average,
+            'remark': remark,
+            'grademetrics': grademetrics,
             'student': student,
             'results': results,
             "students": student,
@@ -253,7 +264,7 @@ def student_subject_wise_results(request):
             'total_students': total_students,  # Add position to the context
             'total_grade_points': total_grade_points,  # Add total_grade_points to the context
         }
-        html_result = render_to_string('student_template/result_table.html', context)
+        html_result = render_to_string('student_template/student_result_table.html', context)
         return JsonResponse({'html_result': html_result})    
 
  

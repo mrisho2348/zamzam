@@ -1,9 +1,14 @@
 from decimal import Decimal
+import json
+import logging
 from django.db import models
 from django.dispatch import receiver
 from django.db.models.signals import post_save,post_delete
 from django.contrib.auth.models import AbstractUser,BaseUserManager
 from django.utils import timezone
+from django.db.models import DecimalField
+from django.db.models import Max
+from django.db.models import Sum
 # Create your models here.
 
 class CustomUserManager(BaseUserManager):
@@ -110,7 +115,9 @@ class ExamType(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()  # Additional field for the creation date
     # Other fields...
-
+    def __str__(self):
+        return f"{self.name}"
+    
 class Subject(models.Model):
     id = models.AutoField(primary_key=True)    
     subject_name = models.CharField(max_length=255, null=True, blank=True)
@@ -120,7 +127,9 @@ class Subject(models.Model):
     objects = models.Manager()
     def __str__(self):
         return f"{self.subject_name}"
-    
+  
+  
+  
 
 class Result(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
@@ -160,6 +169,8 @@ class Result(models.Model):
             return 'Fail'
 
     
+
+         
 class StudentExamInfo(models.Model):   # ... (other fields)
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
     exam_type = models.ForeignKey(ExamType, on_delete=models.CASCADE)
@@ -172,11 +183,9 @@ class StudentExamInfo(models.Model):   # ... (other fields)
     objects = models.Manager()
     
     def __str__(self):
-        return f"{self.student} - {self.exam_type}"      
+        return f"{self.student} - {self.exam_type}"       
     
 
-    
-    
 class StudentPositionInfo(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
     exam_type = models.ForeignKey(ExamType, on_delete=models.CASCADE)
@@ -187,10 +196,7 @@ class StudentPositionInfo(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return f"{self.student} - {self.exam_type} - Position: {self.position}"
-
-
-    
+        return f"{self.student} - {self.exam_type} - Position: {self.position}"    
    
    
 # Define the signal handler
@@ -221,7 +227,8 @@ def update_student_exam_info(sender, instance, **kwargs):
         selected_class=current_class
     )
 
-    if exam_results.count() >= 7:
+    subject_count = exam_results.count()
+    if subject_count >= 7:
         # Calculate the seven subjects with the highest scores
         sorted_subjects = sorted(exam_results, key=lambda x: x.marks, reverse=True)[:7]
         seven_best_subjects = [subject.subject.subject_name for subject in sorted_subjects]
@@ -231,48 +238,76 @@ def update_student_exam_info(sender, instance, **kwargs):
 
         # Calculate division based on total grade points
         if 7 <= total_grade_points <= 17:
-            division = "Division 1"
+            division = "I"
         elif 18 <= total_grade_points <= 21:
-            division = "Division 2"
+            division = "II"
         elif 22 <= total_grade_points <= 24:
-            division = "Division 3"
+            division = "III"
         elif 26 <= total_grade_points <= 29:
-            division = "Division 4"
+            division = "IV"
         else:
-            division = "Division 0"
+            division = "0"
+    else:
+        # If less than seven subjects, mark division as incomplete
+        division = -1
+        total_grade_points = -1
+        seven_best_subjects = []
 
-        # Update or create StudentExamInfo instance
-        student_exam_info, created = StudentExamInfo.objects.get_or_create(
-            student=student,
-            exam_type=exam_type,
-            selected_class=current_class,
-        )
+    # Update or create StudentExamInfo instance
+    student_exam_info, created = StudentExamInfo.objects.get_or_create(
+        student=student,
+        exam_type=exam_type,
+        selected_class=current_class,
+    )
 
-        student_exam_info.division = division
-        student_exam_info.total_grade_points = total_grade_points
-        student_exam_info.best_subjects = seven_best_subjects
-        student_exam_info.save()
+    student_exam_info.division = division
+    student_exam_info.total_grade_points = total_grade_points
+    student_exam_info.best_subjects = seven_best_subjects
+    student_exam_info.save()
+
         
-        
+class ExamMetrics(models.Model):
+    student = models.ForeignKey(Students, on_delete=models.CASCADE)
+    exam_type = models.ForeignKey(ExamType, on_delete=models.CASCADE)
+    selected_class = models.CharField(max_length=255, null=True, blank=True)
+    total_marks = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0)
+    average = models.DecimalField(max_digits=5, decimal_places=2, null=True, blank=True, default=0)
+    grade = models.CharField(max_length=1, null=True, blank=True)
+    remark = models.CharField(max_length=10, null=True, blank=True)  # Add remark field
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
 
-@receiver(post_save, sender=StudentExamInfo)
-@receiver(post_delete, sender=StudentExamInfo)
+    def __str__(self):
+        return f"{self.student} - {self.exam_type}"         
+
+# Signal handler to update student positions based on total marks
+@receiver(post_save, sender=ExamMetrics)
+@receiver(post_delete, sender=ExamMetrics)
 def update_student_position(sender, instance, **kwargs):
     # Retrieve all students with the same current class and exam type
-    students = StudentExamInfo.objects.filter(
+    students = ExamMetrics.objects.filter(
         selected_class=instance.selected_class,
         exam_type=instance.exam_type,
-    ).order_by('total_grade_points')  # Order by total_grade_points in ascending order
+    ).order_by('-total_marks', 'created_at')  # Order by total_marks in descending order and created_at for tie-breaker
 
-    # Update the positions based on total_grade_points
+    # Update the positions based on total_marks
+    prev_marks = None
+    prev_position = None
     for index, student in enumerate(students, start=1):
+        if student.total_marks != prev_marks:
+            position = index
+        else:
+            position = prev_position
         student_position, created = StudentPositionInfo.objects.get_or_create(
             student=student.student,
             exam_type=student.exam_type,
             current_class=student.selected_class,
         )
-        student_position.position = index
-        student_position.save() 
+        student_position.position = position
+        student_position.save()
+        prev_marks = student.total_marks
+        prev_position = position
         
      
 @receiver(post_save, sender=CustomUser)
@@ -286,4 +321,67 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     if instance.user_type == 1:
         instance.admin_hod.save()
-        
+
+    
+    
+    
+@receiver(post_save, sender=Result)
+@receiver(post_delete, sender=Result)
+def update_exam_metrics_on_create_or_delete(sender, instance, **kwargs):
+    update_exam_metrics(instance)
+
+@receiver(post_save, sender=Result)
+def update_exam_metrics_on_update(sender, instance, **kwargs):
+    if not kwargs.get('created'):
+        update_exam_metrics(instance)
+
+def update_exam_metrics(instance):
+    student = instance.student
+    exam_type = instance.exam_type
+    selected_class = instance.selected_class
+
+    exam_results = Result.objects.filter(
+        student=student,
+        exam_type=exam_type,
+        selected_class=selected_class
+    )
+
+    total_marks = exam_results.aggregate(total_marks=Sum('marks'))['total_marks'] or 0
+
+    total_subjects_count = exam_results.values('subject').distinct().count()
+    average = total_marks / total_subjects_count if total_subjects_count > 0 else 0
+
+    grade = calculate_grade(average)
+    remark = calculate_remark(grade)
+
+    exam_metrics, created = ExamMetrics.objects.get_or_create(
+        student=student,
+        exam_type=exam_type,
+        selected_class=selected_class,
+    )
+
+    exam_metrics.total_marks = total_marks
+    exam_metrics.average = average
+    exam_metrics.grade = grade
+    exam_metrics.remark = remark  # Assign remark
+    exam_metrics.save()    
+    
+# Function to calculate grade based on average marks
+def calculate_grade(average):
+    if average >= 75:
+        return 'A'
+    elif average >= 65:
+        return 'B'
+    elif average >= 45:
+        return 'C'
+    elif average >= 30:
+        return 'D'
+    else:
+        return 'F'
+
+# Function to calculate remark based on grade
+def calculate_remark(grade):
+    if grade == 'F':
+        return 'FAILED'
+    else:
+        return 'PASS'

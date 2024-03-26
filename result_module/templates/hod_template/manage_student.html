@@ -80,11 +80,17 @@
                   <button  class="btn btn-secondary btn-sm" data-toggle="modal" data-target="#studentDetailsModal{{ student.id }}"  data-toggle="tooltip" title="  View My Personal Info">
                       <i class="fa fa-eye text-dark"></i>
                   </button> 
+                  <button  class="btn btn-info btn-sm" data-toggle="modal" data-target="#addResultModal{{ student.id }}"  data-toggle="tooltip" title="Create student result">
+                      <i class="fa fa-eye text-dark"></i>
+                  </button> 
                       <!-- Add the View Result button -->
                 <a href="{% url 'student_subject_wise_result_page' student.id %}" class="btn btn-success btn-sm" data-toggle="tooltip" title="View Result">
                     <i class="fa fa-file-alt text-white"></i>
                 </a>  
                   </td>
+                 
+
+
     
                         <!-- Delete Modal -->
                         <div class="modal fade" id="deleteStudentModal{{ student.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteStudentModalLabel{{ student.id }}" aria-hidden="true">
@@ -302,6 +308,8 @@
       </div>
       
             </tr>
+
+              
             {% endfor %}
         </tbody>
     </table>
@@ -411,6 +419,7 @@
         });
     }
 </script>
+
 <script>
     function submitForm(checkbox) {
         checkbox.form.submit();

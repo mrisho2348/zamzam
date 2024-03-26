@@ -53,7 +53,7 @@
           <ul class="nav nav-treeview">
               <!-- Necta Results -->
               <li class="nav-item">
-                {% url 'student_subject_wise_result_pages' exam_type as student_subject_wise_result_pages %}
+                {% url 'student_subject_wise_result_pages' as student_subject_wise_result_pages %}
                   <a href="{% url 'student_subject_wise_result_pages' %}"
                       class="nav-link {% if request.path == student_subject_wise_result_pages %} active {% endif %}">
                       <i class="nav-icon fas fa-graduation-cap"></i>
@@ -64,7 +64,7 @@
           </ul>
       </li>
       <li class="nav-item">
-        {% url 'student_announcements' exam_type as student_announcements %}
+        {% url 'student_announcements' as student_announcements %}
         <a href="{% url 'student_announcements' %}" class="nav-link {% if request.path == student_announcements %}active{% endif %}">
             <i class="nav-icon fas fa-bullhorn"></i> <!-- Using a bullhorn icon for announcements -->
             <p>
