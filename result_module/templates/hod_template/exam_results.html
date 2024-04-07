@@ -1,0 +1,211 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block page_title %}
+  {{exam_type}}
+{% endblock page_title %}
+
+{% block breadcrumb %}
+{% include "hod_template/modal_form.html" %}
+<a class="btn btn-primary float-right" type="button" data-toggle="modal" data-target="#addResultModal">
+    <i class="fas fa-plus"></i> New Result
+</a>
+{% endblock breadcrumb %}
+{% load static %}
+{% block main_content %}
+<div class="row">
+    <div class="col-md">
+        <div class="card">
+            <div class="card-header">
+                <h3  class="header-title text-center mt-0 mb-1  text-uppercase">List of Students for {{ class_name }} Result </h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm  display" id="example"  style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Exam Type</th>
+                                <th> Class</th>
+                                <th>History </th>
+                                <th>English </th>
+                                <th>Biology </th>
+                                <th>Arabic </th>
+                                <th>Physics </th>
+                                <th>Mathematics </th>
+                                <th>Chemistry </th>
+                                <th>Civics </th>
+                                <th>Geography </th>
+                                <th>Kiswahili </th>
+                                <th>EDK </th>
+                                <th>Computer Application </th>
+                                <th>Commerce </th>
+                                <th>Book Keeping </th>
+                                <th>Date of Exam</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for result in results %}
+                            <tr>
+                                <td>{{ result.student }}</td>
+                                <td>{{ result.exam_type }}</td>
+                                <td>{{ result.selected_class }}</td>
+                                <td>{{ result.history_score }}</td>
+                                <td>{{ result.english_score }}</td>
+                                <td>{{ result.biology_score }}</td>
+                                <td>{{ result.arabic_score }}</td>
+                                <td>{{ result.physics_score }}</td>
+                                <td>{{ result.mathematics_score }}</td>
+                                <td>{{ result.chemistry_score }}</td>
+                                <td>{{ result.civics_score }}</td>
+                                <td>{{ result.geography_score }}</td>
+                                <td>{{ result.kiswahili_score }}</td>
+                                <td>{{ result.edk_score }}</td>
+                                <td>{{ result.computer_application_score }}</td>
+                                <td>{{ result.commerce_score }}</td>
+                                <td>{{ result.book_keeping_score }}</td>
+                                <td>{{ result.date_of_exam }}</td>
+                                <td>   
+                                <button  class="btn btn-info btn-sm" data-toggle="modal" data-target="#addResultModal{{ result.student.id }}"  data-toggle="tooltip" title="Create student result">
+                                    <i class="fa fa-eye text-dark"></i>
+                                </button> 
+                            </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                                 
+                      </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="addResultModal" tabindex="-1" role="dialog" aria-labelledby="addResultModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addResultModalLabel">Add Result</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container-fluid">
+            <form id="resultForm" method="post">
+              
+            <div class="row">                     
+                  <div class="col-md-4">
+                    <label for="examType">Exam Type:</label>
+                    <select id="examType" name="exam_type_id" class="form-control select2bs4" style="width: 100%;">
+                        {% for exam_type in exam_types %}
+                            <option value="{{ exam_type.id }}">{{ exam_type.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="student">Student:</label>
+                    <select id="student" name="student_id" class="form-control select2bs4" style="width: 100%;">
+                        {% for student in students %}
+                            <option value="{{ student.id }}">{{ student }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="historyScore">History:</label>
+                    <input type="number" id="historyScore" name="history_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="englishScore">English:</label>
+                    <input type="number" id="englishScore" name="english_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="biologyScore">Biology:</label>
+                    <input type="number" id="biologyScore" name="biology_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="arabicScore">Arabic:</label>
+                    <input type="number" id="arabicScore" name="arabic_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="physicsScore">Physics:</label>
+                    <input type="number" id="physicsScore" name="physics_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="mathematics_score">Mathematics:</label>
+                    <input type="number" id="mathematics_score" name="mathematics_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="chemistryScore">Chemistry:</label>
+                    <input type="number" id="chemistryScore" name="chemistry_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="civicsScore">Civics:</label>
+                    <input type="number" id="civicsScore" name="civics_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="geographyScore">Geography:</label>
+                    <input type="number" id="geographyScore" name="geography_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="kiswahiliScore">Kiswahili:</label>
+                    <input type="number" id="kiswahiliScore" name="kiswahili_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="edkScore">EDK:</label>
+                    <input type="number" id="edkScore" name="edk_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="computerApplicationScore">Computer Application:</label>
+                    <input type="number" id="computerApplicationScore" name="computer_application_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="commerceScore">Commerce:</label>
+                    <input type="number" id="commerceScore" name="commerce_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="bookKeepingScore">Book Keeping:</label>
+                    <input type="number" id="bookKeepingScore" name="book_keeping_score" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="date_of_exam">Date of exam:</label>
+                    <input type="date" id="date_of_exam" name="date_of_exam" class="form-control">
+                </div>
+           
+          </div>         
+        </div>
+        <div id="resultMessage"></div>
+      </div>
+        <div class="modal-footer">          
+          <button type="button" class="btn btn-primary btn-block" id="submitResult">Submit</button>
+        </div>
+      </div>
+    </form>  
+    </div>
+  </div>
+  
+  <script>
+    $(document).ready(function() {
+        $("#submitResult").click(function() {
+            var formData = $("#resultForm").serialize(); // Serialize the form data
+            $.ajax({
+                type: "POST",
+                url: "/save_student_result/",
+                data: formData,
+                success: function(response) {
+                    $("#resultMessage").html(response.message); // Display success message
+                },
+                error: function() {
+                    $("#resultMessage").html("Failed to submit result. Please try again."); // Display error message
+                }
+            });
+        });
+    });
+</script>
+
+
+
+
+
+{% include 'hod_template/datatable.html' %}
+{% endblock main_content %}

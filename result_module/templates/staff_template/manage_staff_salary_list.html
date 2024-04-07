@@ -1,0 +1,54 @@
+{% extends 'staff_template/base_template.html' %}
+
+{% block title %}
+    Staff Salary List
+{% endblock title %}
+
+
+
+{% block main_content %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">List of my Salaries</h3>
+                    </div>
+                    <div class="card-body">
+                        <table class="table table-bordered table-striped" id="example">
+                            <thead>
+                                <tr>
+                                    <th>Staff Member</th>
+                                    <th>Month</th>
+                                    <th>Paid Amount</th>
+                                    <th>Total Amount Required</th>
+                                    <th>Remaining Amount</th>
+                                    <th>Description</th>
+                               
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for salary in staff_salaries %}
+                                    <tr>
+                                        <td>{{salary.staff_member.admin.first_name}}  {{salary.staff_member.admin.last_name}}</td>
+                                        <td>{{ salary.month|date:"F Y" }}</td>
+                                        <td>{{ salary.paid_amount }}/Tsh</td>
+                                        <td>{{ salary.total_amount_required }}/Tsh</td>
+                                        <td>{{ salary.remaining_payment }}/Tsh</td>
+                                        <td>{{ salary.description }}</td>
+                                        
+                                 
+                                {% empty %}
+                               
+                            
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'staff_template/datatable.html' %}
+{% endblock main_content %}

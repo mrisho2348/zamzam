@@ -1,17 +1,19 @@
 from collections import defaultdict
 from decimal import Decimal
+from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.template import RequestContext
 from django.urls import reverse
 from django.views.decorators.http import require_POST
-from result_module.models import AdminHOD, Announcement, AnnouncementForStudents, CustomUser, ExamMetrics, ExamType, Result, StudentExamInfo, StudentPositionInfo, Students, Subject
+from result_module.models import AdminHOD, Announcement, AnnouncementForStudents, CustomUser, ExamMetrics, ExamType, Result, Staffs, StudentExamInfo, StudentPositionInfo, Students, Subject, SujbectWiseResults
 from django.contrib import messages
 from django.contrib.auth import logout,login
 from result_module.emailBackEnd import EmailBackend
 from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
+from django.core.files.storage import FileSystemStorage
 # Create your views here.
 
 def dashboard(request):
@@ -159,14 +161,24 @@ def edit_announcement(request):
         title = request.POST.get('title')
         content = request.POST.get('content')
         current_class = request.POST.get('current_class')
-
+        announcement_file_url = None
+        accepted_image_formats ='application/pdf'
+        max_file_size = 5 * 1024 * 1024
+        announcement_file = request.FILES.get('announcement_file')
+        if announcement_file:
+            if announcement_file.content_type not in accepted_image_formats or announcement_file.size > max_file_size:
+                return JsonResponse({'status': False, 'message': 'File must be PDF and should not exceed 5MB.'})
+            fs = FileSystemStorage()
+            announcement_file_name = fs.save('announcement/' + announcement_file.name, announcement_file)
+            announcement_file_url = fs.url(announcement_file_name)
+            print(announcement_file_url)
         # Retrieve the announcement object
         announcement = Announcement.objects.get(pk=announcement_id)
-
         # Update the announcement fields
         announcement.title = title
         announcement.content = content
         announcement.current_class = current_class
+        announcement.announcement_file = announcement_file_url
         announcement.save()
 
         return JsonResponse({'status': 'success', 'message': 'Announcement updated successfully'})
@@ -244,8 +256,24 @@ def add_announcement(request):
             current_class = request.POST.get('current_class')
             content = request.POST.get('content')
             created_by = request.user.admin_hod  # Assuming the currently logged-in user is an AdminHOD
-
-            Announcement.objects.create(title=title, current_class=current_class, content=content, created_by=created_by)
+            announcement_file_url = None
+            accepted_image_formats = 'application/pdf'
+            max_file_size = 5 * 1024 * 1024
+            announcement_file = request.FILES.get('announcement_file')
+            if announcement_file:
+                if announcement_file.content_type not in accepted_image_formats or announcement_file.size > max_file_size:
+                    return JsonResponse({'status': False, 'message': 'File must be PDF and should not exceed 5MB.'})
+                fs = FileSystemStorage()
+                announcement_file_name = fs.save('announcement/' + announcement_file.name, announcement_file)
+                announcement_file_url = fs.url(announcement_file_name)
+                print(announcement_file_url)
+            Announcement.objects.create(
+                title=title,
+                current_class=current_class,
+                content=content, 
+                created_by=created_by,
+                announcement_file=announcement_file_url,
+                )
             return JsonResponse({'status':'success','message': 'Announcement added successfully'})
         except Exception as e:
             return JsonResponse({'status':'error', 'message': 'Error occurred while adding announcement' + str(e)})
@@ -264,6 +292,18 @@ def save_student(request):
         gender = request.POST.get('gender')
         phone_number = request.POST.get('phone_number')
         address = request.POST.get('address')
+        
+        student_photo = request.FILES.get('student_photo')
+        accepted_image_formats = ['image/jpeg', 'image/jpg', 'image/png']
+        max_file_size = 5 * 1024 * 1024
+        student_photo_url = None
+        if student_photo:
+            if student_photo.content_type not in accepted_image_formats or student_photo.size > max_file_size:
+                return JsonResponse({'status': False, 'message': 'File must be PNG, JPEG, or JPG and should not exceed 5MB.'})
+            fs = FileSystemStorage()
+            student_photo_name = fs.save('student_profile_pic/' + student_photo.name, student_photo)
+            student_photo_url = fs.url(student_photo_name)
+            print(student_photo_url)
         # Add more fields as needed
 
         if student_id:
@@ -276,6 +316,7 @@ def save_student(request):
             student.gender = gender
             student.phone_number = phone_number
             student.address = address           
+            student.profile_pic = student_photo_url           
             student.save()
         else:
             # Adding new inventory item
@@ -286,7 +327,8 @@ def save_student(request):
             date_of_birth=date_of_birth,
             gender=gender,
             phone_number=phone_number,
-            address=address               
+            address=address,               
+            profile_pic=student_photo_url,               
             )
             student.save()
 
@@ -829,3 +871,223 @@ def add_student_result(request):
             return JsonResponse({'success': False, 'message': str(e)})
     else:
         return JsonResponse({'success': False, 'message': 'Only POST requests are allowed for this endpoint.'})
+  
+@csrf_exempt   
+def save_student_result(request):
+    if request.method == 'POST':
+        try:
+            # Parse form data
+            student_id = request.POST.get('student_id')
+            exam_type_id = request.POST.get('exam_type_id')
+            date_of_exam = request.POST.get('date_of_exam')
+            student = Students.objects.get(id=student_id)
+            selected_class = student.current_class
+
+            # Check if required fields are missing
+            if not all([student_id, exam_type_id, date_of_exam]):
+                return JsonResponse({'success': False, 'message': 'Required field(s) missing'})
+
+            # Assign default values if fields are empty or null
+            history_score = request.POST.get('history_score', 0)
+            english_score = request.POST.get('english_score', 0)
+            biology_score = request.POST.get('biology_score', 0)
+            arabic_score = request.POST.get('arabic_score', 0)
+            physics_score = request.POST.get('physics_score', 0)
+            mathematics_score = request.POST.get('mathematics_score', 0)
+            chemistry_score = request.POST.get('chemistry_score', 0)
+            civics_score = request.POST.get('civics_score', 0)
+            geography_score = request.POST.get('geography_score', 0)
+            kiswahili_score = request.POST.get('kiswahili_score', 0)
+            edk_score = request.POST.get('edk_score', 0)
+            computer_application_score = request.POST.get('computer_application_score', 0)
+            commerce_score = request.POST.get('commerce_score', 0)
+            book_keeping_score = request.POST.get('book_keeping_score', 0)
+
+            # Create Results instance
+            result = SujbectWiseResults(
+                student_id=student_id,
+                exam_type_id=exam_type_id,
+                selected_class=selected_class,
+                history_score=history_score,
+                english_score=english_score,
+                biology_score=biology_score,
+                arabic_score=arabic_score,
+                physics_score=physics_score,
+                mathematics_score=mathematics_score,
+                chemistry_score=chemistry_score,
+                civics_score=civics_score,
+                geography_score=geography_score,
+                kiswahili_score=kiswahili_score,
+                edk_score=edk_score,
+                computer_application_score=computer_application_score,
+                commerce_score=commerce_score,
+                book_keeping_score=book_keeping_score,
+                date_of_exam=date_of_exam
+            )
+
+            # Save the result
+            result.save()
+
+            # Return success response
+            return JsonResponse({'success': True, 'message': 'Student result added successfully'})
+
+        except Students.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'Student does not exist'})
+
+        except Exception as e:
+            # Return failure response with error message
+            return JsonResponse({'success': False, 'message': str(e)})
+
+    # If request method is not POST, return failure response
+    return JsonResponse({'success': False, 'message': 'Invalid request method'})
+
+
+def display_results(request):
+    results = SujbectWiseResults.objects.all()
+    students = Students.objects.all()
+    exam_types = ExamType.objects.all()
+    return render(request, 'hod_template/exam_results.html', {
+        'results': results,
+        'students': students,
+        'exam_types': exam_types,
+        })
+
+
+def manage_staff(request):     
+    staffs=Staffs.objects.all()  
+    subjects=Subject.objects.all()  
+    return render(request,"hod_template/manage_staff.html",{
+        "staffs":staffs,
+        "subjects":subjects,
+        })      
+
+def add_staff_record(request):
+    if request.method == 'POST':
+        # Extract form data from the request
+        first_name = request.POST.get('first_name')
+        middle_name = request.POST.get('middle_name')
+        last_name = request.POST.get('last_name')
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        current_class = request.POST.get('current_class')
+        subjects = request.POST.getlist('subject')
+        address = request.POST.get('address')
+        gender = request.POST.get('gender')
+        dob = request.POST.get('dob')
+        doe = request.POST.get('doe')
+        phone = request.POST.get('phone')
+        staff_id = request.POST.get('staff_id')
+        
+        # Handling staff photo upload
+        staff_photo_url = None
+        accepted_image_formats = ['image/jpeg', 'image/jpg', 'image/png']
+        max_file_size = 5 * 1024 * 1024
+        staff_photo = request.FILES.get('staff_photo')
+        if staff_photo:
+            if staff_photo.content_type not in accepted_image_formats or staff_photo.size > max_file_size:
+                return JsonResponse({'status': False, 'message': 'File must be PNG, JPEG, or JPG and should not exceed 5MB.'})
+            fs = FileSystemStorage()
+            staff_photo_name = fs.save('staff_profile_pic/' + staff_photo.name, staff_photo)
+            staff_photo_url = fs.url(staff_photo_name)
+            print(staff_photo_url)
+        
+        try:
+            if staff_id:
+                # Editing an existing staff record
+                staff = Staffs.objects.get(pk=staff_id)
+                user = staff.admin
+                # Update user data
+                user.first_name = first_name
+                user.last_name = last_name                         
+                user.save()
+                # Update staff data
+                staff.middle_name = middle_name
+                staff.profile_pic = staff_photo_url
+                staff.address = address
+                staff.current_class = current_class
+                staff.gender = gender
+                staff.date_of_birth = dob
+                staff.date_of_employment = doe
+                staff.phone_number = phone
+                staff.save()
+                # Update subjects
+                staff.subjects.set(subjects)
+                return JsonResponse({'status': True, 'message': 'Staff record updated successfully.'})
+            else:
+                if CustomUser.objects.filter(username=username).exists():
+                    return JsonResponse({'status': False, 'message': 'Username already exists.'})
+            
+                if CustomUser.objects.filter(email=email).exists():
+                    return JsonResponse({'status': False, 'message': 'Email already exists.'})
+            
+                # Adding a new staff record
+                user = CustomUser.objects.create_user(
+                    last_name=last_name,
+                    first_name=first_name,
+                    username=username,
+                    email=email,
+                    password=password,
+                    user_type=2
+                )
+                staff = user.staffs              
+                staff.date_of_birth = dob
+                staff.date_of_employment = doe
+                staff.gender = gender
+                staff.middle_name = middle_name
+                staff.current_class = current_class
+                staff.address = address
+                staff.phone_number = phone             
+                staff.profile_pic = staff_photo_url      
+                # Save the staff record
+                staff.save()
+                staff.subjects.set(subjects)
+                return JsonResponse({'status': True, 'message': 'Staff record added successfully.'})
+        except Exception as e:
+            return JsonResponse({'status': False, 'message': str(e)}, status=400)
+    return JsonResponse({'status': False, 'message': 'Invalid request method.'}, status=400)
+
+
+@csrf_exempt
+def delete_staff(request, staff_id):
+    if request.method == 'POST':
+        try:
+            staff = get_object_or_404(Staffs, id=staff_id)
+            staff.delete()
+            return JsonResponse({'status': 'success', 'message': 'Staff record deleted successfully.'})
+        except IntegrityError as e:
+            return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+        except Exception as e:
+            return JsonResponse({'status': 'error', 'message': 'An error occurred while deleting the staff record.'}, status=500)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request method.'}, status=400)
+
+
+def update_staff_status(request):
+    try:
+        if request.method == 'POST':
+            # Get the user_id and is_active values from POST data
+            user_id = request.POST.get('user_id')
+            is_active = request.POST.get('is_active')
+
+            # Retrieve the staff object or return a 404 response if not found
+            staff = get_object_or_404(CustomUser, id=user_id)
+
+            # Toggle the is_active status based on the received value
+            if is_active == '1':
+                staff.is_active = False
+            elif is_active == '0':
+                staff.is_active = True
+            else:
+                messages.error(request, 'Invalid request')
+                return redirect('manage_staff')  # Make sure 'manage_staffs' is the name of your staff list URL
+
+            staff.save()
+            messages.success(request, 'Status updated successfully')
+        else:
+            messages.error(request, 'Invalid request method')
+    except Exception as e:
+        messages.error(request, f'An error occurred: {str(e)}')
+
+    # Redirect back to the staff list page
+    return redirect('manage_staff')  # Make sure 'manage_staffs' is the name of your staff list URL

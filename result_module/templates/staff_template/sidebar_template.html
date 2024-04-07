@@ -1,0 +1,303 @@
+{% load static %}
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="#" class="brand-link">
+      <img src="{% static 'dist/img/logoNembo.jpg' %}" alt="Tabora Logo" class="brand-image img-circle elevation-3"
+           style="opacity: .8">
+      <span class="brand-text font-weight-light">madratul mujtabahaa </span>
+    </a>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <!-- Sidebar user panel (optional) -->
+      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          {% if staff.profile_pic %}
+          <img src="{{ staff.profile_pic }}" class="img-circle elevation-2" alt="User Image">
+      {% else %}
+          <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+      {% endif %}
+        </div>
+        <div class="info">
+          <a href="{% url 'staff_profile' %}" class="d-block">{{user.username}}</a>
+        </div>
+      </div>
+  <!-- Sidebar Menu -->
+  <nav class="mt-2">
+    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <!-- Add icons to the links using the .nav-icon class
+           with font-awesome or any other icon font library -->
+
+      <li class="nav-item">
+        {% url 'staff_home' as staff_home %}
+        <a href="{% url 'staff_home' %}" class="nav-link {% if request.path == staff_home %} active {% endif %}">
+
+          <i class="nav-icon fa fa-home"></i>
+          <p>
+            HOME
+            {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+          </p>
+        </a>
+      </li> 
+    <!-- Brand Logo -->
+  
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        <ul class="nav nav-pills nav-sidebar flex-column"
+          data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            {% url 'staff_take_attendance' as staff_take_attendance %}
+            <a href="{% url 'staff_take_attendance' %}" class="nav-link {% if request.path == staff_take_attendance %} active {% endif %}">
+
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                Take Attendance
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            {% url 'staff_update_attendance' as staff_update_attendance %}
+            <a href="{% url 'staff_update_attendance' %}" class="nav-link {% if request.path == staff_update_attendance %} active {% endif %}">
+
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                View Attendance
+              </p>
+            </a>
+          </li>        
+          <li class="nav-item">
+            {% url 'staff_sendfeedback' as staff_sendfeedback %}
+            <a href="{% url 'staff_sendfeedback' %}" class="nav-link {% if request.path == staff_sendfeedback %} active {% endif %}">
+
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                Send FeedBack
+              </p>
+            </a>
+          </li>       
+   
+        
+          <li class="nav-item">
+            {% url 'staff_apply_leave' as staff_apply_leave %}
+            <a href="{% url 'staff_apply_leave' %}" class="nav-link {% if request.path == staff_apply_leave %} active {% endif %}">
+
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                Apply for Leave
+              </p>
+            </a>
+          </li>   
+          <li class="nav-item">
+            {% url 'staff_detail' as staff_detail %}
+            <a href="{% url 'staff_detail' %}" class="nav-link {% if request.path == staff_detail %} active {% endif %}">
+
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                My details
+              </p>
+            </a>
+          </li>        
+          <li class="nav-item">
+            {% url 'staff_salary' as staff_salary %}
+            <a href="{% url 'staff_salary' %}" class="nav-link {% if request.path == staff_salary %} active {% endif %}">
+
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                My salary
+              </p>
+            </a>
+          </li>          
+        
+        
+          <li class="nav-header">Results</li>
+          <li class="nav-item">
+            <a href="{% url 'exams:question_list' %}" class="nav-link">
+              <i class="nav-icon fas fa-money-bill-alt"></i>
+              <p>
+                Create question database
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'exams:question_papers_list' %}" class="nav-link">
+              <i class="nav-icon fas fa-money-bill-alt"></i>
+              <p>
+                question paper
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'exams:exams_list' %}" class="nav-link">
+              <i class="nav-icon fas fa-money-bill-alt"></i>
+              <p>
+                exams model 
+              </p>
+            </a>
+          </li>   
+
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-graduation-cap"></i>
+              <p>
+                RESULTS
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+               
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-graduation-cap"></i>
+                  <p>
+                    Necta results
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                {% url 'students_summary_staff'  exam_type='Mork'   as students_summary_staff %}
+                <a href="{% url 'students_summary_staff' exam_type='Mork' %}" class="nav-link {% if request.path == students_summary_staff %} active {% endif %}">
+                  <i class="nav-icon fas fas fa-user"></i>
+                  <p>
+                    Mork results
+                    <i class="right"></i>
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                {% url 'students_summary_staff'  exam_type='Terminal Exam'    as students_summary_staff %}
+                <a href="{% url 'students_summary_staff' exam_type='Terminal Exam' %}" class="nav-link {% if request.path == students_summary_staff %} active {% endif %}">
+                  <i class="nav-icon fas fa-user"></i>
+                  <p>
+                    Terminal results
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                {% url 'assign_results'   exam_type='Mid-Term Exam'   as assign_results  %}
+                <a href="{% url 'students_summary_staff' exam_type='Mid-Term Exam' %}" class="nav-link  {% if request.path == assign_results %}active{% endif %} " >
+                  <i class="nav-icon fas fa-user"></i>
+                  <p>
+                    Mid Term Results
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                {% url 'students_summary_staff'   exam_type='Homework'    as students_summary_staff %}
+                <a href="{% url 'students_summary_staff' exam_type='Homework' %}" class="nav-link {% if request.path == students_summary_staff %} active {% endif %}">
+                  <i class="nav-icon fas fa-user"></i>
+                  <p>
+                    Home works
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                {% url 'students_summary_staff'   exam_type='Quiz'   as students_summary_staff %}
+                <a href="{% url 'students_summary_staff' exam_type='Quiz' %}" class="nav-link {% if request.path == students_summary_staff %} active {% endif %}">
+                  <i class="nav-icon fas fa-user"></i>
+                  <p>
+                    Quiz results
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                {% url 'students_summary_staff'  exam_type='Assignment'  as students_summary_staff %}
+                <a href="{% url 'students_summary_staff'  exam_type='Assignment' %}" class="nav-link {% if request.path == students_summary_staff %} active {% endif %}">
+                  <i class="nav-icon fas fa-user"></i>
+                  <p>
+                    Assignemnts
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                {% url 'students_summary_staff' exam_type='Classwork' as students_summary_staff %}              
+              
+                <a href="{% url 'students_summary_staff'  exam_type='Classwork' %}" class="nav-link {% if request.path == students_summary_staff %} active {% endif %}">
+                  <i class="nav-icon fas fa-user"></i>
+                  <p>
+                    Class work
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </li>
+
+          <li class="nav-header">Others</li>
+          <li class="nav-item has-treeview">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Management
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-bars"></i>
+                  <p>
+                    Sessions
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="#" class="nav-link">
+                  <i class="nav-icon fas fa-bars"></i>
+                  <p>
+                    Terms
+                    <i class="right"></i>
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+               
+                <a href="#" class="nav-link ">
+                  <i class="nav-icon fas fa-bars"></i>
+                  <p>
+                    Subjects
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url "add_notes" %}" class="nav-link">
+                  <i class="nav-icon fas fa-bars"></i>
+                  <p>
+                    Add Notes
+                  </p>
+                </a>
+              </li>
+              <li class="nav-item">
+                
+                <a href="{% url "manage_notes" %}" class="nav-link ">
+                  <i class="nav-icon fas fa-bars"></i>
+                  <p>
+                   Manage Notes
+                  </p>
+                </a>
+              </li>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nav-icon fas fa-cog"></i>
+              <p>
+                Settings
+              </p>
+            </a>
+          </li>
+
+
+        </ul>
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>

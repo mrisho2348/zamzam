@@ -41,15 +41,20 @@
               </p>
             </a>
           </li>
-
-
+          <li class="nav-item">
+            {% url 'manage_staff' as manage_staff_url %}
+            <a href="{% url 'manage_staff' %}" class="nav-link {% if request.path == manage_staff_url %}active{% endif %}">
+                <i class="nav-icon fas fa-users"></i> <!-- Correct Font Awesome icon -->
+                <p>
+                    Staffs
+                </p>
+            </a>
+        </li>
           <li class="nav-item">
             {% url 'staff_announcements' as staff_announcements %} 
             <a href="{% url 'staff_announcements' %}" class="nav-link {% if request.path == staff_announcements %}active{% endif %}">
-                <i class="nav-icon fas fa-bullhorn"></i> <!-- Using a bullhorn icon for announcements -->
-                <p>
-                    Manage Announcements <!-- Renamed for clarity and appeal -->
-                    {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
+                <i class="nav-icon fas fa-bullhorn"></i> 
+                    Manage Announcements 
                 </p>
             </a>
         </li>
@@ -59,8 +64,16 @@
                 <i class="nav-icon fas fa-user-graduate"></i>
                 <p>
                     Students Management
-                    {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
-                </p>
+               </p>
+            </a>
+        </li>
+          <li class="nav-item">
+            {% url 'display_results' as display_results %}          
+            <a href="{% url 'display_results' %}" class="nav-link {% if request.path == display_results %}active{% endif %}">
+                <i class="nav-icon fas fa-user-graduate"></i>
+                <p>
+                    Students 
+               </p>
             </a>
         </li>
            
@@ -70,8 +83,7 @@
                 <i class="nav-icon fas fa-book"></i>
                 <p>
                     Subject Management
-                    {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
-                </p>
+               </p>
             </a>
         </li>
         <li class="nav-item">
@@ -80,8 +92,7 @@
                 <i class="nav-icon fas fa-clipboard-check"></i>
                 <p>
                     Exam Type Management
-                    {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
-                </p>
+               </p>
             </a>
         </li>
         <li class="nav-item">
@@ -100,8 +111,7 @@
                 <i class="nav-icon fas fa-poll"></i>
                 <p>
                     Result Management
-                    {% comment %} <span class="right badge badge-danger">New</span> {% endcomment %}
-                </p>
+               </p>
             </a>
         </li>
      </ul>

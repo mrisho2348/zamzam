@@ -19,5 +19,11 @@ class ImportExamTypeForm(forms.Form):
         validators=[FileExtensionValidator(allowed_extensions=['xlsx', 'xls'])],
         widget=forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': '.xlsx, .xls'})
     )
+class ImportSujbectWiseResultsForm(forms.Form):
+    new_record = forms.FileField(
+        label='Choose an Excel file',
+        validators=[FileExtensionValidator(allowed_extensions=['xlsx', 'xls'])],
+        widget=forms.ClearableFileInput(attrs={'class': 'form-control', 'accept': '.xlsx, .xls'})
+    )
 
      

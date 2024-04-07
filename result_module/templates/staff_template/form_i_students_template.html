@@ -1,0 +1,102 @@
+{% extends 'staff_template/base_template.html' %}
+{% block title %}
+{{ current_class }} Students 
+{% endblock title %}
+{% block main_content %}
+{% load static %}
+<section class="content">
+    <div class="container-fluid">
+        <div class="container-fluid">
+            <h1 class="text-center">{{ current_class }} Students</h1>
+            {% if students %}
+            <ul class="list-group">
+                {% for student in students %}
+                <li class="list-group-item">
+                    <div class="student-card">
+                        {% if student.profile_pic %}
+                        <img src="{{ student.profile_pic }}" class="student-avatar" alt="User Image">
+                        {% else %}
+                        <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+                        {% endif %}
+                        <div class="student-details">
+                            <a href="{% url 'student_details' student.id exam_type.id %}">
+                                <h3>{{ student.admin.first_name }} {{ student.admin.last_name }}</h3>
+                            </a>
+                            <p>Date of Birth: {{ student.date_of_birth }}</p>
+                            <p>Gender: {{ student.gender }}</p>
+                        </div>
+                    </div>
+                    <div class="student-actions">
+                        <a href="#" class="btn btn-primary">Assign Results</a>
+                        <a href="{% url 'subject_wise_results' student.id exam_type.id %}" class="btn btn-success">View Results</a>
+                    </div>
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <h5>No students record found</h5>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+
+<style>
+    .student-card {
+        display: flex;
+        align-items: center;
+        padding: 15px;
+        border: 1px solid #e0e0e0;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        background-color: #f9f9f9;
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+    .student-card:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    .student-avatar {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        margin-right: 20px;
+        border: 2px solid #007BFF;
+    }
+
+    .student-details {
+        flex: 1;
+    }
+
+    .student-details h3 {
+        font-size: 1.5rem;
+        margin: 0;
+        color: #333;
+    }
+
+    .student-details p {
+        margin: 5px 0;
+        font-size: 1rem;
+        color: #777;
+    }
+
+    .list-group-item {
+        border: none;
+        padding: 0;
+    }
+
+    .container-fluid {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+</style>
+
+
+{% endblock main_content %}
+

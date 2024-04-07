@@ -1,0 +1,88 @@
+{% extends 'staff_template/base_template.html' %}
+{% block title %}
+FeedBack Message
+{% endblock title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+      <div class="container-fluid">
+                    <div class="row">
+              <div class="col-md-12">
+            <!-- general form elements -->
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">Leave a FeedBack message</h3>
+              </div>
+              <!-- /.card-header -->
+              <!-- form start -->
+                <div class="card-body">
+                    <form action="{% url 'staff_sendfeedback_save' %}" method="POST">
+                      {% csrf_token %}
+                   <div class="form-group">
+                    <div>
+                        <label>Feedback message</label>
+                        <textarea rows="6" name="feedback_msg" class="form-control"></textarea>               
+                      </div>
+                  </div>        
+             
+                   <div class="form-group">
+                      {% if messages %}
+                        {% for message in messages %}
+                        {% if message.tags == 'error' %}
+                        <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% if message.tags == 'success' %}
+                        <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                        {% endif %}
+                        {% endfor %}
+                      {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block" name="fetch_student">Leave a feedback message</button>
+                </form>                <!-- /.card-body -->            
+            </div>
+            </div>
+            <!-- /.card -->
+
+            <div class="card card-primary">
+              <div class="card-header">
+                <h3 class="card-title">
+                  FeedBack history
+                </h3>
+              </div>
+
+              <div class="card-body">
+                <div class="table">
+                <table class="table table-bordered table-striped"  id="example">
+                  <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>FeedBack Message</th>
+                    <th>FeedBack Reply</th>
+                   
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for row in feedback_data %}
+                  <tr>
+                    <td>{{row.id}}</td>
+                    <td>{{row.feedback}}</td>
+                    <td>{{row.feedback_reply}}</td>               
+                
+                  </tr> 
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+              </div>
+            </div>
+       
+
+
+          </div>
+          </div>
+      </div>
+    </section>
+    <!-- /.content -->
+    {% include 'staff_template/datatable.html' %}
+{% endblock main_content %}
+

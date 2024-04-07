@@ -1,12 +1,18 @@
 {% extends 'hod_template/base_template.html' %}
 
+{% block title %}
+{{ class_name }} Result
+{% endblock title %}
 {% block page_title %}
   {{exam_type}}
 {% endblock page_title %}
 
 {% block breadcrumb %}
 {% include "hod_template/modal_form.html" %}
-
+<!-- Add Import insurance link and modal trigger -->
+<a class="btn btn-success float-right mr-2" href="{% url "import_subject_wise_result" exam_type.id  %}">
+    <i class="fas fa-file-import"></i> Import result
+  </a>
 {% endblock breadcrumb %}
 
 {% load static %}

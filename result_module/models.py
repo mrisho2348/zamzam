@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.db.models import DecimalField
 from django.db.models import Max
 from django.db.models import Sum
+from django.core.exceptions import ObjectDoesNotExist
 # Create your models here.
 
 class CustomUserManager(BaseUserManager):
@@ -66,10 +67,27 @@ class AdminHOD(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
 
+class Staffs(models.Model):
+    id = models.AutoField(primary_key=True)
+    admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)   
+    middle_name = models.TextField(blank=True)
+    address = models.TextField(blank=True)   
+    gender = models.TextField(blank=True)    
+    date_of_birth = models.DateField(blank=True, default='2000-01-01')
+    date_of_employment = models.DateField(blank=True, default='2000-01-01')
+    phone_number = models.CharField(max_length=20, blank=True)
+    current_class = models.CharField(max_length=20, blank=True)
+    profile_pic = models.FileField(upload_to='staff_profile_pic',null=True, blank=True) 
+    subjects = models.ManyToManyField('Subject', related_name='staffs_subjects', blank=True)  
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)    
+    objects = models.Manager()
+
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
     current_class = models.CharField(max_length=100) 
     content = models.TextField()
+    announcement_file = models.FileField(upload_to='announcement',null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
     created_by = models.ForeignKey(AdminHOD, on_delete=models.CASCADE)
     updated_at = models.DateTimeField(auto_now=True)
@@ -78,6 +96,8 @@ class Announcement(models.Model):
     
     def __str__(self):
         return self.title
+
+
 
 class AnnouncementForStudents(models.Model):
     announcement = models.ForeignKey(Announcement, on_delete=models.CASCADE)
@@ -101,6 +121,7 @@ class Students(models.Model):
     gender = models.CharField(max_length=10)    
     phone_number = models.CharField(max_length=20)     
     address = models.CharField(max_length=200,null=True, blank=True)  
+    profile_pic = models.FileField(upload_to='student_profile_pic',null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -118,6 +139,30 @@ class ExamType(models.Model):
     def __str__(self):
         return f"{self.name}"
     
+class SujbectWiseResults(models.Model):
+    student = models.ForeignKey(Students, on_delete=models.CASCADE)
+    exam_type = models.ForeignKey(ExamType, on_delete=models.CASCADE)
+    selected_class = models.CharField(max_length=255, null=True, blank=True)
+    history_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    english_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    biology_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    arabic_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    physics_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    mathematics_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    chemistry_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    civics_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    geography_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    kiswahili_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    edk_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    computer_application_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    commerce_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    date_of_exam = models.DateField(auto_now=True)
+    book_keeping_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    objects = models.Manager()
+    
+    
 class Subject(models.Model):
     id = models.AutoField(primary_key=True)    
     subject_name = models.CharField(max_length=255, null=True, blank=True)
@@ -129,7 +174,64 @@ class Subject(models.Model):
         return f"{self.subject_name}"
   
   
-  
+class Attendance(models.Model):
+    id = models.AutoField(primary_key=True)  
+    subject_id = models.ForeignKey(Subject,on_delete=models.DO_NOTHING)
+    attendance_date = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)   
+    updated_at = models.DateTimeField(auto_now=True)  
+    objects = models.Manager()
+
+
+class AttendanceReport(models.Model):
+    id = models.AutoField(primary_key=True)  
+    student_id = models.ForeignKey(Students,on_delete=models.DO_NOTHING)
+    attendance_id = models.ForeignKey(Attendance,on_delete=models.DO_NOTHING)
+    status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)  
+    objects = models.Manager()  
+    
+class LeaveReportStudent(models.Model):
+     id = models.AutoField(primary_key=True)     
+     student_id = models.ForeignKey(Students,on_delete=models.DO_NOTHING)
+     leave_date = models.DateTimeField(auto_now_add=True)
+     leave_message = models.TextField()
+     leave_status = models.IntegerField(default=0)    
+     created_at = models.DateTimeField(auto_now_add=True)
+     updated_at = models.DateTimeField(auto_now=True)  
+     objects = models.Manager()
+     
+     
+class LeaveReportStaffs(models.Model):
+     id = models.AutoField(primary_key=True)     
+     staff_id = models.ForeignKey(Staffs,on_delete=models.DO_NOTHING)
+     leave_date = models.DateTimeField(auto_now_add=True)
+     leave_message = models.TextField()
+     leave_status = models.IntegerField(default=0)    
+     created_at = models.DateTimeField(auto_now_add=True)
+     updated_at = models.DateTimeField(auto_now=True)   
+     objects = models.Manager()  
+     
+
+class FeedBackStudent(models.Model):
+     id = models.AutoField(primary_key=True)     
+     student_id = models.ForeignKey(Students,on_delete=models.DO_NOTHING)
+     feedback = models.CharField(max_length=255)     
+     feedback_reply = models.TextField()    
+     created_at = models.DateTimeField(auto_now_add=True)
+     updated_at = models.DateTimeField(auto_now=True)
+     objects = models.Manager()
+     
+     
+class FeedBackStaff(models.Model):
+     id = models.AutoField(primary_key=True)     
+     staff_id = models.ForeignKey(Staffs,on_delete=models.DO_NOTHING)
+     feedback = models.CharField(max_length=255)     
+     feedback_reply = models.TextField()    
+     created_at = models.DateTimeField(auto_now_add=True)
+     updated_at = models.DateTimeField(auto_now=True)   
+     objects = models.Manager()        
 
 class Result(models.Model):
     student = models.ForeignKey(Students, on_delete=models.CASCADE)
@@ -314,13 +416,17 @@ def update_student_position(sender, instance, **kwargs):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         if instance.user_type == 1:  # HOD
-            AdminHOD.objects.create(admin=instance)
+            AdminHOD.objects.create(admin=instance)            
+        elif instance.user_type == 2:  # Staff
+            Staffs.objects.create(admin=instance)    
        
 
 @receiver(post_save, sender=CustomUser)
 def save_user_profile(sender, instance, **kwargs):
     if instance.user_type == 1:
         instance.admin_hod.save()
+    elif instance.user_type == 2:
+        instance.staffs.save()    
 
     
     
@@ -385,3 +491,68 @@ def calculate_remark(grade):
         return 'FAILED'
     else:
         return 'PASS'
+    
+
+# subject_fields = {
+#         'History': 'history_score',
+#         'English': 'english_score',
+#         'Biology': 'biology_score',
+#         'Arabic': 'arabic_score',
+#         'Physics': 'physics_score',
+#         'Mathematics': 'mathematics_score',
+#         'Geography': 'geography_score',
+#         'Kiswahili': 'kiswahili_score',
+#         'EDK': 'edk_score',
+#         'Computer Application': 'computer_application_score',
+#         'Commerce': 'commerce_score',
+#         'Book Keeping': 'book_keeping_score',
+#     }    
+
+@receiver(post_save, sender=SujbectWiseResults)
+def fill_result_model(sender, instance, created, **kwargs):
+    if created:
+        student = instance.student
+        exam_type = instance.exam_type
+        selected_class = instance.selected_class
+        date_of_exam = instance.date_of_exam 
+        
+        subject_fields = {
+        'Chemistry': 'chemistry_score',
+        'History': 'history_score',
+        'English': 'english_score',
+        'Biology': 'biology_score',
+        'Arabic': 'arabic_score',
+        'Physics': 'physics_score',
+        'Mathematics': 'mathematics_score',
+        'Geography': 'geography_score',
+        'Civics': 'civics_score',
+        'Kiswahili': 'kiswahili_score',
+        'EDK': 'edk_score',
+        'Computer Application': 'computer_application_score',
+        'Commerce': 'commerce_score',
+        'Book Keeping': 'book_keeping_score',
+    }    
+        # Iterate through the subject fields
+        for field_name, subject_field in subject_fields.items():
+            score = getattr(instance, subject_field)
+            if score is not None:
+                # Get the subject object
+                try:
+                    subject = Subject.objects.get(subject_name=field_name)
+                except ObjectDoesNotExist:
+                    # Log the error or handle it as needed
+                    print(f"Subject '{field_name}' does not exist.")
+                    continue
+                
+                # Create or update the Result object
+                Result.objects.update_or_create(
+                    student=student,
+                    subject=subject,
+                    exam_type=exam_type,
+                    date_of_exam=date_of_exam,
+                    selected_class=selected_class,
+                    defaults={'marks': score, 'total_marks': 100}
+                )
+                
+
+                

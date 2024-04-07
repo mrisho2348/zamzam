@@ -1,4 +1,5 @@
 {% extends 'hod_template/base_template.html' %}
+{% load custom_filters %}
 {% block title %}
 Staff Announcements
 {% endblock %}
@@ -25,6 +26,7 @@ Staff Announcements
                                     <th>Title</th>
                                     <th>Content</th>
                                     <th>Class</th>
+                                    <th>File</th>
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                     <th>Read by Students</th>
@@ -37,6 +39,13 @@ Staff Announcements
                                     <td>{{ announcement.title }}</td>
                                     <td>{{ announcement.content }}</td>
                                     <td>{{ announcement.current_class }}</td>
+                                    <td>
+                                        {% if announcement.announcement_file %}
+                                            <a href="{{ announcement.announcement_file }}" target="_blank">{{ announcement.announcement_file|filename }}</a>
+                                        {% else %}
+                                            No file uploaded
+                                        {% endif %}
+                                    </td>
                                     <td>{{ announcement.created_at }}</td>
                                     <td>{{ announcement.updated_at }}</td>
                                     <td>
@@ -126,28 +135,38 @@ Staff Announcements
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form id="editAnnouncementForm{{ announcement.id }}"  method="POST">
+            <form id="editAnnouncementForm{{ announcement.id }}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="editTitle{{ announcement.id }}">Title:</label>
                         <input type="text" class="form-control" id="editTitle{{ announcement.id }}" name="title" value="{{ announcement.title }}" required>
-                        <input type="hidden"  id="announcement_id{{ announcement.id }}" name="announcement_id" value="{{ announcement.id }}" required>
+                        <input type="hidden" id="announcement_id{{ announcement.id }}" name="announcement_id" value="{{ announcement.id }}" required>
                     </div>
                     <div class="form-group">
                         <label for="editContent{{ announcement.id }}">Content:</label>
                         <textarea class="form-control" id="editContent{{ announcement.id }}" name="content" rows="3" required>{{ announcement.content }}</textarea>
-                    </div>                             
-                        <div class="form-group">
-                            <label for="current_class">Class</label>
-                            <select class="form-control select2bs4" style="width: 100%;" id="current_class" name="current_class">
-                                <option value="Form One" {% if announcement.current_class == 'Form One' %} selected {% endif %}>Form One</option>
-                                <option value="Form Two" {% if announcement.current_class == 'Form Two' %} selected {% endif %}>Form Two</option>
-                                <option value="Form Three" {% if announcement.current_class == 'Form Three' %} selected {% endif %}>Form Three</option>
-                                <option value="Form Four" {% if announcement.current_class == 'Form Four' %} selected {% endif %}>Form Four</option>
-                            </select>
-                        </div>         
-                   
+                    </div>
+                    <div class="form-group">
+                        <label for="editAnnouncementFile{{ announcement.id }}">Announcement File (PDF)</label>
+                        {% if announcement.announcement_file %}
+                            <p>Current File: <a href="{{ announcement.announcement_file.url }}">{{ announcement.announcement_file.name }}</a></p>
+                        {% else %}
+                            <p>No file uploaded</p>
+                        {% endif %}
+                        <input type="file" class="form-control" id="editAnnouncementFile{{ announcement.id }}" name="announcement_file" accept=".pdf" data-max-size="5242880">
+                        <small class="form-text text-danger">Accepted format: PDF | Maximum file size: 5MB</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="current_classes">Class</label>
+                        <select class="form-control select2bs4" style="width: 100%;" id="current_classes" name="current_class">
+                            <option value="Form One" {% if announcement.current_class == 'Form One' %} selected {% endif %}>Form One</option>
+                            <option value="Form Two" {% if announcement.current_class == 'Form Two' %} selected {% endif %}>Form Two</option>
+                            <option value="Form Three" {% if announcement.current_class == 'Form Three' %} selected {% endif %}>Form Three</option>
+                            <option value="Form Four" {% if announcement.current_class == 'Form Four' %} selected {% endif %}>Form Four</option>
+                            <option value="To All Class" {% if announcement.current_class == 'To All Class' %} selected {% endif %}>To All Class</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
@@ -165,32 +184,30 @@ Staff Announcements
 <script>
     $(document).ready(function() {
         // Submit edit announcement form
-        $('[id^=editAnnouncementForm]').submit(function(event) {
+        $('#editAnnouncementForm{{ announcement.id }}').submit(function(event) {
             event.preventDefault(); // Prevent default form submission
-            var formId = $(this).attr('id'); // Get form ID
-            var announcementId = formId.substring(17); // Extract announcement ID from form ID
-            var formData = $(this).serialize(); // Serialize form data
+            var formData = new FormData($(this)[0]); // Get form data including file
 
             // Send AJAX request to edit announcement
             $.ajax({
                 url: "{% url 'edit_announcement' %}",
                 type: "POST",
                 data: formData,
+                processData: false, // Important! Prevents jQuery from automatically transforming the data into a query string
+                contentType: false, // Important! Sets the content type to false
+                cache: false, // Prevents caching of AJAX requests
                 success: function(response) {
                     // Display success message or handle response
-                    if(response.status === 'success')
-                    {
-                        $('#EditannouncementResponse' + announcementId).html('<div class="alert alert-success">' + response.message + '</div>');
-                        location.reload(true)
+                    if (response.status === 'success') {
+                        $('#EditannouncementResponse{{ announcement.id }}').html('<div class="alert alert-success">' + response.message + '</div>');
+                       
+                    } else {
+                        $('#EditannouncementResponse{{ announcement.id }}').html('<div class="alert alert-danger">' + response.message + '</div>');
                     }
-                    else{
-                        $('#EditannouncementResponse' + announcementId).html('<div class="alert alert-danger">' + response.message + '</div>');
-                    }
-                 
                 },
                 error: function(xhr, status, error) {
                     // Display error message or handle error
-                    $('#EditannouncementResponse' + announcementId).html('<div class="alert alert-danger">' + xhr.responseText + '</div>');
+                    $('#EditannouncementResponse{{ announcement.id }}').html('<div class="alert alert-danger">' + xhr.responseText + '</div>');
                 }
             });
         });
@@ -305,82 +322,92 @@ Staff Announcements
 <!-- Modal -->
 <div class="modal fade" id="addAnnouncementModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Create Announcement</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-md-6">
-                <form id="addAnnouncementForm" method="POST">
-                  {% csrf_token %}
-                  <div class="form-group">
-                    <label for="announcementTitle">Title:</label>
-                    <input type="text" class="form-control" id="announcementTitle" name="title" required>
-                  </div>
-                  <div class="form-group">
-                    <label for="announcementContent">Content:</label>
-                    <textarea class="form-control" id="announcementContent" name="content" rows="3" required></textarea>
-                  </div>              
-              </div>
-              <div class="col-md-6">            
-                  <div class="form-group">
-                    <label for="current_class">Class</label>
-                    <select  class="form-control select2bs4" style="width: 100%;"  id="current_class" name="current_class">
-                      <option value="Form One">Form One</option>
-                      <option value="Form Two">Form Two</option>
-                      <option value="Form Three">Form Three</option>
-                      <option value="Form Four">Form Four</option>
-                    </select>
-                  </div>          
-              </div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Announcement</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-          </div>
-        </div>
-        <div class="row">
-            <div class="col-md-12">
-                <div id="announcementResponse">
-
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <form id="addAnnouncementForm" method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="form-group">
+                                    <label for="announcementTitle">Title:</label>
+                                    <input type="text" class="form-control" id="announcementTitle" name="title" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="announcementContent">Content:</label>
+                                    <textarea class="form-control" id="announcementContent" name="content" rows="3" required></textarea>
+                                </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="current_class">Class</label>
+                                <select class="form-control select2bs4" style="width: 100%;" id="current_class" name="current_class">
+                                    <option value="Form One">Form One</option>
+                                    <option value="Form Two">Form Two</option>
+                                    <option value="Form Three">Form Three</option>
+                                    <option value="Form Four">Form Four</option>
+                                    <option value="To All Class">To All Class</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="announcementFile">Announcement File (PDF)</label>
+                                <input type="file" class="form-control" id="announcementFile" name="announcement_file" accept=".pdf" data-max-size="5242880">
+                                <small class="form-text text-danger">Accepted format: PDF | Maximum file size: 5MB</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="announcementResponse"></div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveAnnouncementBtn">Create Announcement</button>
+            </div>
+            </form>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary" id="saveAnnouncementBtn">Create Announcement</button>
-        </div>
-      </div>
     </div>
-  </div>
-</form>
-  <!-- Script for AJAX form submission -->
-  <script>
-    $(document).ready(function() {
-        $('#saveAnnouncementBtn').click(function() {
-          $.ajax({
-            url: "{% url 'add_announcement' %}",
-            type: "POST",
-            data: $('#addAnnouncementForm').serialize(),
-            success: function(response) {
-              if (response.status === 'success') {
-                // Display success message
-                $('#announcementResponse').html('<div class="alert alert-success">' + response.message + '</div>');
-                    location.reload(true)
-              } else {
-                // Display error message if status is not success
-                $('#announcementResponse').html('<div class="alert alert-danger">' + response.message + '</div>');
-              }
-            },
-            error: function(xhr, errmsg, err) {
-              // Display error message
-              $('#announcementResponse').html('<div class="alert alert-danger">' + xhr.responseText + '</div>');
-            }
-          });
+</div>
+
+<!-- Script for AJAX form submission -->
+<script>
+    $(document).ready(function () {
+        $('#saveAnnouncementBtn').click(function () {
+            var formData = new FormData($('#addAnnouncementForm')[0]); // Get form data including file
+            $.ajax({
+                url: "{% url 'add_announcement' %}",
+                type: "POST",
+                data: formData,
+                processData: false, // Important! Prevents jQuery from automatically transforming the data into a query string
+                contentType: false, // Important! Sets the content type to false
+                cache: false, // Prevents caching of AJAX requests
+                success: function (response) {
+                    if (response.status === 'success') {
+                        // Display success message
+                        $('#announcementResponse').html('<div class="alert alert-success">' + response.message + '</div>');
+                        location.reload(true)
+                    } else {
+                        // Display error message if status is not success
+                        $('#announcementResponse').html('<div class="alert alert-danger">' + response.message + '</div>');
+                    }
+                },
+                error: function (xhr, errmsg, err) {
+                    // Display error message
+                    $('#announcementResponse').html('<div class="alert alert-danger">' + xhr.responseText + '</div>');
+                }
+            });
         });
-      });
-  </script>
+    });
+</script>
+
   
 {% endblock main_content %}

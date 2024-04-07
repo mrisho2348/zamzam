@@ -9,6 +9,11 @@ urlpatterns = [
         path('accounts/', include('django.contrib.auth.urls')),  
         path('zamzam/dashboard',views.dashboard, name="dashboard"),
         path('dologin',views.DoLogin, name="DoLogin"),
+        path('save_student_result/',views.save_student_result, name="save_student_result"),
+        path('add_staff_record/',views.add_staff_record, name="add_staff_record"),
+        path('update_staff_status/',views.update_staff_status, name="update_staff_status"),
+        path('manage_staff/',views.manage_staff, name="manage_staff"),
+        path('delete-staff/<int:staff_id>/', views.delete_staff, name='delete_staff'),
         path('save_student/', views.save_student, name='save_student'),
         path('add_student_result/', views.add_student_result, name='add_student_result'),
         path('save_subject/', views.save_subject, name='save_subject'),
@@ -28,7 +33,7 @@ urlpatterns = [
         path('exam-types/', views.exam_type_list, name='exam_type_list'),
         path('exam_type_to_view_class/<int:exam_type_id>/', views.exam_type_to_view_class, name='exam_type_to_view_class'),
         path('view_student_to_add_result/<int:exam_type_id>/<str:class_name>/', views.view_student_to_add_result, name='view_student_to_add_result'),
-        # manage urls 
+        
         path('students/', views.manage_student, name='manage_student'),        
         path('manage_exam_type/', views.manage_exam_type, name='manage_exam_type'),
         path('manage_subject/', views.manage_subject, name='manage_subject'),
@@ -47,7 +52,8 @@ urlpatterns = [
          path('import_student_records', imports.import_student_records, name='import_student_records'),
          path('import_subject_records', imports.import_subject_records, name='import_subject_records'),
          path('import_exam_type_records', imports.import_exam_type_records, name='import_exam_type_records'),
-         
+         path('import_subject_wise_result/<int:exam_type_id>/', imports.import_subject_wise_result, name='import_subject_wise_result'),
+        # manage urls 
           # student url paths  
         path('student_home', StudentView.student_home, name='student_home'),      
        
@@ -61,5 +67,6 @@ urlpatterns = [
         path('students_subject_wise_results', StudentView.students_subject_wise_results, name='students_subject_wise_results'),  
         path('student_login', views.student_login, name='student_login'),  
         path('logout_user', views.logout_user, name='logout_user'),  # Move this line here
+        path('results/', views.display_results, name='display_results'),
     
 ]

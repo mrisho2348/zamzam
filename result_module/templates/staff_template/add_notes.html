@@ -1,0 +1,88 @@
+{% extends 'staff_template/base_template.html' %}
+
+{% block title %}
+  Add Notes
+{% endblock title %}
+
+{% block page_title %}
+  Add Notes
+{% endblock page_title %}
+
+{% block main_content %}
+  <section class="content">
+    <div class="container-fluid">
+    
+        <!-- Add the form here -->
+        <form method="post" enctype="multipart/form-data" action="{% url 'add_notes' %}">
+          {% csrf_token %}
+          <!-- Notes Information -->
+          <div class="row">
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="subject">Subject</label>
+                <select  class="form-control select2bs4" style="width: 100%;"   id="subject" name="subject" required>
+                  {% for subject in subjects %}
+                    <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="selected_class">Selected Class</label>
+                <select  class="form-control select2bs4" style="width: 100%;"   id="selected_class" name="selected_class" required>
+                  {% for class_level in class_levels %}
+                    <option value="{{ class_level.id }}">{{ class_level.name }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+
+            <div class="col-md-4">
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" class="form-control" id="title" name="title" required>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" name="description" rows="3"></textarea>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="form-group">
+                <label for="file">File</label>
+                <input type="file" class="form-control-file" id="file" name="file" accept=".pdf, .doc, .docx" data-max-size="5242880">
+                <small class="form-text text-danger">Accepted formats: PDF, DOC, DOCX | Maximum file size: 5MB</small>
+              </div>
+            </div>
+          </div>
+          <!-- Add other fields as needed -->
+
+          <div class="card-footer">
+            <div class="form-row">
+              <div class="col-12">
+                {% if messages %}
+                  {% for message in messages %}
+                    <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'success' %}alert-primary{% endif %}">
+                      {{ message }}
+                    </div>
+                  {% endfor %}
+                {% endif %}
+              </div>
+            </div>
+            
+            <button type="submit" class="btn btn-secondary btn-block">Save Notes</button>
+           
+          </div>
+        </form>
+
+    </div>
+  </section>
+{% endblock main_content %}

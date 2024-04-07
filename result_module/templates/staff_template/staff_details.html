@@ -1,0 +1,188 @@
+{% extends 'staff_template/base_template.html' %}
+{% load static %}
+{% block title %}
+Staff Information
+{% endblock title %}
+{% block main_content %}
+<div class="container mt-5">
+  <!-- Personal Information -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      Personal Information
+    </div>
+    <div class="card-body">
+      <h5 class="card-title">Full Name: <span style="color: blue;">{{ staff.admin.first_name }}</span> <span style="color: blue;">{{ staff.admin.last_name }}</span></h5>
+      <p class="card-text">Address: {{ staff.address }}</p>
+      <p class="card-text">Surname: {{ staff.surname }}</p>
+      <p class="card-text">Street Address: {{ staff.street_address }}</p>
+      <p class="card-text">House Number: {{ staff.house_number }}</p>
+      <p class="card-text">Gender: {{ staff.gender }}</p>
+      <p class="card-text">Date of Birth: {{ staff.date_of_birth }}</p>
+      <p class="card-text">Contact Number: {{ staff.contact_number }}</p>
+      <p class="card-text">Background Check: {{ staff.background_check }}</p>
+      <p class="card-text">Availability: {{ staff.availability }}</p>
+      <p class="card-text">Preferred Grade Level: {{ staff.preferred_grade_level }}</p>
+      <p class="card-text">Salary Expectations: {{ staff.salary_expectations }}</p>
+      <p class="card-text">National Identity Number: {{ staff.national_identity_number }}</p>
+      <p class="card-text">Personal Statement: {{ staff.personal_statement }}</p>
+      <!-- Add other personal information fields here -->
+    </div>
+  </div>
+
+  <!-- Display Profile Picture -->
+  {% if staff.profile_pic %}
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        Profile Picture
+      </div>
+      <div class="card-body">
+        <img src="{{ staff.profile_pic }}" alt="Profile Picture" class="img-fluid">
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Display National ID Photo -->
+  {% if staff.national_id_photo %}
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        National ID Photo
+      </div>
+      <div class="card-body">
+        <p class="card-text">National ID: <a href="{{ staff.national_id_photo }}" target="_blank" style="color: green;">View national ID photo</a></p>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Display Birth Certificate Photo -->
+  {% if staff.birth_certificate_photo %}
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        Birth Certificate Photo
+      </div>
+      <div class="card-body">
+        <p class="card-text">Birth Certificate: <a href="{{ staff.birth_certificate_photo }}" target="_blank" style="color: purple;">View birth certificate photo</a></p>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Subjects -->
+  {% if staff.subjects.all %}
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        Subjects
+      </div>
+      <div class="card-body">
+        <ul>
+          {% for subject in staff.subjects.all %}
+            <li><span style="color: orange;">{{ subject.subject_name }}</span></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Qualifications -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      Qualifications
+    </div>
+    <div class="card-body">
+      {% if qualifications %}
+        {% for qualification in qualifications %}
+          <p class="card-text">Teaching Experience: {{ qualification.teaching_experience }}</p>
+          <p class="card-text">Educational Qualification: {{ qualification.educational_qualification }}</p>
+          <p class="card-text">Certification: {{ qualification.certification }}</p>
+          {% if qualification.cv %}
+            <p class="card-text">CV: <a href="{{ qualification.cv }}" target="_blank" style="color: red;">View CV</a></p>
+          {% else %}
+            <p class="card-text">CV: <span style="color: gray;">Not available</span></p>
+          {% endif %}
+          {% if qualification.other_certificates %}
+            <p class="card-text">Other Certificates: <a href="{{ qualification.other_certificates }}" target="_blank" style="color: blue;">View Certificates</a></p>
+          {% else %}
+            <p class="card-text">Other Certificates: <span style="color: gray;">Not available</span></p>
+          {% endif %}
+        {% endfor %}
+      {% else %}
+        <p class="card-text">Not available</p>
+      {% endif %}
+      <!-- Add other qualification fields here -->
+    </div>
+  </div>
+
+  <!-- Skills -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      Skills
+    </div>
+    <div class="card-body">
+      {% if skills %}
+        <p class="card-text">Subject Expertise: {{ skills.subject_expertise }}</p>
+        <p class="card-text">Teaching Methods: {{ skills.teaching_methods }}</p>
+        <p class="card-text">Professional Development: {{ skills.professional_development }}</p>
+        <p class="card-text">Language Proficiency: {{ skills.language_proficiency }}</p>
+        <p class="card-text">Technology Skills: {{ skills.technology_skills }}</p>
+        <p class="card-text">Special Skills: {{ skills.special_skills }}</p>
+        {% if skills.certificate_url %}
+          <p class="card-text">Certificate: <a href="{{ skills.certificate_url.url }}" target="_blank" style="color: green;">View Certificate</a></p>
+        {% else %}
+          <p class="card-text">Certificate: <span style="color: gray;">Not available</span></p>
+        {% endif %}
+      {% else %}
+        <p class="card-text">Not available</p>
+      {% endif %}
+      <!-- Add other skill fields here -->
+    </div>
+  </div>
+
+  <!-- Employment History -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      Employment History
+    </div>
+    <div class="card-body">
+      {% if employment_history %}
+        {% for history in employment_history %}
+          <p class="card-text">Company Name: <span style="color: blue;">{{ history.company_name }}</span></p>
+          <p class="card-text">Company Address: {{ history.company_address }}</p>
+          <p class="card-text">Position: {{ history.position }}</p>
+          <p class="card-text">Start Date: {{ history.start_date|date:"F d, Y" }}</p>
+          {% if history.end_date %}
+            <p class="card-text">End Date: {{ history.end_date|date:"F d, Y" }}</p>
+          {% else %}
+            <p class="card-text">End Date: <span style="color: red;">Ongoing</span></p>
+          {% endif %}
+          <hr> <!-- Add a horizontal line to separate multiple employment history records -->
+        {% endfor %}
+      {% else %}
+        <p class="card-text">Not available</p>
+      {% endif %}
+      <!-- Add other employment history fields here -->
+    </div>
+  </div>
+
+  <!-- References -->
+  <div class="card mb-4">
+    <div class="card-header bg-primary text-white">
+      References
+    </div>
+    <div class="card-body">
+      {% if references %}
+        {% for reference in references %}
+          <p class="card-text">Company Name: <span style="color: green;">{{ reference.company_name }}</span></p>
+          <p class="card-text">Company Address: {{ reference.company_address }}</p>
+          <p class="card-text">Company Contact Person: {{ reference.company_contact_person }}</p>
+          <p class="card-text">Company Contact Email: <a href="mailto:{{ reference.company_contact_email }}" style="color: blue;">{{ reference.company_contact_email }}</a></p>
+          <p class="card-text">Company Contact Phone: <a href="tel:{{ reference.company_contact_phone }}" style="color: purple;">{{ reference.company_contact_phone }}</a></p>
+          <hr> <!-- Add a horizontal line to separate multiple references -->
+        {% endfor %}
+      {% else %}
+        <p class="card-text">Not available</p>
+      {% endif %}
+      <!-- Add other references fields here -->
+    </div>
+  </div>
+
+</div>
+
+{% endblock main_content %}

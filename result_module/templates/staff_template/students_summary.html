@@ -1,0 +1,393 @@
+
+{% extends 'staff_template/base_template.html' %}
+{% block title %}
+    Results For {{ exam_type.name }} 
+{% endblock title %}
+{% block page_title %}
+Choose class to add  {{ exam_type.name }}   results
+{% endblock page_title %}
+{% block main_content %}
+{% load static %}
+    
+<link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">  
+<style>
+    /* Custom CSS for the cards */
+    .card {
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+    }
+
+    .card:hover {
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+
+    .card-header {
+        background-color: #007BFF;
+        color: white;
+        font-weight: bold;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        padding: 10px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+        margin-bottom: 15px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+    }
+
+    li {
+        margin-bottom: 5px;
+    }
+
+    /* Customize the anchor tag (remove underline) */
+    a {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    /* Add a subtle hover effect for the anchor tag */
+    a:hover {
+        text-decoration: none;
+    }
+</style>
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Create Bootstrap Cards for Each Class -->
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='Form I'  %}">
+                    <div class="card">
+                        <div class="card-header">
+                            Form I
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for Form I</h5> {% endcomment %}
+                            <!-- Add content here for Form I -->
+                            <ul>
+                                <li>Total Students: {{ total_form_i_students }}</li>
+                                <li>Male: {{ total_boys_form_i_count }}</li>
+                                <li>Female: {{ total_girls_form_i_count }} </li>
+                                <!-- Add more details for Form I here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Repeat the same structure for other classes -->
+            
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='Form II'   %}">
+                    <div class="card">
+                        <div class="card-header">
+                            Form II
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for Form II</h5> {% endcomment %}
+                            <!-- Add content here for Form II -->
+                            <ul>
+                                <li>Total Students: {{ total_form_2_students }}</li>
+                                <li>Male: {{ total_boys_form_ii_count }}</li>
+                                <li>Female: {{ total_girls_form_ii_count }} </li>
+                                <!-- Add more details for Form II here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Repeat for other classes -->
+            
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='Form III'   %}">
+                    <div class="card">
+                        <div class="card-header">
+                            Form III
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for Form III</h5> {% endcomment %}
+                            <!-- Add content here for Form III -->
+                            <ul>
+                                <li>Total Students: {{ total_form_3_students }}</li>
+                                <li>Male: {{ total_boys_form_iii_count }}</li>
+                                <li>Female: {{ total_girls_form_iii_count }} </li>
+                                <!-- Add more details for Form III here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Repeat this structure for other classes (Form IV, STD I, STD II, etc.) -->
+
+        </div>
+        <div class="row">
+            <!-- Create Bootstrap Cards for Each Class -->
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='Form IV'  %}">
+                    <div class="card">
+                        <div class="card-header">
+                            Form IV
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for Form IV</h5> {% endcomment %}
+                            <!-- Add content here for Form I -->
+                            <ul>
+                                <li>Total Students: {{ total_form_4_students }}</li>
+                                <li>Male: {{ total_boys_form_iv_count }}</li>
+                                <li>Female: {{ total_girls_form_iv_count }} </li>
+                                <!-- Add more details for Form I here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Repeat the same structure for other classes -->
+            
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='STD I'  %}">
+                    <div class="card">
+                        <div class="card-header">
+                            STD I
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for STD I</h5> {% endcomment %}
+                            <!-- Add content here for Form II -->
+                            <ul>
+                                <li>Total Students: {{ total_std_i_students }}</li>
+                                <li>Male: {{ total_boys_std_i_count }}</li>
+                                <li>Female: {{ total_girls_std_i_count }} </li>
+                                <!-- Add more details for Form II here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Repeat for other classes -->
+            
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='STD II'  %}">
+                    <div class="card">
+                        <div class="card-header">
+                            STD II
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for STD II</h5> {% endcomment %}
+                            <!-- Add content here for Form III -->
+                            <ul>
+                                <li>Total Students: {{ total_std_ii_students }}</li>
+                                <li>Male: {{ total_boys_std_ii_count }}</li>
+                                <li>Female: {{ total_girls_std_ii_count }} </li>
+                                <!-- Add more details for Form III here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Repeat this structure for other classes (Form IV, STD I, STD II, etc.) -->
+
+        </div>
+        <div class="row">
+            <!-- Create Bootstrap Cards for Each Class -->
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='STD III'  %}">
+                    <div class="card">
+                        <div class="card-header">
+                            STD III
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for STD III</h5> {% endcomment %}
+                            <!-- Add content here for Form I -->
+                            <ul>
+                                <li>Total Students: {{ total_std_iii_students }}</li>
+                                <li>Male: {{ total_boys_std_iii_count }}</li>
+                                <li>Female: {{ total_girls_std_iii_count }} </li>
+                                <!-- Add more details for Form I here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Repeat the same structure for other classes -->
+            
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='STD IV'    %}">
+                    <div class="card">
+                        <div class="card-header">
+                            STD IV
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for   STD IV</h5> {% endcomment %}
+                            <!-- Add content here for Form II -->
+                            <ul>
+                                <li>Total Students: {{ total_std_iv_students }}</li>
+                                <li>Male: {{ total_boys_std_iv_count }}</li>
+                                <li>Female: {{ total_girls_std_iv_count }} </li>
+                                <!-- Add more details for Form II here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Repeat for other classes -->
+            
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='STD V'    %}">
+                    <div class="card">
+                        <div class="card-header">
+                            STD V
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for  STD V</h5> {% endcomment %}
+                            <!-- Add content here for Form III -->
+                            <ul>
+                                <li>Total Students: {{ total_std_v_students }}</li>
+                                <li>Male: {{ total_boys_std_v_count }}</li>
+                                <li>Female: {{ total_girls_std_v_count }} </li>
+                                <!-- Add more details for Form III here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Repeat this structure for other classes (Form IV, STD I, STD II, etc.) -->
+
+        </div>
+        <div class="row">
+            <!-- Create Bootstrap Cards for Each Class -->
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='STD VI'    %}">
+                    <div class="card">
+                        <div class="card-header">
+                            STD VI
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for  STD VI</h5> {% endcomment %}
+                            <!-- Add content here for Form I -->
+                            <ul>
+                                <li>Total Students: {{ total_std_vi_students }}</li>
+                                <li>Male: {{ total_boys_std_vi_count }}</li>
+                                <li>Female: {{ total_girls_std_vi_count }} </li>
+                                <!-- Add more details for Form I here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Repeat the same structure for other classes -->
+            
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='STD VII'    %}">
+                    <div class="card">
+                        <div class="card-header">
+                            STD VII
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for STD VII</h5> {% endcomment %}
+                            <!-- Add content here for Form II -->
+                            <ul>
+                                <li>Total Students: {{ total_std_vii_tudents }}</li>
+                                <li>Male: {{ total_boys_std_vii_count }}</li>
+                                <li>Female: {{ total_girls_std_vii_count }} </li>
+                                <!-- Add more details for Form II here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+            <!-- Repeat for other classes -->
+            
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='BABY'   %}">
+                    <div class="card">
+                        <div class="card-header">
+                            BABY
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for   BABY</h5> {% endcomment %}
+                            <!-- Add content here for Form III -->
+                            <ul>
+                                <li>Total Students: {{ total_baby_students }}</li>
+                                <li>Male: {{ total_boys_baby_count }}</li>
+                                <li>Female: {{ total_girls_baby_count }} </li>
+                                <!-- Add more details for Form III here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <!-- Repeat this structure for other classes (Form IV, STD I, STD II, etc.) -->
+
+        </div>
+        <div class="row">
+            <!-- Create Bootstrap Cards for Each Class -->
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='KG1'  %}">
+                    <div class="card">
+                        <div class="card-header">
+                            KG1
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for  KG1</h5> {% endcomment %}
+                            <!-- Add content here for Form I -->
+                            <ul>
+                                <li>Total Students: {{ total_kg1_students }}</li>
+                                <li>Male: {{ total_boys_kg1_count }}</li>
+                                <li>Female: {{ total_girls_kg1_count }} </li>
+                                <!-- Add more details for Form I here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{% url 'form_i_students' exam_type_id=exam_type.id  current_class='KG2'  %}">
+                    <div class="card">
+                        <div class="card-header">
+                            KG2
+                        </div>
+                        <div class="card-body">
+                            {% comment %} <h5 class="card-title">Class Details for  KG2</h5> {% endcomment %}
+                            <!-- Add content here for kg2 -->
+                            <ul>
+                                <li>Total Students: {{ total_kg2_students }}</li>
+                                <li>Male: {{ total_boys_kg2_count }}</li>
+                                <li>Female: {{ total_girls_kg2_count }} </li>
+                                <!-- Add more details for kg2 here -->
+                            </ul>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            
+       
+
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</section>
+
+
+{% endblock main_content %}

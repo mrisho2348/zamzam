@@ -1,0 +1,157 @@
+{% extends 'staff_template/base_template.html' %}
+{% block title %}
+Add {{ exam_type.name }}   Results
+{% endblock title %}
+
+{% block page_title %}
+Add {{ exam_type.name }}   Results
+{% endblock page_title %}
+{% block main_content %}
+{% load static %}
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="card">
+            <div class="card-header">
+                {% if existing_result %}
+                <h3>Update Results for <span style="color: brown;">{{ student.admin.first_name }} {{ student.admin.last_name }}</span></h3>
+                {% else %}
+                <h3>Assign Results for <span style="color: brown;">{{ student.admin.first_name }} {{ student.admin.last_name }}</span></h3>
+                {% endif %}
+            </div>
+            <div class="card-body">
+                <form method="POST" action="{% url 'assign_resutls_save' %}">
+                    {% csrf_token %}
+                    <input type="hidden" name="student_id" value="{{ student.id }}">
+
+                    <div class="mb-3">
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Subject:</label>
+                            <select name="subject" id="subject"  class="form-control select2bs4" style="width: 100%;"  >
+                                <option value="" selected="selected">Select Subject</option>
+                                {% for subject in subjects %}
+                                    {% if existing_result and existing_result.subject.id == subject.id %}
+                                        <option value="{{ subject.id }}" selected="selected">{{ subject.subject_name }}</option>
+                                    {% else %}
+                                        <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <input type="hidden" name="exam_type_id" value="{{ exam_type.id }}">
+                   
+                    <div class="mb-3">
+                        <label for="marks" class="form-label">Marks:</label>
+                        <input type="text" name="marks" id="marks" class="form-control" {% if existing_result %}value="{{ existing_result.marks }}"{% endif %}>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="date_of_exam" class="form-label">Date of Exam:</label>
+                        <input type="date" name="date_of_exam" id="date_of_exam" class="form-control" {% if existing_result %}value="{{ existing_result.date_of_exam }}"{% endif %}>
+                    </div>
+
+                    {% if messages %}
+                        <div class="form-row">
+                            <div class="col-12">
+                                {% for message in messages %}
+                                    {% if message.tags == 'error' %}
+                                        <div class="alert alert-danger">{{ message }}</div>
+                                    {% elif message.tags == 'success' %}
+                                        <div class="alert alert-primary">{{ message }}</div>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <button type="submit" class="btn btn-primary">
+                        {% if existing_result %}
+                        Update Results
+                        {% else %}
+                        Assign Results
+                        {% endif %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<style>
+    .card {
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin: 20px auto;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease-in-out;
+        background: #f8f9fa;
+    }
+
+    .card-header {
+        background-color: #007BFF;
+        color: white;
+        font-weight: bold;
+        padding: 15px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .card-body {
+        padding: 20px;
+    }
+
+    .form-label {
+        font-weight: bold;
+    }
+
+    .form-control {
+        border-radius: 5px;
+    }
+
+    .form-control:focus {
+        box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+    }
+
+    .alert {
+        margin-top: 20px;
+    }
+
+    button[type="submit"] {
+        background-color: #007BFF;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease-in-out;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    h3 {
+        font-size: 24px;
+    }
+
+    .container-fluid {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 0 0 10px 10px;
+    }
+
+    /* Add animation to the card on hover */
+    .card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+    }
+</style>
+
+<script>
+    // Get the current date in YYYY-MM-DD format
+    const currentDate = new Date().toISOString().split('T')[0];
+
+    // Set the current date as the default value for the input field
+    document.getElementById('date_of_exam').value = currentDate;
+</script>
+{% endblock main_content %}

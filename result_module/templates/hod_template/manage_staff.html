@@ -1,0 +1,563 @@
+{% extends 'hod_template/base_template.html' %}
+
+{% block title %}
+List of  Staffs    
+{% endblock title %}
+
+{% block breadcrumb %}
+{% include "hod_template/modal_form.html" %}
+<a class="btn btn-primary float-right" type="button" data-toggle="modal" data-target="#addStaffModal">
+    <i class="fas fa-plus"></i> New staff
+</a>
+{% endblock breadcrumb %}
+
+{% block main_content %}
+<div class="table-responsive">
+    <!-- Any additional content or components can be placed here -->
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h3  class="header-title text-center mt-0 mb-1  text-uppercase">List of Staff</h3>
+            </div>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm" id="example">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>                            
+                                <th>User Name</th>
+                                <th>Age</th>
+                                <th>Year of employment</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Class</th>
+                                <th>Picture</th>
+                                <th>Last Logged In</th>
+                                <th>Date Joined</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for staff in staffs %}
+                            <tr>
+                                <td>{{ staff.admin.id }}</td>
+                                <td>{{ staff.admin.first_name }} {{ staff.middle_name }} {{ staff.admin.last_name }}</td>                           
+                                <td>{{ staff.admin.username }}</td>
+                                <td><script>
+                                    var dob = new Date("{{ staff.date_of_birth|date:'Y-m-d' }}");
+                                    var now = new Date();
+                                    var ageMilliseconds = now - dob;
+                                    var ageSeconds = ageMilliseconds / 1000;
+                                    var ageYears = Math.floor(ageSeconds / (365.25 * 24 * 60 * 60));
+                                    document.write(ageYears + ' years');
+                                </script>
+                            </td>
+                                <td><script>
+                                    var dob = new Date("{{ staff.date_of_employment|date:'Y-m-d' }}");
+                                    var now = new Date();
+                                    var ageMilliseconds = now - dob;
+                                    var ageSeconds = ageMilliseconds / 1000;
+                                    var ageYears = Math.floor(ageSeconds / (365.25 * 24 * 60 * 60));
+                                    document.write(ageYears + ' years');
+                                </script>
+                            </td>
+                                <td>{{ staff.admin.email }}</td>
+                                <td>{{ staff.address }}</td>
+                                <td>{{ staff.current_class }}</td>
+                                <td>
+                                    {% if staff.profile_pic %}
+                                        <img src="{{ staff.profile_pic }}" style="width:100px;" alt="Profile Picture" />
+                                    {% else %}
+                                        <p>No profile picture</p>
+                                    {% endif %}
+                                </td>
+                                <td>{{ staff.admin.last_login }}</td>
+                                <td>{{ staff.admin.date_joined }}</td>
+                                <td>
+                                    <form method="POST" action="{% url 'update_staff_status' %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="user_id" value="{{ staff.admin.id }}">
+                                        <input type="hidden" name="is_active" value="{% if staff.admin.is_active %}1{% else %}0{% endif %}">
+                                        <input
+                                            type="checkbox"
+                                            data-toggle="switchbutton"
+                                            data-size="xs"
+                                            data-onlabel="Active"
+                                            data-offlabel="Inactive"
+                                            data-offstyle="danger"
+                                            data-onstyle="success"
+                                            {% if staff.admin.is_active %}checked{% endif %}
+                                            onchange="submitForm(this)"
+                                        >
+                                    </form>
+                                </td>
+                                <td class="text-center">
+                                    <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#editStaffModal{{ staff.id }}"  data-toggle="tooltip" title="Edit">
+                                        <i class="fa fa-edit text-white"></i>
+                                    </button>
+                                    <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteStaffModal{{ staff.id }}"  data-toggle="tooltip" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>   
+                                    <button class="btn btn-success btn-sm" data-toggle="modal" data-target="#viewStaffModal{{ staff.id }}"  data-toggle="tooltip" title="Delete">
+                                        <i class="fas fa-eye-slash"></i>
+                                    </button>   
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal fade" id="addStaffModal" tabindex="-1" role="dialog" aria-labelledby="addStaffModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addStaffModalLabel">Add Staff</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form id="addStaffForm" method="post" enctype="multipart/form-data"> 
+            {% csrf_token %}      
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="first_name">First name</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" placeholder="First name" required>
+                    <input type="hidden" name="staff_id" id="staff_id" value="">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="middle_name">Middle name</label>
+                    <input type="text" class="form-control" id="middle_name" name="middle_name" placeholder="Middle name" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="last_name">Last name</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Last name" required>
+                </div>           
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="username">Username</label>
+                    <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="password">Password</label>
+                    <input type="password" class="form-control" id="password" name="password" placeholder="Password" required>
+                </div>
+            </div>
+            <!-- Second row of fields -->
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="subject">Subject</label>
+                    <select class="form-control select2bs4" style="width: 100%;" id="subject" name="subject" multiple>
+                        {% for subject in subjects %}
+                        <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="address">Address</label>
+                    <input type="text" class="form-control" id="address" name="address" placeholder="Address" value="{{ staff.address }}">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="gender">Gender</label>
+                    <select id="gender" class="form-control select2bs4" style="width: 100%;" name="gender">
+                        <option selected>Choose...</option>
+                        <option>Male</option>
+                        <option>Female</option>
+                    </select>
+                </div>
+            </div>
+            <!-- Third row of fields -->
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="dob">Date of Birth</label>
+                    <input type="date" class="form-control" id="dob" name="dob">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="doe">Date of Employment</label>
+                    <input type="date" class="form-control" id="doe" name="doe">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="phone">Phone Number</label>
+                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Phone Number">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="staff_photos">Profile Picture</label>
+                    <input type="file" class="form-control" id="staff_photos" name="staff_photo" accept=".jpg, .jpeg, .png"  data-max-size="5242880">
+                    <small class="form-text text-danger">Accepted formats: JPG, JPEG, PNG | Maximum file size: 5MB</small>
+                </div>  
+                <div class="form-group col-md-4">
+                    <label for="current_clas">Selected Class</label>
+                    <select class="form-control select2bs4" style="width: 100%;" id="current_clas" name="current_class">
+                        <option value="Form One">Form One</option>
+                        <option value="Form Two">Form Two</option>
+                        <option value="Form Three">Form Three</option>
+                        <option value="Form Four">Form Four</option>
+                      </select>
+                  </div>              
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div id="responseMessage"></div>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+        </form>        
+      </div>      
+    </div>
+  </div>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+        $('#addStaffForm').on('submit', function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            
+            // Clear previous error messages
+            $('.error-message').remove();
+            
+            // Check if required fields are filled
+            var isValid = true;
+            $(this).find('[required]').each(function() {
+                if ($(this).val() == '') {
+                    // If a required field is empty, display an error message
+                    $(this).after('<span class="error-message text-danger">This field is required.</span>');
+                    isValid = false;
+                }
+            });
+            
+            if (!isValid) {
+                // If any required field is empty, do not submit the form
+                return;
+            }
+            
+            // Create FormData object
+            var formData = new FormData(this);
+    
+            // Send form data to the server using AJAX
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'add_staff_record' %}', // Replace 'your_endpoint_here' with the actual URL endpoint
+                data: formData,
+                contentType: false, // Don't set contentType
+                processData: false, // Don't process data
+                success: function(response) {
+                    // If the request is successful, display a success message
+                    if(response.status)
+                    {
+                        $('#responseMessage').html('<div class="alert alert-success">'+ response.message +'</div>');
+                        location.reload(true)
+                       
+                    }
+                    else{
+                        $('#responseMessage').html('<div class="alert alert-danger">'+ response.message +'</div>');
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // If the request fails, display an error message
+                    $('#responseMessage').html('<div class="alert alert-danger">Error: ' + xhr.responseText + '</div>');
+                }
+            });
+        });
+    });
+</script>
+
+{% for staff in staffs %}
+<div class="modal fade" id="editStaffModal{{ staff.id }}" tabindex="-1" role="dialog" aria-labelledby="editStaffModalLabel{{ staff.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editStaffModalLabel{{ staff.id }}">Edit Staff</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="editStaffForm{{ staff.id }}" method="post" enctype="multipart/form-data"> 
+                    {% csrf_token %}      
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="first_name">First name</label>
+                            <input type="text" class="form-control" id="first_name{{ staff.id }}" name="first_name" placeholder="First name" value="{{ staff.admin.first_name }}" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="middle_name">Middle name</label>
+                            <input type="text" class="form-control" id="middle_name{{ staff.id }}" name="middle_name" placeholder="Middle name" value="{{ staff.middle_name }}" required>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="last_name">Last name</label>
+                            <input type="text" class="form-control" id="last_name{{ staff.id }}" name="last_name" placeholder="Last name" value="{{ staff.admin.last_name }}" required>
+                        </div>           
+                    </div>              
+                    <!-- Second row of fields -->
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="subjects">Subject</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="subjects{{ staff.id }}" name="subject" multiple>
+                                {% for subject in subjects %}
+                                <option value="{{ subject.id }}" {% if subject in staff.subjects.all %} selected {% endif %}>{{ subject.subject_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="address">Address</label>
+                            <input type="text" class="form-control" id="address{{ staff.id }}" name="address" placeholder="Address" value="{{ staff.address }}">
+                            <input type="hidden" class="form-control" id="staff_id" name="staff_id" value="{{ staff.id }}">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="genders">Gender</label>
+                            <select id="genders{{ staff.id }}" class="form-control select2bs4" style="width: 100%;" name="gender">
+                                <option {% if staff.gender == 'Male' %} selected {% endif %}>Male</option>
+                                <option {% if staff.gender == 'Female' %} selected {% endif %}>Female</option>
+                            </select>
+                        </div>
+                    </div>
+                    <!-- Third row of fields -->
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" class="form-control" id="dob{{ staff.id }}" name="dob" value="{{ staff.date_of_birth|date:'Y-m-d' }}">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="doe">Date of Employment</label>
+                            <input type="date" class="form-control" id="doe{{ staff.id }}" name="doe" value="{{ staff.date_of_employment|date:'Y-m-d' }}">
+                        </div>
+                        <div class="form-group col-md-4">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" class="form-control" id="phone{{ staff.id }}" name="phone" placeholder="Phone Number" value="{{ staff.phone_number }}">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group col-md-4">
+                            <label for="staff_photo">Profile Picture</label>
+                            <!-- Display current profile picture -->
+                            {% if staff.profile_pic %}
+                                <img src="{{ staff.profile_pic }}" alt="Profile Picture" class="img-thumbnail">
+
+                            {% else %}
+                                <p>No picture available</p>
+                            {% endif %}                    
+                            <input type="file" class="form-control" id="staff_photo{{ staff.id }}" name="staff_photo" accept=".jpg, .jpeg, .png"  data-max-size="5242880">
+                            <small class="form-text text-danger">Accepted formats: JPG, JPEG, PNG | Maximum file size: 5MB</small>
+                        </div>           
+                        <div class="form-group col-md-4">
+                            <label for="current_class{{ staff.id }}">Current Class</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="current_class{{ staff.id }}" name="current_class">
+                                <option value="Form One" {% if staff.current_class == 'Form One' %} selected {% endif %}>Form One</option>
+                                <option value="Form Two" {% if staff.current_class == 'Form Two' %} selected {% endif %}>Form Two</option>
+                                <option value="Form Three" {% if staff.current_class == 'Form Three' %} selected {% endif %}>Form Three</option>
+                                <option value="Form Four" {% if staff.current_class == 'Form Four' %} selected {% endif %}>Form Four</option>
+                            </select>
+                        </div>         
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="responseMessages"></div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+                </form>        
+            </div>      
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<script>
+    $(document).ready(function() {
+        // Submit form data when the form is submitted
+        $('form[id^="editStaffForm"]').submit(function(e) {
+            e.preventDefault(); // Prevent the default form submission
+            
+            var form = $(this);           
+            var formData = new FormData(form[0]);
+            
+            $.ajax({
+                type: "POST",
+                url: '{% url 'add_staff_record' %}',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function(response) {
+                    if (response.status) {
+                        $('#responseMessages' + response.id).html('<div class="alert alert-success" role="alert">' + response.message + '</div>');
+                        location.reload(true)
+                    } else {
+                        $('#responseMessages' + response.id).html('<div class="alert alert-danger" role="alert">' + response.message + '</div>');
+                    }
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    $('#responseMessages' + response.id).html('<div class="alert alert-danger" role="alert">' + errorThrown + '</div>');
+                }
+            });
+        });
+    });
+</script>
+
+{% for staff in staffs %}
+<div class="modal fade" id="deleteStaffModal{{ staff.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteStaffModalLabel{{ staff.id }}" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteStaffModalLabel{{ staff.id }}">Confirm Deletion</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Are you sure you want to delete this staff record?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-danger" id="confirmDeleteBtn{{ staff.id }}">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>  
+
+<script>
+    $(document).ready(function() {
+        // Show the delete modal for staff with ID {{ staff.id }} when the corresponding delete button is clicked
+        $('#deleteBtn{{ staff.id }}').click(function() {
+            $('#deleteStaffModal{{ staff.id }}').modal('show');
+        });
+
+        // Handle the delete confirmation for staff with ID {{ staff.id }}
+        $('#confirmDeleteBtn{{ staff.id }}').click(function() {
+            // Send a delete request to the server for staff with ID {{ staff.id }}
+            $.ajax({
+                url: '/delete-staff/{{ staff.id }}/', // Updated URL with trailing slash
+                method: 'POST',
+                success: function(response) {
+                    if (response.status) {                        
+                        location.reload(true)
+                    } else {
+                        
+                    }
+                },
+                error: function(xhr, status, error) {
+                    // Handle error response from the server
+                    // For example, show an error message to the user
+                    alert('Failed to delete staff record. Please try again later.');
+                }
+            });
+        });
+    });
+</script>
+{% endfor %}
+
+{% for staff in staffs %}
+    <!-- Modal -->
+<div class="modal fade" id="viewStaffModal{{ staff.id }}" tabindex="-1" role="dialog" aria-labelledby="viewStaffModalLabel{{ staff.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="viewStaffModalLabel{{ staff.id }}">Staff Details</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="container">
+            <div class="row">
+              <div class="col-md-4">
+                <strong>First Name:</strong>
+                <span>{{ staff.admin.first_name }}</span>
+              </div>
+              <div class="col-md-4">
+                <strong>Last Name:</strong>
+                <span>{{ staff.admin.last_name }}</span>
+              </div>
+              <div class="col-md-4">
+                <strong>Email:</strong>
+                <span>{{ staff.admin.email }}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <strong>Middle Name:</strong>
+                <span>{{ staff.middle_name }}</span>
+              </div>
+              <div class="col-md-4">
+                <strong>Address:</strong>
+                <span>{{ staff.address }}</span>
+              </div>
+              <div class="col-md-4">
+                <strong>Gender:</strong>
+                <span>{{ staff.gender }}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <strong>Date of Birth:</strong>
+                <span>{{ staff.date_of_birth }}</span>
+              </div>
+              <div class="col-md-4">
+                <strong>Date of Employment:</strong>
+                <span>{{ staff.date_of_employment }}</span>
+              </div>
+              <div class="col-md-4">
+                <strong>Phone Number:</strong>
+                <span>{{ staff.phone_number }}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <strong>Current Class:</strong>
+                <span>{{ staff.current_class }}</span>
+              </div>
+              <div class="col-md-4">
+                <strong>Profile Picture:</strong>
+                {% if staff.profile_pic %}
+                  <img src="{{ staff.profile_pic }}" alt="Profile Picture" class="img-fluid">
+                {% else %}
+                  <span>No profile picture available</span>
+                {% endif %}
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-12">
+                <strong>Subjects:</strong>
+                <ul>
+                  {% for subject in staff.subjects.all %}
+                    <li>{{ subject.subject_name }}</li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endfor %}
+<script>
+    function submitForm(checkbox) {
+        checkbox.form.submit();
+    }
+</script>
+{% include 'hod_template/datatable.html' %}
+{% endblock main_content %}

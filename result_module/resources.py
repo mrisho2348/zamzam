@@ -1,5 +1,5 @@
 from import_export import resources
-from .models import  ExamType, Students, Subject
+from .models import  ExamType, Students, Subject, SujbectWiseResults
 
 class StudentResources(resources.ModelResource):
     class Meta:
@@ -10,5 +10,8 @@ class ExamTypeResources(resources.ModelResource):
 class SubjectResources(resources.ModelResource):
     class Meta:
         model = Subject
+class SujbectWiseResultsResources(resources.ModelResource):
+    class Meta:
+        model = SujbectWiseResults
 
         
