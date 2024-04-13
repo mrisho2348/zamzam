@@ -22,6 +22,9 @@ from result_system import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('result_module.urls')),
+    path('Student/', include('result_system.student_urls')),
+    path('Staff/', include('result_system.staff_urls')),
+    path('hod/', include('result_system.hod_urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

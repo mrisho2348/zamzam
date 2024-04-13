@@ -1,0 +1,134 @@
+{% extends 'hod_template/base_template.html' %}
+{% block title %}
+    View Update Attendance
+{% endblock title %}
+
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">         
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title" id="attendanceTitle">View Update Attendance</h3>
+                        </div>           
+                        <div class="card-body">                 
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Select Class</label>
+                                        <select class="form-control select2bs4" style="width: 100%;" id="current_class" name="current_class">
+                                            <option value="Form One">Form One</option>
+                                            <option value="Form Two">Form Two</option>
+                                            <option value="Form Three">Form Three</option>
+                                            <option value="Form Four">Form Four</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Subjects</label>
+                                        <select  class="form-control select2bs4" style="width: 100%;"   name="subject" id="subject">
+                                            {% for subject in subjects %}
+                                              <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="date">Date</label>
+                                        <select class="form-control" id="date" name="date">
+                                            {% for attendance in attendances %}
+                                                <option value="{{ attendance.id }}">{{ attendance.attendance_date }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="button" class="btn btn-primary btn-block" id="fetch_attendance">Fetch Attendance</button>
+                            </div>                          
+                        </div>            
+                        <div id="student_data" class="card-footer"></div>
+                    </div>           
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+{% include 'hod_template/datatable.html' %}    
+{% endblock main_content %}
+
+{% block customer_js %}
+<script>
+    $(document).ready(function(){      
+        $("#fetch_attendance").click(function() {
+            var date = $("#date").val();
+            var current_class = $("#current_class").val();
+            var subject = $("#subject").val();
+
+            $.ajax({
+                url: '{% url 'admin_get_subject_student_attendance_data' %}',
+                type: 'POST',
+                data: {
+                    date: date,
+                    current_class: current_class,
+                    subject: subject,
+                },
+            })
+            .done(function(response) {
+                var json_data = JSON.parse(response);
+                console.log(json_data);
+            
+                // Get the class and subject names based on the selected values
+                var selectedClass = $("#current_class option:selected").text();
+                var selectedDate = $("#date option:selected").text();
+                var selectedSubject = $("#subject option:selected").text();
+                
+                // Update the title dynamically
+                document.title = selectedClass + " - " + selectedSubject + " - " + selectedDate + " |  Attendance"; 
+                
+                // Create the card structure with a header
+                var cardHtml = "<div class='card card-success'>";
+                cardHtml += "<div class='card-header'>" + selectedClass + " Student Attendance on " + selectedDate + " for " +selectedSubject+ "</div>"; // Add card header with class and subject
+                cardHtml += "<div class='card-body'>";
+                cardHtml += "<div class='table-responsive'><table class='table table-hover text-nowrap table-bordered table-striped table-sm' id='example'><thead><tr><th>Student Name</th><th>Attendance</th></tr></thead><tbody>";
+            
+                // Generate the student attendance rows in table format
+                for (var key in json_data) {
+                    cardHtml += "<tr><td>" + json_data[key]['name'] + "</td><td>";
+                    
+                    // Check if the student's attendance is present or absent and display accordingly
+                    if (json_data[key]["status"]) {
+                        cardHtml += "<span class='badge badge-success'>Present</span>";
+                    } else {
+                        cardHtml += "<span class='badge badge-danger'>Absent</span>";
+                    }
+                    
+                    cardHtml += "</td></tr>";
+                }
+            
+                cardHtml += "</tbody></table></div>"; // Close table body and table
+                cardHtml += "<div class='form-group'>";              
+                cardHtml += "</div>";
+                cardHtml += "</div></div>"; // Close card body and card
+            
+                // Set the card structure to the student_data div
+                $("#student_data").html(cardHtml);
+                
+                // Initialize DataTables
+                new DataTable('#example', {
+                    dom: 'Bfrtip',
+                    buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+                });
+            })
+            .fail(function() {
+                alert("Error in Fetching Student");
+            });
+        }); 
+             
+    })
+</script>
+{% endblock customer_js %}

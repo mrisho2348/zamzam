@@ -18,7 +18,7 @@
                         <h2>Student Parent Login</h2>
                     </div>
                     <div class="card-body">
-                        <form action="/student_dologin" method="POST">
+                        <form action="{% url "student_dologin" %}" method="POST">
                             {% csrf_token %}
                             <div class="form-group">
                                 <label for="registration_number">Registration Number:</label>

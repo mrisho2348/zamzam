@@ -1,6 +1,7 @@
 {% extends 'student_template/base_template.html' %}
+{% load custom_filters %}
 {% block title %}
-Student Announcements
+View {{student}}  Announcements
 {% endblock %}
 {% block breadcrumb %}       
 {% endblock breadcrumb %}
@@ -17,7 +18,8 @@ Student Announcements
                             <thead>
                                 <tr>
                                     <th>Title</th>
-                                    <th>Content</th>                                    
+                                    <th>Content</th> 
+                                    <th>File</th>                                   
                                     <th>Created At</th>
                                     <th>Updated At</th>
                                 </tr>
@@ -26,7 +28,14 @@ Student Announcements
                                 {% for announcement in announcements %}
                                 <tr>
                                     <td>{{ announcement.title }}</td>
-                                    <td>{{ announcement.content }}</td>                                   
+                                    <td>{{ announcement.content }}</td> 
+                                    <td>
+                                        {% if announcement.announcement_file %}
+                                            <a href="{{ announcement.announcement_file }}" target="_blank">{{ announcement.announcement_file|filename }}</a>
+                                        {% else %}
+                                            No file uploaded
+                                        {% endif %}
+                                    </td>                                  
                                     <td>{{ announcement.created_at }}</td>
                                     <td>{{ announcement.updated_at }}</td>
                                 </tr>

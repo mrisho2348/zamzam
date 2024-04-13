@@ -1,0 +1,273 @@
+{% extends 'staff_template/base_template.html' %}
+
+{% block title %}
+{{ class_name }} Result
+{% endblock title %}
+{% block page_title %}
+  {{exam_type}}
+{% endblock page_title %}
+
+{% block breadcrumb %}
+{% include "staff_template/modal_form.html" %}
+<!-- Add Import insurance link and modal trigger -->
+<a class="btn btn-success float-right mr-2" href="{% url "staff_import_subject_wise_result" exam_type.id  %}">
+    <i class="fas fa-file-import"></i> Import result
+  </a>
+{% endblock breadcrumb %}
+{% load static %}
+{% block main_content %}
+<div class="row">
+    <div class="col-md">
+        <div class="card">
+            <div class="card-header">
+                <h3  class="header-title text-center mt-0 mb-1  text-uppercase">List of Students for {{ class_name }} Result </h3>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm  display" id="example"  style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Reg/Exam No.</th>
+                                <th>Candidate Name</th>
+                                <th>Sex</th>
+                                <th>Point</th>
+                                <th>Div</th>
+                                <th>Hist</th>              
+                                <th>Eng</th>
+                                <th>Kisw</th>
+                                <th>Geo</th>
+                                <th>Math</th>
+                                <th>Phy</th>
+                                <th>Arab</th>
+                                <th>Bio</th>
+                                <th>Chem</th>
+                                <th>EDK</th>
+                                <th>Civ</th>
+                                <th>Total</th>
+                                <th>Avg</th>
+                                <th>GRD</th>
+                                <th>POS</th>
+                                <th>Remark</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for student_result in student_results %}
+                            <tr>
+                                <td>{{ student_result.student.registration_number }}</td>
+                                <td>{{ student_result.student }}</td>
+                                <td>
+                                    {% if student_result.student.gender == 'Female' %}
+                                        F
+                                    {% else %}
+                                        M
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if student_result.total_grade_points %}
+                                    {% if student_result.total_grade_points == -1 %}
+                                    Incomplete
+                                  {% else %}
+                                    {{ student_result.total_grade_points }}
+                                  {% endif %}
+                                    {% else %}
+                                    {% endif %}
+                                  </td>
+                                  <td>
+                                    {% if student_result.division  %}
+                                    {% if student_result.division == '-1' %}
+                                    Incomplete
+                                  {% else %}
+                                    {{ student_result.division }}
+                                  {% endif %}
+                                     {% else %}
+                                    {% endif %}
+                                  </td>
+                                {% for subject, grade in student_result.student_subject_results.items %}
+                                    <td>{{ grade }}</td>
+                                {% endfor %}
+                                <td>{{ student_result.total_marks|default_if_none:"" }}</td>
+                                <td>{{ student_result.average|default_if_none:"" }}</td>
+                                <td>{{ student_result.grademetrics|default_if_none:"" }}</td>
+                                <td>{{ student_result.position|default_if_none:"" }}</td>
+                                <td>{{ student_result.remark|default_if_none:"" }}</td>
+                                <td>
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#addResultModal{{ student_result.student.id }}"  data-toggle="tooltip" title="Add result for this student">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                    <a href="{% url 'staff_student_subject_wise_result_page' student_result.student.id %}" class="btn btn-success btn-sm" data-toggle="tooltip" title="View Result">
+                                        <i class="fa fa-file-alt text-white"></i>
+                                    </a> 
+                                </td>
+                            </tr>
+                            
+                            {% endfor %}
+                        </tbody>                        
+                      </table>
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% for student_result in student_results %}
+<div class="modal fade" id="addResultModal{{ student_result.student.id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{ student_result.student.full_name }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Form to add student results -->
+                <form id="addResultForm{{ student_result.student.id }}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden"  name="exam_type" value="{{exam_type.id}}" >
+                    <input type="hidden"  name="class_name" value="{{class_name}}" >
+                    <input type="hidden"  name="student_id" value="{{ student_result.student.id }}" >
+                    <table  class="table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm  display" id="resultTable{{ student_result.student.id }}">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Marks</th>
+                                <th></th> 
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <select  class="form-control select2bs4" style="width: 100%;" name="subjects[]" required>
+                                        <!-- Populate options from the database model -->
+                                        {% for subject in subjects %}
+                                            <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </td>
+                                <td><input type="text" class="form-control" name="marks[]" required></td>
+                                <td><button type="button" class="btn btn-danger delete-row">Delete</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-primary btn-block add-row" onclick="addRow('{{ student_result.student.id }}')"> <i class="fas fa-plus-circle"></i> Add more result</button>
+                    <!-- Date of Exam field outside the table -->
+                    <div class="form-group mt-3">
+                        <label for="date_of_exam">Date of Exam:</label>
+                        <!-- Set the default value dynamically using JavaScript -->
+                        <input type="date" class="form-control" id="date_of_exam{{ student_result.student.id }}" name="date_of_exam">
+                    </div>
+               
+                <div class="row">
+                    <div class="col-md-12">
+                      <div id="successMessageContainer{{ student_result.student.id }}"></div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">                                
+                            <!-- Use onclick attribute to call the addResult() function -->
+                            <button type="button" class="btn btn-primary btn-block" onclick="addResult('{{ student_result.student.id }}')">Add Result</button>
+                        </div>    
+                    </div>
+                </div>     
+            </div>                   
+        </form> <!-- Close the form -->
+        </div>
+    </div>
+</div>
+<!-- Script to set default date for each row -->
+<script>
+    // Get the current date in the format YYYY-MM-DD
+    var currentDate = new Date().toISOString().slice(0, 10);
+    
+    // Set the value of the date input field to the current date for each row
+    document.getElementById("date_of_exam{{ student_result.student.id }}").value = currentDate;
+</script>
+{% endfor %}
+
+<script>
+    // Function to handle the click event
+function addResult(studentId) {
+    // Find the form corresponding to the student ID
+    var form = $('#addResultForm' + studentId);
+
+    // Serialize the form data
+    var formData = form.serialize();
+
+    // Send an AJAX request to the server
+    $.ajax({
+        url: '{% url "staff_add_student_result" %}', // Replace with your server endpoint URL
+        type: 'POST',
+        data: formData,
+        success: function(data) {
+            if (data.success) {
+                // Display success message
+                $('#successMessageContainer' + studentId).html('<div class="alert alert-success" role="alert">' + data.message + '</div>');
+                location.reload(true)
+                // Optionally, refresh the page or perform other actions
+            } else {
+                // Display error message
+                $('#successMessageContainer' + studentId).html('<div class="alert alert-danger" role="alert">' + data.message + '</div>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error(xhr.responseText);
+            // Handle errors if necessary
+        }
+    });
+}
+</script>
+<script>
+    $(document).ready(function() {
+        // Add row button click event
+        $('.add-row').click(function() {
+            var form = $(this).closest('form');
+            var subjects = form.find('select[name="subjects[]"]');
+            var marksInputs = form.find('input[name="marks[]"]');
+            var selectedSubjects = subjects.map(function() {
+                return $(this).val();
+            }).get();
+            var marks = marksInputs.map(function() {
+                return parseInt($(this).val());
+            }).get();
+
+            // Validate marks
+            var isValidMarks = marks.every(function(mark) {
+                return mark >= 0 && mark <= 100;
+            });
+
+            if (isValidMarks) {
+                var uniqueSubjects = new Set(selectedSubjects);
+
+                if (uniqueSubjects.size === subjects.length) {
+                    var row = '<tr>' +
+                                  '<td>' +
+                                      '<select  class="form-control select2bs4" style="width: 100%;" name="subjects[]">' +
+                                          '{% for subject in subjects %}' +
+                                              '<option value="{{ subject.id }}">{{ subject.subject_name }}</option>' +
+                                          '{% endfor %}' +
+                                      '</select>' +
+                                  '</td>' +
+                                  '<td><input type="text" class="form-control" name="marks[]"></td>' +
+                                  '<td><button type="button" class="btn btn-danger delete-row">Delete</button></td>' +
+                              '</tr>';
+                    form.find('tbody').append(row);
+                } else {
+                    // Display error message
+                    alert('Each subject should be selected only once for each row.');
+                }
+            } else {
+                // Display error message
+                alert('Marks should be between 0 and 100.');
+            }
+        });
+
+        // Delete row button click event
+        $(document).on('click', '.delete-row', function() {
+            $(this).closest('tr').remove();
+        });
+    });
+</script>
+
+{% include 'staff_template/datatable.html' %}
+{% endblock main_content %}

@@ -1,0 +1,225 @@
+
+
+
+<div class="modal" id="services-modal" tabindex="-1" role="dialog" aria-labelledby="services-modal-label" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="services-modal-label">Request Services</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <div class="row">
+                  <div class="col-md-7">
+                    <h>Request Services</h>
+                    <div class="card">
+                      <div class="card-header">
+                        <div class="card-title">
+                     
+                        </div>
+                      </div>
+                      <div class="card-body">
+                       
+                        <div class="form-group">
+                            <!-- Service selection dropdown -->
+                            <select class="form-control select2bs4" style="width: 100%;"   id="service">
+                                <option selected disabled>Select a service</option>
+                                <option value="consultation">CONSULTATION</option>
+                                <option value="blood-test">BLOOD TEST</option>
+                                <option value="x-ray">X-RAY</option>
+                            </select>
+                        </div>
+                        <!-- Table to display selected services -->
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Service</th>
+                                    <th>Result</th>
+                                </tr>
+                            </thead>
+                            <tbody id="services">
+                                <tr>
+                                  <td>consultation</td>
+                                  <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                    <style>
+                      .service-summary-container {
+                        margin-top: 20px;
+                    }
+                    
+                    .summary-heading {
+                        color: #333; /* Adjust the color as needed */
+                        font-size: 24px;
+                        margin-bottom: 15px;
+                    }
+                    
+                    .summary-card {
+                        border: 1px solid #ccc; /* Border color */
+                        border-radius: 10px; /* Border radius for rounded corners */
+                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Box shadow for a subtle lift */
+                    }
+                    
+                    .summary-text {
+                        font-size: 18px;
+                        margin-bottom: 20px;
+                        color: #0056b3;
+                    }
+                    
+                    .btn-primary {
+                        background-color: #007bff; /* Primary button color */
+                        color: #fff; /* Button text color */
+                        border: none; /* Remove button border */
+                        padding: 10px 20px; /* Adjust padding as needed */
+                        font-size: 16px;
+                        cursor: pointer;
+                        transition: background-color 0.3s ease; /* Smooth transition on hover */
+                    }
+                    
+                    .btn-primary:hover {
+                        background-color: #0056b3; /* Darker color on hover */
+                    }
+                    
+                    </style>
+                    <div class="col-md-5">
+                      <div class="service-summary-container">
+                          <h4 class="summary-heading">Service Summary</h4>
+                          <div class="card summary-card">
+                              <div class="card-header">
+                                  <div class="card-title">
+                                      <!-- Additional title or content if needed -->
+                                  </div>
+                              </div>
+                              <div class="card-body">
+                                  <div class="summary">
+                                      <!-- Summary section with added style -->
+                                      <p id="service-summary" class="summary-text">Services: 0 Count: 0.00</p>
+                                      <button class="btn btn-primary" id="save">Save and Continue</button>
+                                  </div>
+                              </div>
+                          </div>
+                      </div>
+                  </div>
+                  
+              </div>
+          </div>
+       
+      </div>
+  </div>
+</div>
+
+<style>
+  /* Custom styles for the modal */
+  #staffModal .modal-dialog {
+      max-width: 800px; /* Set the maximum width as needed */
+      width: 90%; /* Adjust the width percentage as needed */
+  }
+
+  #staffModal .modal-content {
+      width: 100%;
+  }
+
+  #staffModal .modal-body {
+      padding: 20px;
+  }
+
+  #staffModal .modal-header {
+      background-color: #3498db; /* Change the background color as needed */
+      color: #fff;
+      border-bottom: 1px solid #ddd;
+  }
+
+  #staffModal .modal-title {
+      font-size: 1.5rem;
+  }
+
+  #staffModal .close {
+      color: #fff;
+      font-size: 1.5rem;
+  }
+
+  #staffModal .close:hover {
+      color: #f00; /* Change the close button color on hover as needed */
+  }
+
+  #staffModal .btn-primary {
+      background-color: #3498db; /* Change the button color as needed */
+      border-color: #3498db;
+  }
+
+  #staffModal .btn-primary:hover {
+      background-color: #217dbb; /* Change the button color on hover as needed */
+      border-color: #217dbb;
+  }
+</style>
+
+
+
+<style>
+  /* Custom styles for the modal */
+ .modal-dialog {
+      max-width: 800px; /* Set the maximum width as needed */
+      width: 90%; /* Adjust the width percentage as needed */
+  }
+
+ .modal-content {
+      width: 100%;
+  }
+
+ .modal-body {
+      padding: 20px;
+  }
+
+ .modal-header {
+      background-color: #3498db; /* Change the background color as needed */
+      color: #fff;
+      border-bottom: 1px solid #ddd;
+  }
+
+ .modal-title {
+      font-size: 1.5rem;
+  }
+
+ .close {
+      color: #fff;
+      font-size: 1.5rem;
+  }
+
+ .close:hover {
+      color: #f00; /* Change the close button color on hover as needed */
+  }
+
+ .btn-primary {
+      background-color: #3498db; /* Change the button color as needed */
+      border-color: #3498db;
+  }
+
+ .btn-primary:hover {
+      background-color: #217dbb; /* Change the button color on hover as needed */
+      border-color: #217dbb;
+  }
+</style>
+
+
+<script>
+  $('#exampleModal').on('show.bs.modal', event => {
+    var button = $(event.relatedTarget);
+    var modal = $(this);
+    // Use above variables to manipulate the DOM
+    
+  });
+</script>
+<script>
+    $('#exampleModal').on('show.bs.modal', event => {
+        var button = $(event.relatedTarget);
+        var modal = $(this);
+        // Use above variables to manipulate the DOM
+        
+    });
+</script>

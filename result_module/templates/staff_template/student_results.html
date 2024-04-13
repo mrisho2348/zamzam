@@ -1,0 +1,108 @@
+{% extends 'staff_template/base_template.html' %}
+<title>{% block title %}
+    Results
+    {% endblock title %}</title>
+{% load static %}
+
+{% block main_content %}
+<div class="container-fluid mt-5">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title text-center">Search Results</h5>
+        </div>
+        <div class="card-body">
+            <form id="search-form">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="selected_class">Select Class</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="selected_class" name="selected_class">
+                                <option value="Form One">Form One</option>
+                                <option value="Form Two">Form Two</option>
+                                <option value="Form Three">Form Three</option>
+                                <option value="Form Four">Form Four</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="exam_type_id">Select Exam Type:</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="exam_type_id" name="exam_type_id">
+                                {% for exam_type in exam_types %}
+                                    <option value="{{ exam_type.id }}">{{ exam_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label for="year">Select Date:</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="date_of_exam" name="date_of_exam">
+                                {% for date in distinct_dates %}
+                                    <option value="{{ date|date:'Y-m-d' }}">{{ date|date:'Y-m-d' }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn btn-primary btn-block">Search</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="container-fulid">
+   <div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title text-center"> Results</h5>
+            </div>
+            <div class="card-body">
+                <div id="result-table-container">
+                    <!-- Results will be displayed here -->
+                    <div class="table-responsive">
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+   </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    // Add event listener to the form submission
+    $('#search-form').submit(function(event) {
+      // Prevent default form submission
+      event.preventDefault();
+      
+      // Serialize form data
+      var formData = $(this).serialize();
+      
+      // Send AJAX request to the server
+      $.ajax({
+        type: 'POST',
+        url: '{% url 'staff_student_results' %}',
+        data: formData,
+        success: function(response) {
+          // Update the table content with the fetched data
+          console.log(response)
+          $('#result-table-container').html(response.html_result);
+        },
+        error: function(xhr, status, error) {
+          // Handle errors
+          console.error(xhr.responseText);
+        }
+      });
+    });
+  });
+  </script>   
+
+{% endblock main_content %}

@@ -1,0 +1,157 @@
+{% extends 'staff_template/base_template.html' %}
+{% block title %}
+Take Attendance
+{% endblock title %}
+{% block main_content %}
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Take Attendance</h3>
+                        </div>         
+                        <div class="card-body">                 
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label>Select class </label>
+                                        <select class="form-control select2bs4" style="width: 100%;" id="current_class" name="current_class">
+                                            {% for option in class_options %}
+                                                {% if option == current_class %}
+                                                    <option value="{{ option }}" selected>{{ option }}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="year">Year</label>
+                                        <input type="text" id="year" name="year" class="form-control" readonly>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                        <div class="card-footer">
+                            <button type="button" class="btn btn-primary btn-block" id="fetch_student">Fetch Student</button>
+                        </div>
+                        <div id="student_data" class="card-footer">
+
+                        </div>
+                    </div>         <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- /.content -->
+{% endblock main_content %}
+
+{% block customer_js %}
+
+<script>
+  $(document).ready(function(){
+    // Function to fetch students based on subject, year, and class
+    $("#fetch_student").click(function(){
+        var subject = $("#subject").val();
+        var year = $("#year").val();
+        var current_class = $("#current_class").val();
+        var subjectName = $("#subject option:selected").text();
+        
+        // AJAX call to retrieve students
+        $.ajax({
+            url: '{% url 'staff_fetch_students' %}',
+            type: 'POST',
+            data: {               
+                year: year,
+                current_class: current_class
+            },
+        })
+        .done(function(response) {          
+            var currentDate = new Date().toISOString().split('T')[0];
+            // Generate card header with class and subject
+            var cardHeader = "<div class='card-header'>" + current_class + " Student Attendance for Subject: " + subjectName + "</div>";
+        
+            // Generate card body with table for students
+            var div_data = "<div class='card card-success'>" + cardHeader;
+            div_data += "<div class='card-body'><div class='form-group'><label>Attendance Date : </label><input type='date' name='attendance_date' id='attendance_date' class='form-control'  value='" + currentDate + "'></div>";
+            div_data += "<table  class='table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm  display' id='example'  style='width:100%'><thead><tr><th>Student Name</th><th>Attendance</th></tr></thead><tbody>";
+        
+            // Iterate over response to create rows in the table
+            for (var key in response) {
+                div_data += "<tr><td>" + response[key]['name'] + "</td><td><div class='form-check'><input type='checkbox' checked='checked' name='student_data[]' value='" + response[key]['id'] + "' class='form-check-input'><label class='form-check-label'>Present</label></div></td></tr>";
+            }
+        
+            // Close table body and card body
+            div_data += "</tbody></table></div>";
+        
+            // Add save button
+            div_data += "<div class='form-group'><button id='save_attendance' class='btn btn-success btn-block' type='button'>Save Attendance Data</button></div></div>";
+        
+            // Display the generated content
+            $("#student_data").html(div_data);
+            $('#example').DataTable();
+        })
+        .fail(function(){
+            alert("Error in Fetching Student");
+        });
+    });
+
+    // Function to save attendance data
+    $(document).on("click", "#save_attendance", function(){
+        $(this).attr("disabled", "disabled").text("Saving Attendance Data...");
+
+        // Collect student data and attendance date
+        var student_data = $("input[name='student_data[]']").map(function(){
+            return {
+                "id": $(this).val(),
+                "status": $(this).is(":checked") ? 1 : 0
+            };
+        }).get();
+        
+        var attendance_date = $("#attendance_date").val();
+        var current_class = $("#current_class").val();   
+
+        // Convert student data to JSON
+        student_data = JSON.stringify(student_data);
+
+        // AJAX call to save attendance data
+        $.ajax({
+            url: '{% url 'staff_save_class_attendance_data' %}',
+            type: 'POST',
+            data: {
+                student_ids: student_data,
+                attendance_date: attendance_date,
+                current_class: current_class,               
+            },
+        })
+        .done(function(response){
+            if(response == "OK") {
+                alert("Attendance Saved");
+            } else {
+                alert("Error in Saving Data");
+            }
+            location.reload();
+        })
+        .fail(function(){
+            alert("Error in Saving Student");
+        });
+    });
+});
+</script>
+{% include 'hod_template/datatable.html' %}   
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get the current year
+    var currentYear = new Date().getFullYear();
+    
+    // Set the value of the input field to the current year
+    document.getElementById("year").value = currentYear;
+  });
+</script>
+{% endblock customer_js %}
+
+

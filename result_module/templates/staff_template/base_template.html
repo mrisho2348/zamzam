@@ -4,9 +4,9 @@
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <link rel="icon" type="image/png" href="{% static 'dist/img/logoNembo.jpg' %}">
+  <link rel="icon" type="image/png" href="{% static 'img/zamzamLogo.jpg' %}">
   <title>{% block title %}
-   Management System |  Staff Panel
+    zamzam | Dashboard
     {% endblock title %}</title>
   <!-- Tell the browser to be responsive to screen width -->
 
@@ -61,6 +61,7 @@
 
 <!-- Google Font: Source Sans Pro -->
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
   {% block customer_css %}
 
   {% endblock customer_css %}
@@ -88,7 +89,7 @@
         <a class="nav-link" data-widget="pushmenu" href="#"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
-        <h4 style="margin-left: 10px;margin-top: 5px;">Student Management Sytem | Staff Panel</h4>
+        <h3>ZAMZAM SCHOOL</h3>
       </li>
     
     </ul>
@@ -128,9 +129,13 @@
         </div>
         <div class="col-sm-4">
           <ol class="breadcrumb float-sm-right">
-            <li class="breadcrumb-item">{% block breadcrumb %}
-              
-              {% endblock breadcrumb %}</li>
+            <li class="breadcrumb-item">
+              {% block breadcrumb %}
+            
+              {% endblock breadcrumb %}
+            </li>
+
+           
           </ol>
         </div>
       </div><!-- /.row -->
@@ -155,7 +160,8 @@
 
 <!-- jQuery -->
 <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.debug.js" ></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.3.4/jspdf.min.js" ></script>
 <!-- jQuery UI -->
 <script src="{% static 'plugins/jquery-ui/jquery-ui.min.js' %}"></script>
 <script>

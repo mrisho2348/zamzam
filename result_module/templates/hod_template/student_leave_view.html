@@ -1,0 +1,101 @@
+ 
+{% extends 'hod_template/base_template.html' %}
+{% block title %}
+      Student apply for leave  
+{% endblock title %}
+{% block breadcrumb %}
+{% include "hod_template/modal_form.html" %}
+       
+{% endblock breadcrumb %}
+{% block main_content %}
+{% load static %}
+
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <!-- left column -->
+                  <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Student feedback</h3>
+                      </div>                  
+                          <table class="table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm" id="example">
+                           <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>STUDENT ID</th>
+                              <th>STUDENT NAME</th>
+                              <th>LEAVE DATE</th>
+                              <th>LEAVE MESSAGE</th>  
+                              <th>APPLY ON</th>                            
+                              <th>ACTION</th>                                                        
+                            </tr>
+                           </thead>
+                           <tbody>
+                        
+                            {% for leave in  leaves %}
+                                <tr>
+                                  <td>{{leave.id}}</td>
+                                  <td>{{leave.student_id.id}}</td>
+                                  <td>{{leave.student_id.admin.first_name}}  {{leave.student_id.surname}}  {{leave.student_id.admin.last_name}}</td>
+                                  <td>{{leave.leave_date}}</td>
+                                  <td>{{leave.leave_message}}</td>
+                                  <td>{{leave.created_at}}</td>
+                                  <td>
+                                    {% if leave.leave_status == 0 %}
+                                    <a href="{% url 'student_approve_leave' leave_id=leave.id %}" class="btn btn-success ">APPROVE</a>
+                                    <a  href="{% url 'student_disapprove_leave' leave_id=leave.id %}"  class="btn btn-danger ">DISAPPROVE</a>
+                                    {% elif leave.leave_status == 1 %}  
+                                     <a  href="{% url 'student_approve_leave' leave_id=leave.id %}"   class="btn btn-warning  ">APPROVED</a>   
+                                     {% else %}
+                                     <a  href="{% url 'student_approve_leave' leave_id=leave.id %}"  class="btn btn-danger">DISAPPROVED</a>   
+                                      {{feedback.feedback_reply}}
+                                    {% endif %}
+                                  </td>
+                                  
+
+                                </tr>
+                            {% endfor %}
+                           </tbody>
+                          </table>
+              
+                    </div>
+
+        
+                  </div>
+
+                  </div>
+                  <!--/.col (right) -->
+                </div>
+             
+              
+            </section>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="reply_modal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">           
+            <h4 class="modal-title">Reply</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+          <div class="modal-body">
+            <p>Reply to  <span id="reply_name" style="green"></span></p>
+            <input type="hidden" id="reply_id" name="reply_id">
+            <textarea id="reply_message"  rows="5" class="form-control"></textarea>
+            <button id="reply_btn" class="btn btn-info btn-block">Reply</button>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% include 'hod_template/datatable.html' %}
+
+  {% endblock main_content %}
+
+  

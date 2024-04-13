@@ -1,0 +1,76 @@
+ 
+{% extends 'hod_template/base_template.html' %}
+{% block title %}
+      Staff Leavel    
+{% endblock title %}
+{% block breadcrumb %}
+{% include "hod_template/modal_form.html" %}
+       
+{% endblock breadcrumb %}
+{% block main_content %}
+{% load static %}
+
+            <section class="content">
+              <div class="container-fluid">
+                <div class="row">
+                  <!-- left column -->
+                  <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                      <div class="card-header">
+                        <h3 class="card-title">Staff Leave</h3>
+                      </div>
+          
+                          <table class="table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm" id="example">
+                              <thead>
+                                <tr>
+                                  <th>ID</th>
+                                  <th>STAFF ID</th>
+                                  <th>STAFF NAME</th>                          
+                                  <th> MESSAGE</th>
+                                  <th> SENDED ON</th>
+                                  <th>REPLY</th>
+                                                            
+                                </tr>
+                              </thead>
+                                <tbody>
+                                  {% for leave in  leaves %}
+                                  <tr>
+                                    <td>{{leave.id}}</td>
+                                    <td>{{leave.staff_id.admin_id}}</td>
+                                    <td>{{leave.staff_id.admin.first_name}} {{leave.staff_id.admin.last_name}}</td>
+                                    <td>{{leave.feedback}}</td>
+                                    <td>{{leave.created_at}}</td>                                  
+                                    <td>
+                                      {% if leave.leave_status == 0 %}
+                                      <a class="btn btn-success "  href="{% url 'staff_approve_leave' leave_id=leave.id %}" >APPROVE</a>
+                                      <a class="btn btn-danger "  href="{% url 'staff_approve_leave' leave_id=leave.id %}" >DISAPPROVE</a>
+                                      {% elif leave.leave_status == 1 %}
+                                      <a class="btn btn-warning "  href="{% url 'staff_approve_leave' leave_id=leave.id %}" >APPROVED</a>
+                                      {% else %}                                   
+                                      <a class="btn btn-danger"  href="{% url 'staff_approve_leave' leave_id=leave.id %}" >DISAPPROVED</a>
+                                      {% endif %}
+                                    </td>
+                                    
+  
+                                  </tr>
+                              {% endfor %}
+                                </tbody>
+                          </table>
+               
+                    </div>
+
+        
+                  </div>
+
+                  </div>
+                  <!--/.col (right) -->
+                </div>
+             
+              
+            </section>
+
+
+   
+            {% include 'hod_template/datatable.html' %}
+  {% endblock main_content %}

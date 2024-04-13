@@ -1,0 +1,717 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="{% static 'img/zamzamLogo.jpg' %}">
+    <title>Zam Zam islamic</title>
+    <!-- bootstrap link  -->
+    <link rel="stylesheet" href="{% static 'assets/css/bootstrap.min.css' %}" />
+    <!-- carousel link  -->
+    <link rel="stylesheet" href="{% static 'assets/css/owl.carousel.min.css' %}" />
+    <!-- font awesome link/ icon   -->
+    <link rel="stylesheet" href="{% static 'assets/fontawesome/css/all.min.css' %}" />
+    <link rel="stylesheet" href="{% static 'assets/css/style.css' %}" />
+  </head>
+
+  <body>
+    <header class="bg-light">
+      <div class="container">
+        <div class="row align-items-center">
+          <div class="col-md-8">
+            <div class="brand d-flex align-items-center">
+              <img src="{% static 'img/zamzamLogo.jpg' %}" alt="Zam Zam Islamic School Logo" width="100" height="100" class="mr-3" />
+              <div class="brand-name">
+                <h1 class="mb-1">Zam Zam Islamic School</h1>
+                <h3>Your Partner in Educational Excellence</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="searchbox">
+              <form action="" method="get" class="mt-3 mt-md-0">
+                <div class="input-group">
+                  <input
+                    type="text"
+                    class="form-control"
+                    placeholder="Search..."
+                    aria-describedby="my-addon"
+                    aria-label="Recipient"
+                    name="search"
+                  />
+                  <div class="input-group-append">
+                    <button class="btn btn-utama" id="tombol-cari">
+                      Search
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    
+    
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-biru">
+      <div class="container">
+        <button
+          class="navbar-toggler"
+          data-target="#my-nav"
+          data-toggle="collapse"
+          aria-controls="my-nav"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div id="my-nav" class="collapse navbar-collapse">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home<span class="sr-only">(current)</span></a>
+            </li>         
+            <li class="nav-item">
+              <a class="nav-link" href="#">About Us</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Teachers Registration</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Parents Portal</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Alumni</a>
+            </li>                     
+            <li class="nav-item">
+              <a class="nav-link" href="#">Contact Us</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    
+
+    <section id="hero-area">
+      <div id="slider-hero-nav"></div>
+      <div class="owl-carousel" id="slider-hero">
+        <div class="slide-item">
+          <div class="slide-item-img">
+            <img src="{% static 'assets/img/banner-siswa.jpg' %}" alt="" />
+          </div>
+          <div class="slider-item-content">
+            <a href="#"><h2>Welcome to Zam Zam Islamic School</h2></a>
+            <p>
+              At Zam Zam Islamic School, we are dedicated to providing an exemplary educational experience grounded in Islamic values and ethics. Our mission is to nurture the holistic development of our students, fostering academic excellence, moral integrity, and spiritual growth.
+            </p>
+            <a href="#" class="btn btn-utama">Learn More</a>
+          </div>
+        </div>
+
+        <div class="slide-item">
+          <div class="slide-item-img">
+            <img src="{% static 'assets/img/banner-siswa.jpg' %}" alt="" />
+          </div>
+          <div class="slider-item-content">
+            <a href="#"><h2>Empowering Students with Islamic Knowledge</h2></a>
+            <p>
+              Discover our comprehensive curriculum designed to empower students with a strong foundation in Islamic teachings and principles. Through a blend of academic rigor and spiritual guidance, we prepare our students to become compassionate leaders and contributors to society.
+            </p>
+            <a href="#" class="btn btn-utama">Explore Programs</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="sambutan">
+      <div class="container">
+        <h2>Experience Zam Zam Islamic School</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="video-wrapper">
+              <iframe
+                width="560"
+                height="315"
+                src="https://www.youtube.com/embed/your_video_id_here"
+                title="Zam Zam Islamic School Introduction Video"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen
+              ></iframe>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <h3>Welcome to Zam Zam Islamic School</h3>
+            <p>
+              Assalamu alaykum! Welcome to Zam Zam Islamic School, where we strive to provide an enriching educational experience rooted in Islamic values and teachings. Our dedicated faculty and staff are committed to nurturing the intellectual, spiritual, and moral development of our students.
+            </p>
+            <p>
+              At Zam Zam Islamic School, we believe in fostering a love for learning, cultivating critical thinking skills, and instilling a sense of responsibility and compassion in our students. Through our holistic approach to education, we aim to empower our students to become confident, ethical, and socially responsible individuals.
+            </p>
+            <a href="#" class="btn btn-utama">Learn More</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="prestasi">
+      <div class="container">
+        <div class="section-title">
+          <h2>Achievements at Zam Zam Islamic School</h2>
+        </div>
+        <div class="section-item">
+          <div class="row">
+            <div class="col-md-6">
+              <a href=""
+                ><img
+                  class="section-item-thumbnail"
+                  src="{% static 'assets/img/juara-olimpiade.jpeg' %}"
+                  alt=""
+              /></a>
+            </div>
+            <div class="col-md-6 col-item-kanan">
+              <div class="section-item-title">
+                <h3>First Place in Quran Memorization Competition</h3>
+
+                <div class="section-item-meta">
+                  <span><i class="far fa-calendar-alt"></i> March 10, 2024</span>
+                  <span><i class="fas fa-map-marked-alt"></i> Zam Zam Islamic School</span>
+                </div>
+              </div>
+              <div class="section-item-body">
+                <p>
+                  Zam Zam Islamic School celebrates the outstanding achievement of our students in winning the first place in the Quran memorization competition. This achievement reflects our commitment to nurturing a deep understanding and appreciation of the Quran among our students.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-item">
+          <div class="row">
+            <div class="col-md-6">
+              <img
+                class="section-item-thumbnail"
+                src="{% static 'assets/img/juara-olimpiade.jpeg' %}"
+                alt=""
+              />
+            </div>
+            <div class="col-md-6 col-item-kanan">
+              <div class="section-item-title">
+                <h3>Community Service Award</h3>
+
+                <div class="section-item-meta">
+                  <span><i class="far fa-calendar-alt"></i> May 20, 2024</span>
+                  <span><i class="fas fa-map-marked-alt"></i> Zam Zam Islamic School</span>
+                </div>
+              </div>
+              <div class="section-item-body">
+                <p>
+                  Zam Zam Islamic School receives recognition for its commitment to community service and social responsibility. Through various initiatives, our students actively contribute to making a positive difference in the community, embodying the values of compassion and service taught at our school.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-item">
+          <div class="row">
+            <div class="col-md-6">
+              <img class="section-item-thumbnail" src="{% static 'assets/img/juara-olimpiade.jpeg' %}" alt="Achievement 4" />
+            </div>
+            <div class="col-md-6 col-item-kanan">
+              <div class="section-item-title">
+                <h3>First Place in Quran Memorization Competition</h3>
+                <div class="section-item-meta">
+                  <span><i class="far fa-calendar-alt"></i> May 10, 2024</span>
+                  <span><i class="fas fa-map-marked-alt"></i> Zam Zam Islamic School</span>
+                </div>
+              </div>
+              <div class="section-item-body">
+                <p>
+                  Zam Zam Islamic School celebrates the remarkable achievement of our students in winning the first place in the Quran Memorization Competition. This accomplishment demonstrates their dedication to learning and preserving the teachings of the Quran, reflecting our commitment to Islamic education.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="section-item">
+          <div class="row">
+            <div class="col-md-6">
+              <img class="section-item-thumbnail" src="{% static 'assets/img/juara-olimpiade.jpeg' %}" alt="Achievement 5" />
+            </div>
+            <div class="col-md-6 col-item-kanan">
+              <div class="section-item-title">
+                <h3>Recipient of Community Leadership Award</h3>
+                <div class="section-item-meta">
+                  <span><i class="far fa-calendar-alt"></i> June 5, 2024</span>
+                  <span><i class="fas fa-map-marked-alt"></i> Zam Zam Islamic School</span>
+                </div>
+              </div>
+              <div class="section-item-body">
+                <p>
+                  Zam Zam Islamic School proudly acknowledges the outstanding leadership skills of our students, who have been honored with the Community Leadership Award for their exemplary service to the community. This recognition reflects our commitment to nurturing responsible and compassionate leaders grounded in Islamic values.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tombol-selengkapnya">
+          <a href="" class="btn btn-more"> Explore More Achievements </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="ekstrakulikuler">
+      <div class="container">
+        <div class="section-title">
+          <h2>Zam Zam Islamic School's Enriching Extracurricular Activities</h2>
+        </div>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="section-body-item">
+                <div class="row row-2">
+                  <div class="col-md-3">
+                    <i class="far fa-user"></i>
+                  </div>
+                  <div class="col-md-9">
+                    <h4>Hifz Program (Memorization of the Quran)</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-md-4">
+              <div class="section-body-item">
+                <div class="row row-2">
+                  <div class="col-md-3">
+                    <i class="far fa-user"></i>
+                  </div>
+                  <div class="col-md-9">
+                    <h4>Islamic Debating Society</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-md-4">
+              <div class="section-body-item">
+                <div class="row row-2">
+                  <div class="col-md-3">
+                    <i class="far fa-user"></i>
+                  </div>
+                  <div class="col-md-9">
+                    <h4>Arabic Calligraphy Club</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="section-body-item">
+                <div class="row row-2">
+                  <div class="col-md-3">
+                    <i class="far fa-user"></i>
+                  </div>
+                  <div class="col-md-9">
+                    <h4>Community Service Initiatives</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-md-4">
+              <div class="section-body-item">
+                <div class="row row-2">
+                  <div class="col-md-3">
+                    <i class="far fa-user"></i>
+                  </div>
+                  <div class="col-md-9">
+                    <h4>Islamic Arts and Crafts</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+            <div class="col-md-4">
+              <div class="section-body-item">
+                <div class="row row-2">
+                  <div class="col-md-3">
+                    <i class="far fa-user"></i>
+                  </div>
+                  <div class="col-md-9">
+                    <h4>Islamic Quiz Club</h4>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="tenaga-pendidik">
+      <div class="container">
+        <div class="section-title">
+          <h2>Zam Zam Islamic School's Esteemed Educators</h2>
+        </div>
+        <div class="section-body">
+          <div id="slider-tools-1"></div>
+          <div class="owl-carousel" id="tenaga-pendidit-slider">
+            <div class="section-item-slider">
+              <img class="foto-guru" src="{% static 'assets/img/foto-guru-1.jpg' %}" alt="" />
+              <div class="section-item-caption">
+                <h5>Ustadh Ahmad Ibrahim</h5>
+                <h6>Islamic Studies Teacher</h6>
+              </div>
+            </div>
+            <div class="section-item-slider">
+              <img class="foto-guru" src="{% static 'assets/img/foto-guru-2.jpg' %}" alt="" />
+              <div class="section-item-caption">
+                <h5>Ustadha Fatima Hassan</h5>
+                <h6>Arabic Language Instructor</h6>
+              </div>
+            </div>
+            <div class="section-item-slider">
+              <img class="foto-guru" src="{% static 'assets/img/foto-guru-3.jpg' %}" alt="" />
+              <div class="section-item-caption">
+                <h5>Sheikh Mohammed Ali</h5>
+                <h6>Quran Memorization Teacher</h6>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tombol-selengkapnya">
+        <a href="#" class="btn btn-more">View More Educators</a>
+      </div>
+    </section>
+    
+
+    <section id="alumni">
+      <div class="container">
+        <div class="section-title">
+          <h2>Zam Zam's Distinguished Alumni</h2>
+        </div>
+        <div class="section-body">
+          <div id="slider-tools-2"></div>
+          <div class="owl-carousel" id="alumni-slider">
+            <div class="section-item-slider">
+              <div class="row">
+                <div class="col-md-5">
+                  <img
+                    class="foto-alumni"
+                    src="{% static 'assets/img/bu-susi-p.jpg' %}"
+                    alt=""
+                  />
+                </div>
+                <div class="col-md-7">
+                  <div class="section-item-content">
+                    <a href="#"><h3>Dr. Ahmad Ali</h3></a>
+                    <p>
+                      A respected scholar and community leader, Dr. Ahmad Ali is a distinguished Zam Zam alumnus, contributing to the betterment of society through his knowledge and wisdom.
+                      is a distinguished Zam Zam alumnus, contributing to the betterment of society through his knowledge and wisdom.
+                    </p>
+                    <a href="#" class="more">Read more <i class="fas fa-long-arrow-alt-right"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+    
+            <div class="section-item-slider">
+              <div class="row">
+                <div class="col-md-5">
+                  <img
+                    class="foto-alumni"
+                    src="{% static 'assets/img/prof-dwikorita.jpg' %}"
+                    alt=""
+                  />
+                </div>
+                <div class="col-md-7">
+                  <div class="section-item-content">
+                    <a href="#"><h3>Dr. Fatima Hassan</h3></a>
+                    <p>
+                      Renowned in the field of education, Dr. Fatima Hassan, a Zam Zam alumna, is making significant contributions to the advancement of Islamic education and moral values.
+                      is making significant contributions to the advancement of Islamic education and moral values.
+                    </p>
+                    <a href="#" class="more">Read more <i class="fas fa-long-arrow-alt-right"></i></a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+    <section id="tenaga-pendidik">
+      <div class="container">
+        <div class="section-title">
+          <h2>Zam Zam's Inspiring Events</h2>
+        </div>
+        <div class="section-body">
+          <div id="slider-tools-3"></div>
+          <div class="owl-carousel" id="galeri-slider">
+            <div class="section-item-slider">
+              <img class="foto-guru" src="{% static 'assets/img/galeri-1.jpg' %}" alt="" />
+              <div class="section-item-caption">
+                <a href="#"><h5>Islamic Awareness Campaign</h5></a>
+                <a href="#"><h6>Spreading the Message of Peace and Unity</h6></a>
+              </div>
+            </div>
+            <div class="section-item-slider">
+              <img class="foto-guru" src="{% static 'assets/img/foto-guru-2.jpg' %}" alt="" />
+              <div class="section-item-caption">
+                <a href="#"><h5>Community Charity Drive</h5></a>
+                <a href="#"><h6>Empowering the Needy with Compassion</h6></a>
+              </div>
+            </div>
+            <div class="section-item-slider">
+              <img class="foto-guru" src="{% static 'assets/img/foto-guru-3.jpg' %}" alt="" />
+              <div class="section-item-caption">
+                <a href="#"><h5>Islamic Education Symposium</h5></a>
+                <a href="#"><h6>Nurturing Minds with Islamic Values</h6></a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    
+
+    <section>
+      <div class="tombol-selengkapnya">
+        <a href="#" class="btn btn-more">View More Gallery</a>
+
+      </div>
+    </section>
+
+    <section id="berita">
+      <div class="container">
+        <div class="section-title">
+          <h2>Latest Updates</h2>
+        </div>
+        <div class="section-body">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="section-thumbnail">
+                <a href=""><img src="{% static 'assets/img/galeri-2.jpeg' %}" alt="" /></a>
+                <div class="tangal">
+                  <span class="tgl">14</span>
+                  <span class="tgl-2">Rajab 1445</span>
+                </div>
+              </div>
+              <div class="section-content ">
+                <a href="#">
+                  <h3>Empowering Communities: Zam Zam's Social Initiatives</h3>
+                </a>
+                <p>
+                  Explore how Zam Zam Islamic School contributes to social causes, making a positive impact on communities. <a href="#" class="more">Read More</a>
+                </p>
+              </div>
+              <div class="section-meta">
+                <a href="#">Category: Community</a>
+                <a href="#"><i class="fas fa-user"></i> Zam Zam Team</a>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="section-thumbnail">
+                <a href=""><img src="{% static 'assets/img/galeri-2.jpeg' %}" alt="" /></a>
+                <div class="tangal">
+                  <span class="tgl">14</span>
+                  <span class="tgl-2">Rajab 1445</span>
+                </div>
+              </div>
+              <div class="section-content">
+                <a href="#">
+                  <h3>Unveiling Zam Zam's Islamic Education Curriculum</h3>
+                </a>
+                <p>
+                  Learn about Zam Zam's latest advancements in Islamic education and how they are shaping the future of students. <a href="#" class="more">Read More</a>
+                </p>
+              </div>
+              <div class="section-meta">
+                <a href="#">Category: Education</a>
+                <a href="#"><i class="fas fa-user"></i> Educational Insights</a>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="section-thumbnail">
+                <a href=""><img src="{% static 'assets/img/galeri-2.jpeg' %}" alt="" /></a>
+                <div class="tangal">
+                  <span class="tgl">14</span>
+                  <span class="tgl-2">Rajab 1445</span>
+                </div>
+              </div>
+              <div class="section-content">
+                <a href="#">
+                  <h3>Empowering Students: Zam Zam's Leadership Development Program</h3>
+                </a>
+                <p>
+                  Discover how Zam Zam is nurturing leadership skills among students through its innovative leadership development program. <a href="#" class="more">Read More</a>
+                </p>
+              </div>
+              <div class="section-meta">
+                <a href="#">Category: Leadership</a>
+                <a href="#"><i class="fas fa-user"></i> Student Affairs</a>
+              </div>
+            </div>
+          </div>
+    
+          <div class="row">
+            <div class="col-md-4">
+              <div class="section-thumbnail">
+                <a href=""><img src="{% static 'assets/img/galeri-2.jpeg' %}" alt="" /></a>
+                <div class="tangal">
+                  <span class="tgl">14</span>
+                  <span class="tgl-2">Rajab 1445</span>
+                </div>
+              </div>
+              <div class="section-content">
+                <a href="#">
+                  <h3>Islamic Ethics in Practice: Zam Zam's School Values</h3>
+                </a>
+                <p>
+                  Learn about Zam Zam's emphasis on Islamic ethics and how they are integrated into everyday school life. <a href="#" class="more">Read More</a>
+                </p>
+              </div>
+              <div class="section-meta">
+                <a href="#">Category: Islamic Studies</a>
+                <a href="#"><i class="fas fa-user"></i> Islamic Affairs</a>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="section-thumbnail">
+                <a href=""><img src="{% static 'assets/img/galeri-2.jpeg' %}" alt="" /></a>
+                <div class="tangal">
+                  <span class="tgl">14</span>
+                  <span class="tgl-2">Rajab 1445</span>
+                </div>
+              </div>
+              <div class="section-content">
+                <a href="#">
+                  <h3>Inspiring Minds: Zam Zam's Student Achievements</h3>
+                </a>
+                <p>
+                  Explore the achievements and successes of Zam Zam students in various academic and extracurricular activities. <a href="#" class="more">Read More</a>
+                </p>
+              </div>
+              <div class="section-meta">
+                <a href="#">Category: Student Achievements</a>
+                <a href="#"><i class="fas fa-user"></i> Student Success</a>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="section-thumbnail">
+                <a href=""><img src="{% static 'assets/img/galeri-2.jpeg' %}" alt="" /></a>
+                <div class="tangal">
+                  <span class="tgl">14</span>
+                  <span class="tgl-2">Rajab 1445</span>
+                </div>
+              </div>
+              <div class="section-content mb-2">
+                <a href="#">
+                  <h3>Islamic Knowledge Series: Zam Zam's Quran Recitation Competition</h3>
+                </a>
+                <p>
+                  Discover the spiritual journey of Zam Zam students in the annual Quran recitation competition, embodying the essence of Islamic knowledge. <a href="#" class="more">Read More</a>
+                </p>
+              </div>
+              <div class="section-meta">
+                <a href="#">Category: Quran Recitation</a>
+                <a href="#"><i class="fas fa-user"></i> Islamic Affairs</a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="tombol-selengkapnya">
+          <a href="#" class="btn btn-more">Explore More Updates</a>
+        </div>
+      </div>
+    </section>
+    
+
+    <footer>
+      <div class="container">
+        <div class="row">
+          <div class="col-md-5">
+            <div class="footer-col">
+              <div class="brand">
+                <img src="{% static 'img/zamzamLogo.jpg' %}" alt="Zam Zam Logo" />
+                <h1>Zam Zam Islamic School</h1>
+              </div>
+              <p class="tentang">
+                Explore Islamic education and values at Zam Zam Islamic School. Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni pariatur quas temporibus quaerat nam, atque architecto odio quae ipsam, placeat adipisci necessitatibus vel tenetur distinctio optio rerum!
+              </p>
+              <ul class="sosmed">
+                <li>
+                  <a href="#"><i class="fab fa-facebook"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fab fa-instagram"></i></a>
+                </li>
+                <li>
+                  <a href="#"><i class="fab fa-youtube"></i></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="footer-col">
+              <h1>Contact</h1>
+              <p class="alamat">
+                Explore Islamic education and values at Zam Zam Islamic School. Lorem ipsum dolor sit amet consectetur adipisicing elit. Magni pariatur quas temporibus quaerat nam, atque architecto odio quae ipsam, placeat adipisci necessitatibus vel tenetur distinctio optio rerum!
+              </p>
+              <ul class="kontak">
+                <li>
+                  <a href="#"><i class="fas fa-phone"></i>Call Us: +255657315955</a>
+                </li>
+                <li>
+                  <a href="#"><i class="fas fa-envelope"></i>Email: info@zamzamislamicschool.com</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="footer-col">
+              <h1>Quick Links</h1>
+              <ul class="footer-nav">
+                <li><a href="#">About Us</a></li>
+                <li class="nav-item">
+                  <a  href="#"> Staff Signup</a>
+                </li>
+                <li class="nav-item">
+                  <a  href="#"> Staff Sign</a>
+                </li>
+                <li class="nav-item">
+                  <a  href="#">Student Parent login</a>
+                </li>
+                <li><a href="#">Contact</a></li>
+                <li>
+                  <a href="#">Careers <span>Join Our Team</span></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <div class="container text-center">
+          <h6>&copy; Hak cipta Dilindungi. @ 2022 <a href=""> Zam Zam Islamic School </a></h6>
+        </div>
+      </div>
+    </footer>
+    
+    
+
+    <script src="{% static 'assets/js/jquery-3.3.1.slim.min.js' %}"></script>
+    <script src="{% static 'assets/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'assets/js/owl.carousel.min.js' %}"></script>
+    <script src="{% static 'assets/js/main.js' %}"></script>
+  </body>
+</html>

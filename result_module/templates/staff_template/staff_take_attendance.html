@@ -26,20 +26,18 @@ Take Attendance
                   </div>
                   <div class="form-group">
                     <label>Select class </label>
-                    <select  class="form-control select2bs4" style="width: 100%;"   name="current_class" id="current_class">
-                      {% for class_level in class_levels %}
-                          <option value="{{ class_level.name }}">{{ class_level.name }}</option>
-                      {% endfor %}
-                  </select>
-                  </div>
-                  <div class="form-group">
-                    <label>Session Year</label>
-                    <select  class="form-control select2bs4" style="width: 100%;"   name="session_year" id="session_year">
-                        {% for session_year in session_years %}
-                          <option value="{{ session_year.id }}">{{ session_year.session_start_year }} TO {{ session_year.session_end_year }}</option>
-                        {% endfor %}
+                    <select class="form-control select2bs4" style="width: 100%;" id="current_class" name="current_class">
+                      {% for option in class_options %}
+                        {% if option == current_class %}
+                            <option value="{{ option }}" selected>{{ option }}</option>
+                        {% endif %}
+                    {% endfor %}
                     </select>
                   </div>
+                  <div class="form-group">
+                    <label for="year">Year</label>
+                    <input type="text" id="year" name="year" class="form-control" readonly>
+                </div>
                    <div class="form-group">
                       {% if messages %}
                         {% for message in messages %}
@@ -68,93 +66,94 @@ Take Attendance
     <!-- /.content -->
 {% endblock main_content %}
 {% block customer_js %}
+
 <script>
   $(document).ready(function(){
+    // Function to fetch students based on subject, year, and class
     $("#fetch_student").click(function(){
-      var subject = $("#subject").val();
-      var session_year = $("#session_year").val();
-      var current_class = $("#current_class").val(); // Get the selected class
-      var subjectee = $("#subject option:selected").text();
-      $.ajax({
-          url: '{% url 'get_students' %}',
-          type: 'POST',
-          data: {
-              subject: subject,
-              session_year: session_year,
-              current_class: current_class // Pass the selected class as well
-          },
-      })
-      .done(function(response){
-          console.log(response);
-  
-          // Generate a formatted header with the class and subject
-          var cardHeader = "<div class='card-header'>";
-          cardHeader += current_class + " Student Attendance for Subject: " + subjectee;
-          cardHeader += "</div>";
-  
-          var div_data = "<div class='card card-success'>";
-          div_data += cardHeader;
-          div_data += "<div class='card-body'>";
-          div_data += "<div class='form-group'><label>Attendance Date : </label><input type='date' name='attendance_date' id='attendance_date' class='form-control'></div><div class='form-group'><div class='row'>";
-  
-          for (var key in response) {
-              div_data += "<div class='col-lg-3'><div class='form-check'><input type='checkbox' checked='checked' name='student_data[]' value='" + response[key]['id'] + "'><label class='form-check-label'>" + response[key]['name'] + "</label></div></div>";
-          }
-  
-          div_data += "</div></div>";
-          div_data += "<div class='form-group'>";
-          div_data += "<button id='save_attendance' class='btn btn-success btn-block' type='button'>Save Attendance Data</button>";
-          div_data += "</div>";
-          div_data += "</div>"; // Close card body
-          div_data += "</div>"; // Close card
-  
-          $("#student_data").html(div_data);
-  
-      })
-      .fail(function(){
-          alert("Error in Fetching Student");
-      });
-  });
-  
+        var subject = $("#subject").val();
+        var year = $("#year").val();
+        var current_class = $("#current_class").val();
+        var subjectName = $("#subject option:selected").text();
+        
+        // AJAX call to retrieve students
+        $.ajax({
+            url: '{% url 'staff_get_students' %}',
+            type: 'POST',
+            data: {
+                subject: subject,
+                year: year,
+                current_class: current_class
+            },
+        })
+            .done(function(response) {
+              var currentDate = new Date().toISOString().split('T')[0];
+              // Generate card header with class and subject
+              var cardHeader = "<div class='card-header'>" + current_class + " Student Attendance for Subject: " + subjectName + "</div>";
+          
+              // Generate card body with table for students
+              var div_data = "<div class='card card-success'>" + cardHeader;
+              div_data += "<div class='card-body'><div class='form-group'><label>Attendance Date:</label><input type='date' name='attendance_date' id='attendance_date' class='form-control' value='" + currentDate + "'></div>";
+              div_data += "<div class='table-responsive'><table  class='table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm  display' id='example'  style='width:100%'><thead><tr><th>Student Name</th><th>Attendance</th></tr></thead><tbody>";
+          
+              // Iterate over response to create rows in the table
+              for (var key in response) {
+                  div_data += "<tr><td>" + response[key]['name'] + "</td><td><div class='form-check'><input type='checkbox'";
+                  if (response[key]['present']) {
+                      div_data += " checked='checked'";
+                  }
+                  div_data += " name='student_data[]' value='" + response[key]['id'] + "' class='form-check-input'><label class='form-check-label'>Present</label></div></td></tr>";
+              }
+          
+              // Close table body and card body
+              div_data += "</tbody></table></div></div>";
+          
+              // Add save button
+              div_data += "<div class='form-group'><button id='save_attendance' class='btn btn-success btn-block' type='button'>Save Attendance Data</button></div>";
+          
+              // Close the card
+              div_data += "</div>";
+          
+              // Display the generated content
+              $("#student_data").html(div_data);
+              $('#example').DataTable();
+          })
+        .fail(function(){
+            alert("Error in Fetching Student");s
+        });
+    });
 
-
+    // Function to save attendance data
     $(document).on("click", "#save_attendance", function(){
-        $(this).attr("disabled", "disabled");
-        $(this).text("Saving Attendance Data...");
+        $(this).attr("disabled", "disabled").text("Saving Attendance Data...");
 
+        // Collect student data and attendance date
         var student_data = $("input[name='student_data[]']").map(function(){
-            if($(this).is(":checked")) {
-                return {
-                    "id": $(this).val(),
-                    "status": 1
-                };
-            } else {
-                return {
-                    "id": $(this).val(),
-                    "status": 0
-                };
-            }
+            return {
+                "id": $(this).val(),
+                "status": $(this).is(":checked") ? 1 : 0
+            };
         }).get();
-
+        
         var attendance_date = $("#attendance_date").val();
-        var subject_id = $("#subject").val();
-        var session_year_id = $("#session_year").val();
-        console.log(student_data);
+        var subject_id = $("#subject").val();     
+
+        // Convert student data to JSON
         student_data = JSON.stringify(student_data);
 
+        // AJAX call to save attendance data
         $.ajax({
-            url: '{% url 'save_attendance_data' %}',
+            url: '{% url 'staff_save_attendance_data' %}',
             type: 'POST',
             data: {
                 student_ids: student_data,
                 attendance_date: attendance_date,
-                subject_id: subject_id,
-                session_year_id: session_year_id
+                subject_id: subject_id,               
             },
         })
         .done(function(response){
             if(response == "OK") {
-                alert("Attendance Save");
+                alert("Attendance Saved");
             } else {
                 alert("Error in Saving Data");
             }
@@ -165,7 +164,16 @@ Take Attendance
         });
     });
 });
-
+</script>
+{% include 'hod_template/datatable.html' %}  
+<script>
+  document.addEventListener("DOMContentLoaded", function() {
+    // Get the current year
+    var currentYear = new Date().getFullYear();
+    
+    // Set the value of the input field to the current year
+    document.getElementById("year").value = currentYear;
+  });
 </script>
 {% endblock customer_js %}
 

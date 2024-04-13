@@ -96,7 +96,7 @@
                     <div class="modal-body">
                       <form id="editSubjectForm{{ subject.id }}">
                         <div class="row">
-                          <div class="col-md-4">
+                          <div class="col-md-12">
                             <div class="form-group">
                               <label for="subject_name">Subject Name</label>
                               <input type="text" class="form-control" id="subject_name" name="subject_name" value="{{ subject.subject_name }}">
@@ -106,7 +106,7 @@
                         </div>
                         <div class="form-row">
                           <div class="col-md-12 form-group">
-                              <button  type="submit" class="btn btn-primary float-lg-right"  id="submitBtn">update Subject </button>  
+                              <button  type="submit" class="btn btn-primary btn-block"  id="submitBtn">update Subject </button>  
                           </div>
                       </div>
                       </form>
@@ -165,7 +165,7 @@
         <div class="modal-body">
           <form id="addSubjectForm">
             <div class="row">
-              <div class="col-md-4">
+              <div class="col-md-12">
                 <div class="form-group">
                   <label for="subject_name">Subject Name</label>
                   <input type="text" class="form-control" id="subject_name" name="subject_name">
@@ -175,7 +175,7 @@
             </div>
             <div class="form-row">
               <div class="col-md-12 form-group">
-                  <button  type="button" class="btn btn-primary float-lg-right"  onclick="addSubject()">Add Subject </button>  
+                  <button  type="button" class="btn btn-primary btn-block"  onclick="addSubject()">Add Subject </button>  
               </div>
           </div>
           </form>

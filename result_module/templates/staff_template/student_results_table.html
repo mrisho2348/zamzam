@@ -1,0 +1,74 @@
+<div class="table-responsive">
+    <table class="table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm display" id="example" style="width:100%">
+      <thead>
+          <tr>
+              <th>Reg/Exam No.</th>
+              <th>Candidate Name</th>
+              <th>Sex</th>
+              <th>Point</th>
+              <th>Div</th>
+              <th>Hist</th>              
+              <th>Eng</th>
+              <th>Kisw</th>
+              <th>Geo</th>
+              <th>Math</th>
+              <th>Phy</th>
+              <th>Arab</th>
+              <th>Bio</th>
+              <th>Chem</th>
+              <th>EDK</th>
+              <th>Civ</th>
+              <th>Total</th>
+              <th>Avg</th>
+              <th>GRD</th>
+              <th>POS</th>
+              <th>Remark</th>
+          </tr>
+      </thead>
+      <tbody>
+          {% for student_result in student_results %}
+          <tr>
+              <td>{{ student_result.student.registration_number }}</td>
+              <td>{{ student_result.student }}</td>
+              <td>
+                  {% if student_result.student.gender == 'Female' %}
+                      F
+                  {% else %}
+                      M
+                  {% endif %}
+              </td>
+              <td>
+                  {% if student_result.total_grade_points %}
+                  {% if student_result.total_grade_points == -1 %}
+                  Incomplete
+                {% else %}
+                  {{ student_result.total_grade_points }}
+                {% endif %}
+                  {% else %}
+                  {% endif %}
+                </td>
+                <td>
+                  {% if student_result.division  %}
+                  {% if student_result.division == '-1' %}
+                  Incomplete
+                {% else %}
+                  {{ student_result.division }}
+                {% endif %}
+                   {% else %}
+                  {% endif %}
+                </td>
+              {% for subject, grade in student_result.student_subject_results.items %}
+                  <td>{{ grade }}</td>
+              {% endfor %}
+              <td>{{ student_result.total_marks|default_if_none:"" }}</td>
+              <td>{{ student_result.average|default_if_none:"" }}</td>
+              <td>{{ student_result.grademetrics|default_if_none:"" }}</td>
+              <td>{{ student_result.position|default_if_none:"" }}</td>
+              <td>{{ student_result.remark|default_if_none:"" }}</td>
+          </tr>
+          {% endfor %}
+      </tbody>
+      
+    </table>
+  </div>
+  {% include 'staff_template/datatable.html' %}

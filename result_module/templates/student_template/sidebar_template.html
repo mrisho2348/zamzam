@@ -12,8 +12,8 @@
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                {% if students.profile_pic %}
-                <img src="{{ students.profile_pic }}" class="img-circle elevation-2" alt="User Image">
+                {% if student.profile_pic %}
+                <img src="{{ student.profile_pic }}" class="img-circle elevation-2" alt="User Image">
                 {% else %}
                 <img src="{% static 'dist/img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
                 {% endif %}
@@ -73,6 +73,20 @@
             </p>
         </a>
     </li>
+    <li class="nav-item">
+        {% url 'student_view_subject_attendance' as student_view_subject_attendance_url %}
+        <a href="{{ student_view_subject_attendance_url }}" class="nav-link {% if request.path == student_view_subject_attendance_url %}active{% endif %}">
+            <i class="fas fa-calendar-alt nav-icon"></i>
+            <p>View Subject Attendance</p>
+        </a>
+    </li>
+    <li class="nav-item">
+        {% url 'student_view_class_attendance' as student_view_class_attendance_url %}
+        <a href="{{ student_view_class_attendance_url }}" class="nav-link {% if request.path == student_view_class_attendance_url %}active{% endif %}">
+            <i class="fas fa-chalkboard nav-icon"></i>
+            <p>View Class Attendance</p>
+        </a>
+    </li>
       <!-- Details -->
       <li class="nav-header">Details</li>
 
@@ -103,7 +117,7 @@
     // Function to fetch the total number of unread announcements for the student's class
     function fetchUnreadAnnouncementCount() {
         $.ajax({
-            url: '/fetch_unread_announcement_count/',
+            url: '{% url "fetch_unread_announcement_count" %}',
             type: 'GET',
             success: function(data) {
                 // Update the badge with the total number of unread announcements

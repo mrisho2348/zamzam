@@ -1,61 +1,118 @@
 {% extends 'staff_template/base_template.html' %}
+<title>{% block title %}
+    {{ student.full_name }}   Results
+    {% endblock title %}</title>
 {% load static %}
-{% block title %}
-Subject-wise Results
-{% endblock title %}
+
 {% block main_content %}
-<div class="container mt-5">
-  <div class="card mb-4">
-    <div class="card-header bg-primary text-white">
-      {{ student.admin.first_name }}'s Subject-wise Results
+<div class="container">
+  <div class="row">
+    <div class="col-md">
+        <div class="card">
+            <div class="card-header">Student Personal Details</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-4">
+                        <strong>Registration Number:</strong> {{ student.registration_number }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Full Name:</strong> {{ student.full_name }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Current Class:</strong> {{ student.current_class }}
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-4">
+                        <strong>Date of Birth:</strong> {{ student.date_of_birth }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Gender:</strong> {{ student.gender }}
+                    </div>
+                    <div class="col-md-4">
+                        <strong>Phone Number:</strong> {{ student.phone_number }}
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-12">
+                        <strong>Address:</strong> {{ student.address }}
+                    </div>
+                </div>
+                <!-- Add more rows and details as needed -->
+            </div>
+        </div>
     </div>
-    <div class="card-body">
-      <table class="table table-hover" id="result_list">
-        <thead>
-          <tr>
-            <th>Subject</th>
-            <th>Marks</th>
-            <th>Grade</th>
-            <th>Pass/Fail</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for result in results %}
-            <tr>
-              <td>{{ result.subject.subject_name }}</td>
-              <td>{{ result.marks }}</td>
-              <td>{{ result.determine_grade }}</td>
-              <td>{{ result.determine_pass_fail }}</td>
-              <td>
-                {% if result.subject in staff_subjects %}
-                  <!-- Display edit link only if the subject is taught by the staff -->
-                  <a href="{% url 'update_students_results' result.id student.id exam_type_id %}" class="btn btn-primary btn-sm">Edit</a>
-
-                {% endif %}
-              </td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
 </div>
-<script src="https://code.jquery.com/jquery-3.7.0.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
 
+  <div class="row">
+    <div class="col-md-12">
+        <div class="container mt-5">
+            <form id="search-form">
+                {% csrf_token %}
+                <div class="row">
+                    <input type="hidden" id="student_id" name="student_id" value="{{ student.id }}" readonly/>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="exam_type_id">Select Exam Type:</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="exam_type_id" name="exam_type_id">
+                                {% for exam_type in exam_types %}
+                                    <option value="{{ exam_type.id }}">{{ exam_type.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="year">Select Year:</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="year" name="year">
+                                {% for date in distinct_dates %}
+                                    <option value="{{ date|date:'Y-m-d' }}">{{ date|date:'Y-m-d' }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                       <div class="form-group">
+                        <label for="year">Search:</label>
+                        <button type="submit" class="btn btn-primary float-right form-control">Search</button>
+                       </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div id="result-table-container">
+
+</div>
 <script>
-    new DataTable('#result_list', {
-        dom: 'Bfrtip',
-        buttons: ['copy', 'csv', 'excel', 'pdf', 'print'],
+  $(document).ready(function() {
+    // Add event listener to the form submission
+    $('#search-form').submit(function(event) {
+      // Prevent default form submission
+      event.preventDefault();
+      
+      // Serialize form data
+      var formData = $(this).serialize();
+      
+      // Send AJAX request to the server
+      $.ajax({
+        type: 'POST',
+        url: '{% url 'staff_student_subject_wise_result' %}',
+        data: formData,
+        success: function(response) {
+          // Update the table content with the fetched data
+          console.log(response)
+          $('#result-table-container').html(response.html_result);
+        },
+        error: function(xhr, status, error) {
+          // Handle errors
+          console.error(xhr.responseText);
+        }
+      });
     });
-</script>
+  });
+  </script>   
 
 {% endblock main_content %}

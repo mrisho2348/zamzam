@@ -77,11 +77,15 @@ class Staffs(models.Model):
     date_of_employment = models.DateField(blank=True, default='2000-01-01')
     phone_number = models.CharField(max_length=20, blank=True)
     current_class = models.CharField(max_length=20, blank=True)
+    staff_role = models.CharField(max_length=20, blank=True,default="Staff")
     profile_pic = models.FileField(upload_to='staff_profile_pic',null=True, blank=True) 
     subjects = models.ManyToManyField('Subject', related_name='staffs_subjects', blank=True)  
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)    
     objects = models.Manager()
+    
+    def get_full_name(self):
+        return f"{self.admin.first_name} {self.middle_name} {self.admin.last_name}"
 
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
@@ -202,6 +206,23 @@ class LeaveReportStudent(models.Model):
      updated_at = models.DateTimeField(auto_now=True)  
      objects = models.Manager()
      
+     
+class ClassAttendance(models.Model):
+    id = models.AutoField(primary_key=True)  
+    current_class = models.CharField(max_length=15)  # Ex   
+    attendance_date = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)   
+    updated_at = models.DateTimeField(auto_now=True)  
+    objects = models.Manager()
+        
+class StudentClassAttendance(models.Model):
+    id = models.AutoField(primary_key=True)  
+    attendance = models.ForeignKey(ClassAttendance, on_delete=models.CASCADE)
+    student = models.ForeignKey(Students, on_delete=models.DO_NOTHING)
+    status = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)  
+    objects = models.Manager()        
      
 class LeaveReportStaffs(models.Model):
      id = models.AutoField(primary_key=True)     
@@ -492,21 +513,7 @@ def calculate_remark(grade):
     else:
         return 'PASS'
     
-
-# subject_fields = {
-#         'History': 'history_score',
-#         'English': 'english_score',
-#         'Biology': 'biology_score',
-#         'Arabic': 'arabic_score',
-#         'Physics': 'physics_score',
-#         'Mathematics': 'mathematics_score',
-#         'Geography': 'geography_score',
-#         'Kiswahili': 'kiswahili_score',
-#         'EDK': 'edk_score',
-#         'Computer Application': 'computer_application_score',
-#         'Commerce': 'commerce_score',
-#         'Book Keeping': 'book_keeping_score',
-#     }    
+   
 
 @receiver(post_save, sender=SujbectWiseResults)
 def fill_result_model(sender, instance, created, **kwargs):

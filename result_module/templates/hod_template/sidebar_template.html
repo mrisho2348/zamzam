@@ -32,8 +32,8 @@
                with font-awesome or any other icon font library -->
 
           <li class="nav-item">
-             {% url 'dashboard' as dashboard %}
-            <a href="{% url 'dashboard' %}" class="nav-link {% if request.path == dashboard %} active {% endif %}">
+             {% url 'admin_home' as admin_home %}
+            <a href="{% url 'admin_home' %}" class="nav-link {% if request.path == admin_home %} active {% endif %}">
               <i class="nav-icon fas fa-th"></i>
               <p>
                 HOME
@@ -49,6 +49,26 @@
                     Staffs
                 </p>
             </a>
+        </li>
+        <li class="nav-item">
+          {% url 'staff_feedback_message' as staff_feedback_message %}
+          <a href="{% url 'staff_feedback_message' %}" class="nav-link {% if request.path == staff_feedback_message %}active{% endif %}">
+           
+            <i class="nav-icon fas fa-bars"></i>
+            <p>
+              Staff Feedback
+              <i class="right"></i>
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          {% url 'staff_leave_view' as staff_leave_view %}
+          <a href="{% url 'staff_leave_view' %}" class="nav-link {% if request.path == staff_leave_view %}active{% endif %}">
+            <i class="nav-icon fas fa-bars"></i>
+            <p>
+              Staff Leave
+            </p>
+          </a>
         </li>
           <li class="nav-item">
             {% url 'staff_announcements' as staff_announcements %} 
@@ -72,11 +92,46 @@
             <a href="{% url 'display_results' %}" class="nav-link {% if request.path == display_results %}active{% endif %}">
                 <i class="nav-icon fas fa-user-graduate"></i>
                 <p>
-                    Students 
+                    Students results
                </p>
             </a>
         </li>
-           
+        <li class="nav-item">
+          {% url 'admin_view_subject_attendance' as admin_view_subject_attendance %}
+          <a href="{% url 'admin_view_subject_attendance' %}" class="nav-link  {% if request.path == admin_view_subject_attendance %}active{% endif %}">
+            <i class="nav-icon fas fa-bars"></i>
+            <p>
+              View subject  Attendance
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          {% url 'admin_view_class_attendance' as admin_view_class_attendance %}
+          <a href="{% url 'admin_view_class_attendance' %}" class="nav-link  {% if request.path == admin_view_class_attendance %}active{% endif %}">
+            <i class="nav-icon fas fa-bars"></i>
+            <p>
+              View class  Attendance
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          {% url 'student_feedback_message' as student_feedback_message %}
+          <a href="{% url 'student_feedback_message' %}" class="nav-link {% if request.path == student_leave_view %}active{% endif %}">
+            <i class="nav-icon fas fa-user"></i>
+            <p>
+              student Feedback
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          {% url 'student_leave_view' as student_leave_view %}
+          <a href="{% url 'student_leave_view' %}" class="nav-link {% if request.path == student_leave_view %}active{% endif %}">
+            <i class="nav-icon fas fa-user"></i>
+            <p>
+              student Leave
+            </p>
+          </a>
+        </li>
         <li class="nav-item">
             {% url 'manage_subject' as manage_subject %}       
             <a href="{% url 'manage_subject' %}" class="nav-link {% if request.path == manage_subject %}active{% endif %}">
