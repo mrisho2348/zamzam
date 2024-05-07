@@ -87,7 +87,8 @@ def staff_home(request):
     else:
         # Redirect the user to the login page
         return redirect("login")  # Replace "login" with the actual URL name of your login page
-    
+
+@login_required    
 def staff_take_attendance(request):
     staff = Staffs.objects.get(admin=request.user.id)
     # Assuming that the educational level is a ForeignKey in Staffs model
@@ -100,7 +101,8 @@ def staff_take_attendance(request):
         "class_options": class_options,
         "staff": staff,
     })
-    
+
+@login_required    
 def staff_take_class_attendance(request):
     staff = Staffs.objects.get(admin=request.user.id)   
     current_class = staff.current_class
@@ -289,7 +291,8 @@ def staff_save_class_attendance_data(request):
         # Return error response
         return HttpResponse("ERR")
     
-    
+
+@login_required    
 def staff_update_attendance(request):
     staff = Staffs.objects.get(admin=request.user.id)
     class_options = ["Form One", "Form Two", "Form Three", "Form Four"] 
@@ -301,7 +304,8 @@ def staff_update_attendance(request):
         "class_options": class_options,
         "staff": staff,
     })
-    
+
+@login_required    
 def staff_update_class_attendance(request):
     staff = Staffs.objects.get(admin=request.user.id)   
     class_options = ["Form One", "Form Two", "Form Three", "Form Four"] 
@@ -311,7 +315,8 @@ def staff_update_class_attendance(request):
         "class_options": class_options,
         "staff": staff,
     })
-    
+
+@login_required    
 def staff_view_class_attendance(request):
     staff = Staffs.objects.get(admin=request.user.id)
     attendances=ClassAttendance.objects.all()  
@@ -322,7 +327,8 @@ def staff_view_class_attendance(request):
         "staff": staff,
         "attendances": attendances,
     })
-    
+
+@login_required    
 def staff_view_subject_attendance(request):
     staff = Staffs.objects.get(admin=request.user.id)
     attendances=Attendance.objects.all()  
@@ -486,6 +492,7 @@ def save_class_updateattendance(request):
         return HttpResponse("ERR")
     
 
+@login_required
 def staff_sendfeedback(request):
     staff_obj = Staffs.objects.get(admin=request.user.id)
     feedback_data = FeedBackStaff.objects.filter(staff_id=staff_obj)
@@ -509,6 +516,7 @@ def staff_sendfeedback_save(request):
             messages.error(request,"feedback failed to be sent")
             return HttpResponseRedirect(reverse("staff_sendfeedback"))
 
+@login_required
 def   staff_apply_leave(request):
     staff_obj = Staffs.objects.get(admin=request.user.id)
     staff_leave_report = LeaveReportStaffs.objects.filter(staff_id=staff_obj)

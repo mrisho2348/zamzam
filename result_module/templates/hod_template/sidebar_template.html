@@ -42,6 +42,15 @@
             </a>
           </li>
           <li class="nav-item">
+            {% url 'admin:index' as admin_url %}
+            <a href="{% url 'admin:index' %}" class="nav-link {% if request.path == admin_url %}active{% endif %}">
+                <i class="nav-icon fas fa-users"></i> <!-- Correct Font Awesome icon -->
+                <p>
+                    Admin
+                </p>
+            </a>
+        </li>
+          <li class="nav-item">
             {% url 'manage_staff' as manage_staff_url %}
             <a href="{% url 'manage_staff' %}" class="nav-link {% if request.path == manage_staff_url %}active{% endif %}">
                 <i class="nav-icon fas fa-users"></i> <!-- Correct Font Awesome icon -->

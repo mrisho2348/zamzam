@@ -19,6 +19,13 @@
   <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
   <!-- Google Font: Source Sans Pro -->
   <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+
+  <style>
+    body {
+      background-image: url("{% static 'img/staff_loginbackground_image.jpg' %}");
+      background-size: cover;
+    }
+  </style>
 </head>
 <body class="hold-transition login-page">
 <div class="login-box">
@@ -56,11 +63,7 @@
             <button type="submit" class="btn btn-primary btn-block ">Staff Sign In</button>               
         </div> 
         </div>
-        <div class="row mt-2"> 
-         <div class="col-12">
-           <a href="{% url "student_login" %}" class="btn btn-secondary btn-block">Student Sign in </a>            
-        </div> 
-        </div>
+      
 
         <div class="row">         
             <div class="col-12 text-center">
@@ -81,6 +84,13 @@
           
            </div>
           {% endif %}
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-12 text-center">
+            <p class="mb-0">Don't have an account?</p>
+            <a href="{% url 'add_staff' %}" class="text-center">Create an account</a>
+          </div>
         </div>
       </form>
 

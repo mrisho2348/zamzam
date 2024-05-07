@@ -21,6 +21,7 @@ urlpatterns = [
         path('staff_feedback_message', HodViews.staff_feedback_message, name='staff_feedback_message'),
         path('student_leave_view', HodViews.student_leave_view, name='student_leave_view'),
         path('staff_leave_view', HodViews.staff_leave_view, name='staff_leave_view'), 
+        path('download-template/<str:class_name>/', HodViews.download_excel_template, name='download_excel_template'),
         path('student_approve_leave/<str:leave_id>', HodViews.student_approve_leave, name='student_approve_leave'),  
         path('student_disapprove_leave/<str:leave_id>', HodViews.student_disapprove_leave, name='student_disapprove_leave'), 
         path('staff_approve_leave/<str:leave_id>', HodViews.staff_approve_leave, name='staff_approve_leave'), 

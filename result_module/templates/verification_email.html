@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zam Zam Islamic School Account Verification</title>
+</head>
+<body>
+    <p>Dear {{ user.first_name }},</p>
+    <p>
+        Thank you for registering with Zam Zam Islamic School. Please click the link below to activate your account:
+    </p>
+    <p>
+        <a href="http://{{ domain }}/activate/{{ uid }}/{{ token }}">Activate Your Account</a>
+    </p>
+    <p>
+        If you did not request this, please ignore this email.
+    </p>
+    <p>Regards,<br>Zam Zam Islamic School Team</p>
+</body>
+</html>

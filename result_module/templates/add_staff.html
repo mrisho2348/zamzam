@@ -1,0 +1,211 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <link rel="icon" type="image/png" href="{% static 'img/zamzamLogo.jpg' %}">
+  <title>ZAMZAM | Sign Up</title>
+  <!-- Tell the browser to be responsive to screen width -->
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <link href="{% static 'plugins/select2/css/select2.min.css' %}" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css' %}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- icheck bootstrap -->
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <!-- Google Font: Source Sans Pro -->
+  <link rel="stylesheet" href="{% static 'plugins/select2/css/select2.min.css' %}">
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+  <style>
+    body {
+      background-image: url("{% static 'img/staff_loginbackground_image.jpg' %}");
+      background-size: cover;
+    }
+  </style>
+</head>
+<body class="hold-transition">
+
+    <div class="container">
+        <div class="login-logo text-center">
+          <img src="{% static 'img/zamzamLogo.jpg' %}" alt="ZAMZAM LOGO" class="brand-image img-circle elevation-3" style="opacity: .8; width: 200px;">
+        </div>
+        <div class="login-logo text-center">    
+          <a href="#"><b>ZAMZAM</b> ISLAMIC SCHOOL</a>
+        </div>
+      
+        <div class="card">
+          <div class="card-body">     
+            <div class="container-fluid">
+              <div class="row">
+                <!-- Left column -->
+                <div class="col-md-12">
+                  <!-- Staff creation form -->
+                  <div class="card card-primary">
+                 
+                    <div class="card-body">
+                      <!-- Staff creation form -->
+                      <form method="post" action="{% url 'add_staff_save' %}" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- First row of fields -->
+                        <div class="form-row">
+                          <!-- First Name -->
+                          <div class="form-group col-md-4">
+                            <label for="first_name">First Name</label>
+                            <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter First Name" required>
+                            <input type="hidden" name="staff_id" id="staff_id" value="">
+                          </div>
+                          <!-- Middle Name -->
+                          <div class="form-group col-md-4">
+                            <label for="middle_name">Middle Name</label>
+                            <input type="text" class="form-control" id="middle_name" name="middle_name" placeholder="Enter Middle Name" required>
+                          </div>
+                          <!-- Last Name -->
+                          <div class="form-group col-md-4">
+                            <label for="last_name">Last Name</label>
+                            <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter Last Name" required>
+                          </div>
+                        </div>
+                        <!-- Second row of fields -->
+                        <div class="form-row">
+                          <!-- Username -->
+                          <div class="form-group col-md-4">
+                            <label for="username">Username</label>
+                            <input type="text" class="form-control" id="username" name="username" placeholder="Enter Username">
+                          </div>
+                          <!-- Email -->
+                          <div class="form-group col-md-4">
+                            <label for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" placeholder="Enter Email" required>
+                          </div>
+                          <!-- Password -->
+                          <div class="form-group col-md-4">
+                            <label for="password">Password</label>
+                            <input type="password" class="form-control" id="password" name="password" placeholder="Enter Password" required>
+                          </div>
+                        </div>
+                        <!-- Third row of fields -->
+                        <div class="form-row">
+                          <!-- Subject -->
+                          <div class="form-group col-md-4">
+                            <label for="subject">Subject</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="subject" name="subject" multiple>
+                              {% for subject in subjects %}
+                              <option value="{{ subject.id }}">{{ subject.subject_name }}</option>
+                              {% endfor %}
+                            </select>
+                          </div>
+                          <!-- Address -->
+                          <div class="form-group col-md-4">
+                            <label for="address">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" placeholder="Enter Address" value="{{ staff.address }}">
+                          </div>
+                          <!-- Gender -->
+                          <div class="form-group col-md-4">
+                            <label for="gender">Gender</label>
+                            <select id="gender" class="form-control select2bs4" style="width: 100%;" name="gender">
+                              <option selected>Choose...</option>
+                              <option>Male</option>
+                              <option>Female</option>
+                            </select>
+                          </div>
+                        </div>
+                        <!-- Fourth row of fields -->
+                        <div class="form-row">
+                          <!-- Date of Birth -->
+                          <div class="form-group col-md-4">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" class="form-control" id="dob" name="dob">
+                          </div>
+                          <!-- Date of Employment -->
+                          <div class="form-group col-md-4">
+                            <label for="doe">Date of Employment</label>
+                            <input type="date" class="form-control" id="doe" name="doe">
+                          </div>
+                          <!-- Phone Number -->
+                          <div class="form-group col-md-4">
+                            <label for="phone">Phone Number</label>
+                            <input type="text" class="form-control" id="phone" name="phone" placeholder="Enter Phone Number">
+                          </div>
+                        </div>
+                        <!-- Fifth row of fields -->
+                        <div class="form-row">
+                          <!-- Profile Picture -->
+                          <div class="form-group col-md-4">
+                            <label for="staff_photos">Profile Picture</label>
+                            <input type="file" class="form-control" id="staff_photos" name="staff_photo" accept=".jpg, .jpeg, .png"  data-max-size="5242880">
+                            <small class="form-text text-danger">Accepted formats: JPG, JPEG, PNG | Maximum file size: 5MB</small>
+                          </div>
+                          <!-- Selected Class -->
+                          <div class="form-group col-md-4">
+                            <label for="current_clas">Selected Class</label>
+                            <select class="form-control select2bs4" style="width: 100%;" id="current_clas" name="current_class">
+                              <option value="Form One">Form One</option>
+                              <option value="Form Two">Form Two</option>
+                              <option value="Form Three">Form Three</option>
+                              <option value="Form Four">Form Four</option>
+                            </select>
+                          </div>
+                        </div>
+                        <!-- Error/success messages -->
+                        <div class="form-row">
+                          <div>
+                            {% if messages %}
+                              <div class="col-12">
+                                {% for message in messages %}
+                                  {% if message.tags == 'error' %}
+                                    <div class="alert alert-danger">{{ message }}</div>
+                                  {% elif message.tags == 'success' %}
+                                    <div class="alert alert-primary">{{ message }}</div>
+                                  {% endif %}
+                                {% endfor %}
+                              </div>
+                            {% endif %}
+                          </div>
+                        </div>
+                        <!-- Submit button -->
+                        <div class="form-row">
+                          <div class="col-md-12">
+                            <button type="submit" class="btn btn-primary btn-block">Create an account</button>
+                          </div>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap 4 -->
+<!-- Select2 -->
+<script src="{% static 'plugins/select2/js/select2.full.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE App -->
+<script src="{% static 'dist/js/adminlte.min.js' %}"></script>
+<script>
+    $(function () {
+      //Initialize Select2 Elements
+      $('.select2').select2()
+  
+      //Initialize Select2 Elements
+      $('.select2bs4').select2({
+        theme: 'bootstrap4'
+      })
+  
+  
+    
+    })
+  </script>
+</body>
+</html>

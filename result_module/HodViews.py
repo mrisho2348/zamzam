@@ -15,8 +15,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.template.loader import render_to_string
 from django.contrib.auth.decorators import login_required
 from django.core.files.storage import FileSystemStorage
+from openpyxl import Workbook
 # Create your views here.
 
+@login_required
 def admin_home(request):
     # Fetch total number of students
     total_students = Students.objects.count()
@@ -33,7 +35,44 @@ def admin_home(request):
         'total_male_students': total_male_students,
     })
 
+def download_excel_template(request, class_name):
+    # Get students for the given class
+    students = Students.objects.filter(current_class=class_name)
 
+    # Create a new workbook
+    wb = Workbook()
+    ws = wb.active
+
+    # Add headers for the Excel sheet
+    headers = ['Student']
+    subject_scores = SujbectWiseResults._meta.get_fields()[2:-5]  # Exclude student and timestamp fields
+    for field in subject_scores:
+        headers.append(field.name.replace('_score', '').capitalize())  # Get subject name from field name
+    ws.append(headers)
+
+    # Add student names and zero scores for each subject
+    for student in students:
+        row_data = [student.full_name]
+        for _ in subject_scores:
+            row_data.append(0)  # Populate each subject column with zero value
+        ws.append(row_data)
+
+    # Save the workbook in memory
+    from io import BytesIO
+    output = BytesIO()
+    wb.save(output)
+    output.seek(0)
+
+    # Set response headers for Excel file download
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename={class_name}_template.xlsx'
+    
+    # Write workbook data to response
+    response.write(output.getvalue())
+
+    return response
+
+@login_required
 def manage_student(request):
     students = Students.objects.all()
     exam_types = ExamType.objects.all()
@@ -42,6 +81,7 @@ def manage_student(request):
         'exam_types': exam_types,
         })
 
+@login_required
 def student_subject_wise_result_page(request,student_id): 
     student = Students.objects.get(id=student_id)
     exam_types = ExamType.objects.all()
@@ -53,7 +93,8 @@ def student_subject_wise_result_page(request,student_id):
                       'exam_types': exam_types,
                       'distinct_dates': distinct_dates,
                    })
-    
+
+@login_required    
 def students_wise_result_page(request):
     exam_types = ExamType.objects.all()
     distinct_dates= Result.objects.order_by('date_of_exam').values_list('date_of_exam', flat=True).distinct()   
@@ -64,11 +105,12 @@ def students_wise_result_page(request):
                    })
     
     
-
+@login_required
 def manage_exam_type(request):
     exam_types = ExamType.objects.all()
     return render(request, 'hod_template/manage_exam_types.html', {'exam_types': exam_types})
 
+@login_required
 def manage_subject(request):
     subjects = Subject.objects.all()
     return render(request, 'hod_template/manage_subject.html', {'subjects': subjects})
@@ -148,6 +190,7 @@ def delete_announcement(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request method'})
 
+@login_required
 def manage_result(request):
     # Fetch all students
     students = Students.objects.all()
@@ -634,10 +677,12 @@ def student_results_view(request):
         return JsonResponse({'html_result': html_result})
 
 
+@login_required
 def exam_type_list(request):
     exam_types = ExamType.objects.all()
     return render(request, 'hod_template/exam_type_list.html', {'exam_types': exam_types})
 
+@login_required
 def exam_type_to_view_class(request, exam_type_id):
     try:
         # Retrieve the exam type object
@@ -649,6 +694,7 @@ def exam_type_to_view_class(request, exam_type_id):
         # Handle the case where the exam type does not exist
         return redirect('exam_type_list') 
 
+@login_required
 def view_student_to_add_result(request, exam_type_id, class_name):
     # Retrieve all students for the specified class
     students = Students.objects.filter(current_class=class_name, is_active=True)  
@@ -656,7 +702,7 @@ def view_student_to_add_result(request, exam_type_id, class_name):
     # Pass the list of students to the template
     return render(request, 'hod_template/class_wise_students_list.html', {'students': students, 'exam_type': exam_type,'class_name':class_name})
 
-
+@login_required
 def view_student_to_add_result(request, exam_type_id, class_name): 
         
     # Fetch all students for the specified class
@@ -880,6 +926,7 @@ def save_student_result(request):
     return JsonResponse({'success': False, 'message': 'Invalid request method'})
 
 
+@login_required
 def display_results(request):
     results = SujbectWiseResults.objects.all()
     students = Students.objects.all()
@@ -891,6 +938,7 @@ def display_results(request):
         })
 
 
+@login_required
 def manage_staff(request):     
     staffs=Staffs.objects.all()  
     subjects=Subject.objects.all()  
@@ -1042,7 +1090,8 @@ def staff_feedback_message_replied(request):
       return HttpResponse(True)
     except:
        return HttpResponse(False)           
-   
+ 
+@login_required   
 def student_leave_view(request):
     leaves = LeaveReportStudent.objects.all()
     return render(request,"hod_template/student_leave_view.html",{"leaves":leaves})
@@ -1059,6 +1108,7 @@ def student_disapprove_leave(request,leave_id):
     leave.save()
     return HttpResponseRedirect(reverse("student_leave_view"))
 
+@login_required
 def staff_leave_view(request):
     leaves = LeaveReportStaffs.objects.all()
     return render(request,"hod_template/staff_leave_view.html",{"leaves":leaves})
@@ -1069,12 +1119,14 @@ def staff_approve_leave(request,leave_id):
     leave.save()
     return HttpResponseRedirect(reverse("staff_leave_view"))
 
+
 def staff_disapprove_leave(request,leave_id):
     leave = LeaveReportStaffs.objects.get(id=leave_id)
     leave.leave_status = 2
     leave.save()
     return HttpResponseRedirect(reverse("staff_leave_view"))
 
+@login_required
 def admin_view_attendance(request):     
      return render(request,"hod_template/admin_view_attendance.html",{})
 
@@ -1147,11 +1199,13 @@ def student_feedback_message_replied(request):
       return HttpResponse(True)
     except:
        return HttpResponse(False)  
- 
+
+@login_required 
 def staff_feedback_message(request):
     feedbacks = FeedBackStaff.objects.all()
     return render(request,"hod_template/staff_feedback_message.html",{"feedbacks":feedbacks})
 
+@login_required
 def  student_feedback_message(request):
     feedbacks = FeedBackStudent.objects.all()
     return render(request,"hod_template/student_feedback_message.html",{"feedbacks":feedbacks})
@@ -1177,7 +1231,7 @@ def check_username_exist(request):
     else:
         return HttpResponse(False) 
    
-   
+@login_required   
 def admin_view_class_attendance(request):
     admin = request.user
     attendances=ClassAttendance.objects.all()  
@@ -1185,7 +1239,8 @@ def admin_view_class_attendance(request):
          "admin": admin,
         "attendances": attendances,
     })
-    
+
+@login_required    
 def admin_view_subject_attendance(request):
     admin = request.user
     attendances=Attendance.objects.all()  

@@ -54,35 +54,39 @@ def import_subject_wise_result(request, exam_type_id):
                 new_records = request.FILES['new_record']
                 
                 # Load the imported data using tablib
-                dataset = resource.export()
+                dataset = Dataset()
                 imported_data = dataset.load(new_records.read(), format='xlsx')  # Adjust format accordingly
 
                 for data in imported_data:
                     # Check if the row has the expected number of elements
-                    if len(data) != 16:  # Assuming there are 16 columns of data in each row
+                    if len(data) != 15:  # Assuming there are 15 columns of scores in each row
                         # Log the error and skip this row
                         messages.error(request, f'Invalid data format in row: {data}')
                         continue
 
-                    registration_number = data[0]  # Assuming student registration number is in the first column
+                    # Extract student's name and scores
+                    student_name = data[0]
+                    scores = data[1:]
+
                     try:
-                        # Get the student object using the provided registration number
-                        student = Students.objects.get(registration_number=registration_number)
+                        # Get the student object using the provided name
+                        student = Students.objects.get(full_name=student_name)
                     except Students.DoesNotExist:
                         # If the student does not exist, log the error and continue to the next record
-                        messages.error(request, f'Student "{registration_number}" does not exist.')
+                        messages.error(request, f'Student "{student_name}" does not exist.')
                         continue
 
                     # Validate and convert score values to decimal numbers
-                    scores = data[2:]
                     converted_scores = []
                     for i, score in enumerate(scores):
                         try:
                             converted_score = Decimal(score)
+                            if not 0 <= converted_score <= 100:  # Check if the score is between 0 and 100
+                                raise InvalidOperation("Score must be between 0 and 100")
                             converted_scores.append(converted_score)
-                        except InvalidOperation:
+                        except InvalidOperation as e:
                             # Log the error and skip this row
-                            messages.error(request, f'Invalid score format for student "{student.full_name}" at index {i+1}')
+                            messages.error(request, f'Invalid score format for student "{student.full_name}" at index {i+1}: {e}')
                             break  # Skip the entire row if any score value is invalid
 
                     else:
@@ -94,7 +98,7 @@ def import_subject_wise_result(request, exam_type_id):
 
                         # Create a new SujbectWiseResults record
                         new_record = SujbectWiseResults(                       
-                            student_id=student.id,
+                            student=student,
                             physics_score=converted_scores[0],
                             chemistry_score=converted_scores[1],
                             biology_score=converted_scores[2],

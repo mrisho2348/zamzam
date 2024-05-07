@@ -4,13 +4,13 @@
 {% endblock page_title %}
 {% block breadcrumb %}
 {% include "hod_template/modal_form.html" %}
-<a class="btn btn-primary float-right" type="button" data-toggle="modal" data-target="#addSubjectModal">
+{% comment %} <a class="btn btn-primary float-right" type="button" data-toggle="modal" data-target="#addSubjectModal">
     <i class="fas fa-plus"></i> New Subjects
 </a>
 <!-- Add Import insurance link and modal trigger -->
 <a class="btn btn-success float-right mr-2" href="{% url "import_subject_records" %}">
   <i class="fas fa-file-import"></i> Import Subjects
-</a>
+</a> {% endcomment %}
 {% endblock breadcrumb %}
 {% block main_content %}
 
@@ -19,7 +19,7 @@
         <tr>
             <th>ID</th>
             <th>Subject Name</th>                                                                  
-          <th>Action</th>
+          {% comment %} <th>Action</th> {% endcomment %}
         </tr>
       </thead>
 
@@ -29,14 +29,14 @@
             <tr>
                 <td>{{ subject.id }}</td>
                 <td>{{ subject.subject_name }}</td>       
-                <td class="text-center">
-                <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#editSubjectModal{{ subject.id }}"  data-toggle="tooltip" title="Edit">
+                {% comment %} <td class="text-center">
+                 <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#editSubjectModal{{ subject.id }}"  data-toggle="tooltip" title="Edit">
                     <i class="fa fa-edit text-white"></i>
                 </button>
                   <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteSubjectModal{{ subject.id }}"  data-toggle="tooltip" title="Delete">
                     <i class="fas fa-trash"></i>
                 </button>         
-            </td>
+            </td> {% endcomment %}
 
             <!-- Delete Modal -->
             <div class="modal fade" id="deleteSubjectModal{{ subject.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteSubjectModalLabel{{ subject.id }}" aria-hidden="true">

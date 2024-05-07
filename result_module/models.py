@@ -35,7 +35,7 @@ class CustomUser(AbstractUser):
        
     )
     user_type = models.CharField(default=1, choices=user_type_data, max_length=15)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=False)
 
     # Provide unique related_name values
     groups = models.ManyToManyField(
@@ -67,16 +67,27 @@ class AdminHOD(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()
 
+ADDRESS_CHOICES = [
+        ('male', 'Male'),
+        ('female', 'Female'),  
+    ]
+
+CLASS_CHOICES = [
+        ('Form One', 'Form One'),
+        ('Form Two', 'Form Two'),
+        ('Form Three', 'Form Three'),
+        ('Form Four', 'Form Four'),
+    ]
 class Staffs(models.Model):
     id = models.AutoField(primary_key=True)
     admin = models.OneToOneField(CustomUser, on_delete=models.CASCADE)   
     middle_name = models.TextField(blank=True)
-    address = models.TextField(blank=True)   
-    gender = models.TextField(blank=True)    
+    address = models.TextField(blank=True)
+    gender =  models.CharField(max_length=100, choices=ADDRESS_CHOICES, blank=True)   
     date_of_birth = models.DateField(blank=True, default='2000-01-01')
     date_of_employment = models.DateField(blank=True, default='2000-01-01')
     phone_number = models.CharField(max_length=20, blank=True)
-    current_class = models.CharField(max_length=20, blank=True)
+    current_class = models.CharField(max_length=20, choices=CLASS_CHOICES, blank=True)
     staff_role = models.CharField(max_length=20, blank=True,default="Staff")
     profile_pic = models.FileField(upload_to='staff_profile_pic',null=True, blank=True) 
     subjects = models.ManyToManyField('Subject', related_name='staffs_subjects', blank=True)  
@@ -89,7 +100,7 @@ class Staffs(models.Model):
 
 class Announcement(models.Model):
     title = models.CharField(max_length=100)
-    current_class = models.CharField(max_length=100) 
+    current_class = models.CharField(max_length=20, choices=CLASS_CHOICES, blank=True)
     content = models.TextField()
     announcement_file = models.FileField(upload_to='announcement',null=True, blank=True)
     created_at = models.DateTimeField(default=timezone.now)
@@ -120,9 +131,9 @@ class Students(models.Model):
     id = models.AutoField(primary_key=True)
     registration_number = models.CharField(max_length=30,unique=True)   
     full_name = models.CharField(max_length=100)   
-    current_class = models.CharField(max_length=100)   
+    current_class = models.CharField(max_length=20, choices=CLASS_CHOICES, blank=True)  
     date_of_birth = models.DateField(blank=True, null=True)
-    gender = models.CharField(max_length=10)    
+    gender =  models.CharField(max_length=100, choices=ADDRESS_CHOICES, blank=True)      
     phone_number = models.CharField(max_length=20)     
     address = models.CharField(max_length=200,null=True, blank=True)  
     profile_pic = models.FileField(upload_to='student_profile_pic',null=True, blank=True)
@@ -144,9 +155,7 @@ class ExamType(models.Model):
         return f"{self.name}"
     
 class SujbectWiseResults(models.Model):
-    student = models.ForeignKey(Students, on_delete=models.CASCADE)
-    exam_type = models.ForeignKey(ExamType, on_delete=models.CASCADE)
-    selected_class = models.CharField(max_length=255, null=True, blank=True)
+    student = models.ForeignKey(Students, on_delete=models.CASCADE)    
     history_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
     english_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
     biology_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
@@ -160,8 +169,10 @@ class SujbectWiseResults(models.Model):
     edk_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
     computer_application_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
     commerce_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
-    date_of_exam = models.DateField(auto_now=True)
     book_keeping_score = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, default=0)
+    date_of_exam = models.DateField(auto_now=True) 
+    exam_type = models.ForeignKey(ExamType, on_delete=models.CASCADE)
+    selected_class = models.CharField(max_length=255, null=True, blank=True)   
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     objects = models.Manager()

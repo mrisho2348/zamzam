@@ -18,14 +18,24 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 from result_system import settings
-
+from result_module.views import logout_user
+from django.views.i18n import set_language
+from result_module.views import DoLogin
+admin.site.logout = logout_user
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('admin_zamzam/', admin.site.urls),
     path('', include('result_module.urls')),
     path('Student/', include('result_system.student_urls')),
     path('Staff/', include('result_system.staff_urls')),
     path('hod/', include('result_system.hod_urls')),
+    path('i18n/', set_language, name='set_language'), 
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
     urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_URL)
+    
+    
+admin.site.login = 'custom_login'
+admin.site.index_title = "ZAMZAM ISLAMIC SCHOOL"
+admin.site.site_header = "ZAMZAM ISLAMIC SCHOOL"
+admin.site.site_title = "ZAMZAM ISLAMIC SCHOOL"        

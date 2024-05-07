@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'result_module',
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -49,7 +50,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'result_module.LoginCheckMiddleWare.LoginCheckMiddleWare',
+    # 'result_module.LoginCheckMiddleWare.LoginCheckMiddleWare',
 ]
 
 ROOT_URLCONF = 'result_system.urls'
@@ -150,3 +151,94 @@ STATIC_ROOT = os.path.join(BASE_DIR,"static")
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+JAZZMIN_SETTINGS = {
+    # Title of the window
+    "site_title": "ZAMZAM ISLAMIC SCHOOL ",
+
+    # Title on the login screen
+    "site_header": "ZAMZAM ISLAMIC SCHOOL",
+   
+    "index_title":"Dashboard",
+    # Title on the brand
+    "site_brand": "ZAMZAM ISLAMIC SCHOOL",
+
+    # Logo to use for your site, must be present in static files, used for brand on top left
+    "site_logo": "img/zamzamLogo.jpg",
+
+    # Welcome text on the login screen
+    "welcome_sign": "ZAMZAM ISLAMIC SCHOOL",
+
+    # CSS classes that are applied to the logo
+    "site_logo_classes": "img-circle",
+
+    # Copyright on the footer
+    "copyright": "ZAMZAM ISLAMIC SCHOOL Group",
+
+    # Relative path to a favicon for your site
+    "site_icon": None,
+
+    # Links to put along the top menu
+    "topmenu_links": [
+        {"name": "Home",  "url": "admin_home"},   
+
+    ],
+
+    # Additional links to include in the user menu on the top right
+    "usermenu_links": [
+        # {"name": "Support", "url": "activity_list", "new_window": False},
+    ],
+
+    # Whether to display the side menu
+    "show_sidebar": True,
+
+    # Whether to auto-expand the menu
+    "navigation_expanded": True,
+
+    # Hide these models when generating side menu
+    "hide_models": ['auth.user','auth.Group'],
+    
+     
+    
+# Custom icons for side menu apps/models
+"icons": {
+    # Admin app icons
+    "admin.LogEntry": "fas fa-file",
+
+    # Clinic icons
+    "result_module.Staffs": "fas fa-users",
+    "result_module.Announcement": "fas fa-bullhorn",
+    "result_module.Students": "fas fa-user-graduate",
+    "result_module.ExamType": "fas fa-clipboard",
+    "result_module.SujbectWiseResults": "fas fa-poll",
+    "result_module.Subject": "fas fa-book",
+},
+
+
+    # Icons that are used when one is not manually specified
+    "default_icon_parents": "fas fa-chevron-circle-right",
+    "default_icon_children": "fas fa-arrow-circle-right",
+    # Order apps automatically, but make sure choice and book admin links are first within the books app
+#    "order_with_respect_to": ["clinic.Employee", "clinic.Payroll", "clinic.SalaryPayment"],
+   
+    # Render out the change view as a single form, or in tabs
+    "changeform_format": "horizontal_tabs",
+
+    # Add a language dropdown into the admin
+    "language_chooser": True,
+
+    # Relative paths to custom CSS/JS scripts
+    "custom_css": None,
+    "custom_js": None,
+
+    # Whether to link font from fonts.googleapis.com
+    "use_google_fonts_cdn": True,
+
+    # Whether to show the UI customizer on the sidebar
+    "show_ui_builder": False,
+}
+
+JAZZMIN_UI_TWEAKS = {
+   
+    "theme": "slate",
+}

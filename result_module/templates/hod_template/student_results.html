@@ -55,26 +55,25 @@
             </form>
         </div>
     </div>
-</div>
-<div class="container-fulid">
-   <div class="row">
-    <div class="col-md-12">
-        <div class="card">
-            <div class="card-header">
-                <h5 class="card-title text-center"> Results</h5>
-            </div>
-            <div class="card-body">
-                <div id="result-table-container">
-                    <!-- Results will be displayed here -->
-                    <div class="table-responsive">
-                        
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title text-center"> Results</h5>
+                </div>
+                <div class="card-body">
+                    <div id="result-table-container">
+                        <!-- Results will be displayed here -->
+                        <div class="table-responsive">
+                            
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-   </div>
+       </div>
 </div>
+
 
 <script>
   $(document).ready(function() {
@@ -104,5 +103,25 @@
     });
   });
   </script>   
+  <script>
+    // Function to update the page title
+    function updatePageTitle() {
+        var selectedClass = document.getElementById('selected_class').value;
+        var examTypeElement = document.getElementById('exam_type_id');
+        var examType = examTypeElement.options[examTypeElement.selectedIndex].text;
+        var dateOfExam = document.getElementById('date_of_exam').value;
 
+        var newTitle = selectedClass + ' - ' + examType + ' - ' + dateOfExam;
+        document.title = newTitle;
+    }
+
+    // Event listener to trigger the updatePageTitle function when the form is submitted
+    document.getElementById('search-form').addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent form submission
+        updatePageTitle(); // Update page title
+    });
+
+    // Initial page title update when the page loads
+    updatePageTitle();
+</script>
 {% endblock main_content %}
