@@ -5,13 +5,17 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 
 
-@csrf_exempt      
+@csrf_exempt
 @require_POST
-def delete_student(request, student_id):
+def delete_student(request):
     try:
-        students = get_object_or_404(Students, pk=student_id)
-        students.delete()
-        return JsonResponse({'status': 'success'})
+        student_id = request.POST.get('studentId')  # Get studentId from post data
+        if student_id:
+            student = get_object_or_404(Students, pk=student_id)
+            student.delete()
+            return JsonResponse({'status': 'success'})
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Student ID is missing'})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}) 
    

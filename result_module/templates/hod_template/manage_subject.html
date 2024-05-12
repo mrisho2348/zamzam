@@ -13,143 +13,158 @@
 </a> {% endcomment %}
 {% endblock breadcrumb %}
 {% block main_content %}
-
- <table class="table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm  display" id="example"  style="width:100%">
-      <thead>
-        <tr>
-            <th>ID</th>
-            <th>Subject Name</th>                                                                  
-          {% comment %} <th>Action</th> {% endcomment %}
-        </tr>
-      </thead>
-
-
-        <tbody>
-            {% for subject in subjects %}
-            <tr>
-                <td>{{ subject.id }}</td>
-                <td>{{ subject.subject_name }}</td>       
-                {% comment %} <td class="text-center">
-                 <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#editSubjectModal{{ subject.id }}"  data-toggle="tooltip" title="Edit">
-                    <i class="fa fa-edit text-white"></i>
-                </button>
-                  <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteSubjectModal{{ subject.id }}"  data-toggle="tooltip" title="Delete">
-                    <i class="fas fa-trash"></i>
-                </button>         
-            </td> {% endcomment %}
-
-            <!-- Delete Modal -->
-            <div class="modal fade" id="deleteSubjectModal{{ subject.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteSubjectModalLabel{{ subject.id }}" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="deleteSubjectModalLabel{{ subject.id }}">Delete Category</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <p>Are you sure you want to delete this subject detail: <strong>{{ subject.subject_name }}</strong>?</p>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-danger" onclick="deleteSubject({{ subject.id }})">Delete</button>
-                        </div>
-                    </div>
-        
-                    <script>
-                        function deleteSubject(subjectId) {
-                            $.ajax({
-                                type: 'POST',
-                                url: '/delete_subject/' + subjectId + '/',  // Replace with your URL
-                                data: {},
-                                success: function (data) {
-                                    if (data.status === 'success') {
-                                        $('#deleteSubjectModal' + subjectId).modal('hide');
-                                        location.reload(true);
-                                        // Refresh the category list or perform any other actions
-                                    } else {
-                                        // Handle other status cases if needed
-                                        alert(data.message);
-                                    }
-                                },
-                                error: function (error) {
-                                    alert(error);
-                                    // Handle errors if necessary
-                                }
-                            });
-                        }
-                    </script>
-                </div>
+<div class="container-fluid">
+  <div class="row">
+      <div class="col-md-12">
+          <div class="card">            
+              <div class="card-header">
+                <h6  class="header-title text-center mt-0 mb-1  text-uppercase">  List of all subjects in the system</h6>
             </div>
-            
-
-            <div class="modal fade" id="editSubjectModal{{ subject.id }}" tabindex="-1" aria-labelledby="editSubjectModalLabel{{ subject.id }}" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="editSubjectModalLabel{{ subject.id }}">update Subject</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                      </button>
-                    </div>
-                    <div class="modal-body">
-                      <form id="editSubjectForm{{ subject.id }}">
-                        <div class="row">
-                          <div class="col-md-12">
-                            <div class="form-group">
-                              <label for="subject_name">Subject Name</label>
-                              <input type="text" class="form-control" id="subject_name" name="subject_name" value="{{ subject.subject_name }}">
-                              <input type="hidden" class="form-control" id="subject_id" name="subject_id" value="{{ subject.id }}">
-                            </div>
-                          </div>                   
-                        </div>
-                        <div class="form-row">
-                          <div class="col-md-12 form-group">
-                              <button  type="submit" class="btn btn-primary btn-block"  id="submitBtn">update Subject </button>  
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover text-nowrap table-responsive-sm table-bordered table-striped table-sm  display" id="example"  style="width:100%">
+                    <thead>
+                      <tr>
+                          <th>ID</th>
+                          <th>Subject Name</th>                                                                  
+                        {% comment %} <th>Action</th> {% endcomment %}
+                      </tr>
+                    </thead>
+              
+              
+                      <tbody>
+                          {% for subject in subjects %}
+                          <tr>
+                              <td>{{ subject.id }}</td>
+                              <td>{{ subject.subject_name }}</td>       
+                              {% comment %} <td class="text-center">
+                               <button class="btn btn-dark btn-sm" data-toggle="modal" data-target="#editSubjectModal{{ subject.id }}"  data-toggle="tooltip" title="Edit">
+                                  <i class="fa fa-edit text-white"></i>
+                              </button>
+                                <button class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteSubjectModal{{ subject.id }}"  data-toggle="tooltip" title="Delete">
+                                  <i class="fas fa-trash"></i>
+                              </button>         
+                          </td> {% endcomment %}
+              
+                          <!-- Delete Modal -->
+                          <div class="modal fade" id="deleteSubjectModal{{ subject.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteSubjectModalLabel{{ subject.id }}" aria-hidden="true">
+                              <div class="modal-dialog" role="document">
+                                  <div class="modal-content">
+                                      <div class="modal-header">
+                                          <h5 class="modal-title" id="deleteSubjectModalLabel{{ subject.id }}">Delete Category</h5>
+                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                              <span aria-hidden="true">&times;</span>
+                                          </button>
+                                      </div>
+                                      <div class="modal-body">
+                                          <p>Are you sure you want to delete this subject detail: <strong>{{ subject.subject_name }}</strong>?</p>
+                                      </div>
+                                      <div class="modal-footer">
+                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                          <button type="button" class="btn btn-danger" onclick="deleteSubject({{ subject.id }})">Delete</button>
+                                      </div>
+                                  </div>
+                      
+                                  <script>
+                                      function deleteSubject(subjectId) {
+                                          $.ajax({
+                                              type: 'POST',
+                                              url: '/delete_subject/' + subjectId + '/',  // Replace with your URL
+                                              data: {},
+                                              success: function (data) {
+                                                  if (data.status === 'success') {
+                                                      $('#deleteSubjectModal' + subjectId).modal('hide');
+                                                      location.reload(true);
+                                                      // Refresh the category list or perform any other actions
+                                                  } else {
+                                                      // Handle other status cases if needed
+                                                      alert(data.message);
+                                                  }
+                                              },
+                                              error: function (error) {
+                                                  alert(error);
+                                                  // Handle errors if necessary
+                                              }
+                                          });
+                                      }
+                                  </script>
+                              </div>
                           </div>
-                      </div>
-                      </form>
-                    </div>
-                         
-                    <script>
-                        // Handle form submission using AJAX
-                        $(document).ready(function () {
-                            // Assuming you have a loop or iteration for categories, replace "forEach" with your actual loop
-                            {% for subject in subjects %}
-                                $('#editSubjectForm{{ subject.id }}').submit(function (e) {
-                                    e.preventDefault();
-                                    $.ajax({
-                                        type: 'POST',
-                                        url: '{% url "save_subject" %}',  // Replace with your URL
-                                        data: $('#editSubjectForm{{ subject.id }}').serialize(),
-                                        success: function (data) {
-                                            if (data.status === 'success') {
-                                                $('#editSubjectModal{{ subject.id }}').modal('hide');
-                                                location.reload(true);
-                                             
-                                            } else {
-                                              
-                                                alert(data.message);
-                                            }
-                                        },
-                                        error: function (error) {
-                                            alert(error);
-                                            // Handle errors if necessary
-                                        }
-                                    });
-                                });
-                            {% endfor %}
-                        });
-                    </script>
-                  </div>
+                          
+              
+                          <div class="modal fade" id="editSubjectModal{{ subject.id }}" tabindex="-1" aria-labelledby="editSubjectModalLabel{{ subject.id }}" aria-hidden="true">
+                              <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                  <div class="modal-header">
+                                    <h5 class="modal-title" id="editSubjectModalLabel{{ subject.id }}">update Subject</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                  </div>
+                                  <div class="modal-body">
+                                    <form id="editSubjectForm{{ subject.id }}">
+                                      <div class="row">
+                                        <div class="col-md-12">
+                                          <div class="form-group">
+                                            <label for="subject_name">Subject Name</label>
+                                            <input type="text" class="form-control" id="subject_name" name="subject_name" value="{{ subject.subject_name }}">
+                                            <input type="hidden" class="form-control" id="subject_id" name="subject_id" value="{{ subject.id }}">
+                                          </div>
+                                        </div>                   
+                                      </div>
+                                      <div class="form-row">
+                                        <div class="col-md-12 form-group">
+                                            <button  type="submit" class="btn btn-primary btn-block"  id="submitBtn">update Subject </button>  
+                                        </div>
+                                    </div>
+                                    </form>
+                                  </div>
+                                       
+                                  <script>
+                                      // Handle form submission using AJAX
+                                      $(document).ready(function () {
+                                          // Assuming you have a loop or iteration for categories, replace "forEach" with your actual loop
+                                          {% for subject in subjects %}
+                                              $('#editSubjectForm{{ subject.id }}').submit(function (e) {
+                                                  e.preventDefault();
+                                                  $.ajax({
+                                                      type: 'POST',
+                                                      url: '{% url "save_subject" %}',  // Replace with your URL
+                                                      data: $('#editSubjectForm{{ subject.id }}').serialize(),
+                                                      success: function (data) {
+                                                          if (data.status === 'success') {
+                                                              $('#editSubjectModal{{ subject.id }}').modal('hide');
+                                                              location.reload(true);
+                                                           
+                                                          } else {
+                                                            
+                                                              alert(data.message);
+                                                          }
+                                                      },
+                                                      error: function (error) {
+                                                          alert(error);
+                                                          // Handle errors if necessary
+                                                      }
+                                                  });
+                                              });
+                                          {% endfor %}
+                                      });
+                                  </script>
+                                </div>
+                              </div>
+                            </div>
+                          </tr>
+                          {% endfor %}
+                      </tbody>
+                  </table>
+              
                 </div>
               </div>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-
+          </div>
+      </div>
+  </div>
+</div>
+ 
 
     <!-- Bootstrap Modal with Form -->
 

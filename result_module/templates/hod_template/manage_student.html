@@ -131,8 +131,10 @@
                                                         function deleteStudent(studentId) {
                                                             $.ajax({
                                                                 type: 'POST',
-                                                                url: '/delete_student/' + studentId + '/',  // Replace with your URL
-                                                                data: {},
+                                                                url: '{% url "delete_student" %}',  // Replace with your URL
+                                                                data: {
+                                                                    studentId: studentId  // Pass studentId as post data
+                                                                },
                                                                 success: function (data) {
                                                                     if (data.status === 'success') {
                                                                         $('#deleteStudentModal' + studentId).modal('hide');
@@ -149,6 +151,7 @@
                                                                 }
                                                             });
                                                         }
+                                                        
                                                     </script>
                                                 </div>
                                             </div>

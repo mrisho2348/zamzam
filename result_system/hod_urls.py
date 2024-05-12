@@ -59,7 +59,7 @@ urlpatterns = [
         path('student_subject_wise_result_page/<int:student_id>/', HodViews.student_subject_wise_result_page, name='student_subject_wise_result_page'),
        
         # delete urls 
-        path('delete_student/<int:student_id>/', Delete.delete_student, name='delete_student'),
+        path('delete_student/', Delete.delete_student, name='delete_student'),
         path('delete_subject/<int:subject_id>/', Delete.delete_subject, name='delete_subject'),
         path('delete_exam_type/<int:exam_id>/', Delete.delete_exam_type, name='delete_exam_type'),
         
